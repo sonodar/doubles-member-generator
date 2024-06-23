@@ -60,7 +60,7 @@ export default function InitialSettingPane({ onStart }: Props) {
 				<Center>
 					<Stack spacing={6}>
 						<HStack>
-							<Image src={logo.src} boxSize="24px" borderRadius={"md"} />
+							<Image src={logo} boxSize="24px" borderRadius={"md"} />
 							<Heading as="h1" size="sm">
 								ダブルスメンバー決めるくん
 							</Heading>
