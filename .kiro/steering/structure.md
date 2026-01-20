@@ -47,24 +47,26 @@ components/
 
 ### API Layer (`src/api/`)
 **Location**: `src/api/`
-**Purpose**: AWS Amplify GraphQL統合
+**Purpose**: AWS Amplify Gen2 データ統合
 **Pattern**:
-- `graphql/`配下は自動生成（Amplify CLI）
-- `client.ts`でAmplify設定
-- `event.ts`等でドメイン固有のAPI操作をラップ
+- `client.ts`: Amplify設定と型付きクライアント生成
+- スキーマ型は `amplify/data/resource.ts` から直接インポート
+- `environment.ts`, `event.ts` でドメイン固有のAPI操作をラップ
 
 ### Pages (`src/pages/`)
 **Location**: `src/pages/`
-**Purpose**: Astroルーティング（ファイルベース）
-**Pattern**: Astroのファイルベースルーティングに従う
+**Purpose**: React Routerベースのページコンポーネント
+**Pattern**: 各ファイルがルートに対応するページコンポーネント
 
 ### Amplify Backend (`amplify/`)
 **Location**: `amplify/`
-**Purpose**: AWS Amplifyバックエンド設定
+**Purpose**: AWS Amplify Gen2 バックエンド定義（TypeScript + CDK）
 **Pattern**:
-- `backend/api/`にGraphQLスキーマ
-- `backend/function/`にLambda関数（TypeScript）
-- Yarn Workspacesでバックエンド関数を管理
+- `backend.ts`: メインのバックエンド定義（`defineBackend()`）
+- `auth/resource.ts`: Cognito認証設定
+- `data/resource.ts`: GraphQLスキーマ定義（`a.schema()`）
+- `functions/`: Lambda関数リソース
+- 設定ファイル: `amplify_outputs.json`（自動生成、フロントエンドで使用）
 
 ## Naming Conventions
 
@@ -100,7 +102,7 @@ import { settingsAtom } from "./state/index.ts";
 
 - **UI/Logic分離**: `src/logic/`は純粋関数のみ、React依存なし
 - **状態の局所化**: Jotaiアトムでグローバル状態を最小化
-- **自動生成コードの分離**: Amplify生成ファイルはlint対象外に設定
+- **型安全なバックエンド統合**: Amplify Gen2 スキーマ型をフロントエンドで直接参照
 - **テスト併置**: ロジックのテストはソースと同ディレクトリに配置
 
 ---
