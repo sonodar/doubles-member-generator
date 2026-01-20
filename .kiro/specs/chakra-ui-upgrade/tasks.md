@@ -1,26 +1,26 @@
 # Implementation Plan
 
 ## Task 0: 既存のビルドエラー修正
-- [ ] 0.1 TypeScript コンパイルエラーの修正
+- [x] 0.1 TypeScript コンパイルエラーの修正
   - tsconfig.json の未知オプション `noUncheckedSideEffectImports` を削除
   - amplify ディレクトリを tsconfig の include から除外（amplify は独自の tsconfig を持つ）
   - npm run typecheck が通ることを確認する
   - _Requirements: 7.3_
 
-- [ ] 0.2 Biome lint エラーの修正
+- [x] 0.2 Biome lint エラーの修正
   - src/api/event.test.ts の `as any` を適切な型に修正（3箇所）
   - npm run lint が通ることを確認する
   - _Requirements: 7.2_
 
 ## Task 1: テスト環境の整備
-- [ ] 1.1 vitest 設定ファイルの分離
+- [x] 1.1 vitest 設定ファイルの分離
   - vite.config.ts から vitest 設定を分離し、vitest.config.ts を作成する
   - vitest/config から defineConfig をインポートする
   - 既存のテスト設定（environment, setupFiles）を移行する
   - globals: true を追加してグローバル API を有効化する
   - _Requirements: 1.6_
 
-- [ ] 1.2 テスト関連パッケージの更新
+- [x] 1.2 テスト関連パッケージの更新
   - vitest を 1.2.2 から 4.x（React 18 対応最新版）にアップグレードする
   - @vitest/ui を vitest と同じバージョンに更新する
   - @testing-library/react, @testing-library/dom, @testing-library/jest-dom を最新版に更新する
@@ -30,13 +30,13 @@
   - _Requirements: 1.4, 1.6_
 
 ## Task 2: テスト基盤の構築
-- [ ] 2.1 ブラウザ API モックの追加
+- [x] 2.1 ブラウザ API モックの追加
   - test-setup.ts に matchMedia, ResizeObserver, IntersectionObserver のモックを追加する
   - Chakra UI コンポーネントがテスト環境で正常に動作するために必要なモック
   - 既存の @testing-library/jest-dom/vitest インポートを維持しつつ拡張する
   - _Requirements: 1.4, 1.6_
 
-- [ ] 2.2 カスタム render 関数の作成
+- [x] 2.2 カスタム render 関数の作成
   - ChakraProvider をラップしたカスタム render 関数を作成する
   - Jotai Provider も統合し、テスト用の初期状態を設定可能にする
   - @testing-library/react の API を再エクスポートする

@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 
@@ -13,7 +13,16 @@ export default defineConfig({
 			"@logic": path.resolve(__dirname, "src/logic"),
 		},
 	},
-	define: {
-		"window.global": {},
+	test: {
+		globals: true,
+		environment: "happy-dom",
+		setupFiles: ["./src/test-setup.ts"],
+		coverage: {
+			provider: "v8",
+			enabled: true,
+			reporter: ["text", "html"],
+			include: ["src/**/*.ts", "src/**/*.tsx"],
+			exclude: ["src/**/*.test.ts", "src/**/*.test.tsx", "src/testing/**/*"],
+		},
 	},
 });
