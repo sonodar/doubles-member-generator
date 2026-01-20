@@ -1,6 +1,5 @@
-import { DataStore } from "@aws-amplify/datastore";
 import { match } from "ts-pattern";
-import { Event as EventEntity } from "./models";
+import { client, type Schema } from "./client";
 import { type CurrentSettings, type GameMembers, join, leave, replayGenerate, replayRetry } from "@logic";
 
 export const EventType = {
@@ -57,15 +56,15 @@ export type Event = EventPayload & {
 	occurredAt: Date;
 };
 
+type EventModel = Schema["Event"]["type"];
+
 async function emit(environmentID: string, event: EventPayload) {
-	await DataStore.save(
-		new EventEntity({
-			environmentID,
-			type: event.type,
-			payload: JSON.stringify(event.payload || "{}"),
-			occurredAt: new Date().toISOString(),
-		}),
-	);
+	await client.models.Event.create({
+		environmentID,
+		type: event.type,
+		payload: JSON.stringify(event.payload ?? {}),
+		occurredAt: new Date().toISOString(),
+	});
 }
 
 export function eventEmitter(envId: string) {
@@ -80,34 +79,45 @@ export function eventEmitter(envId: string) {
 }
 
 export function subscribeEvent(environmentID: string, handler: (event: Event) => void) {
-	const observer = DataStore.observeQuery(EventEntity, (c) => c.environmentID.eq(environmentID)).subscribe(
-		({ items }) => items.map(toEvent).forEach(handler),
-	);
+	const subscription = client.models.Event.observeQuery({
+		filter: { environmentID: { eq: environmentID } },
+	}).subscribe({
+		next: ({ items }) => {
+			for (const item of items) {
+				handler(toEvent(item));
+			}
+		},
+	});
 
-	const unsubscribe = () => {
-		if (!observer.closed) observer.unsubscribe();
+	return {
+		unsubscribe: () => subscription.unsubscribe(),
 	};
-
-	return { unsubscribe };
 }
 
 export async function findAllEvents(id: string): Promise<Event[]> {
-	const items = await DataStore.query(EventEntity, (c) => c.environmentID.eq(id));
-	return items.map(toEvent).sort((e1, e2) => {
+	const { data } = await client.models.Event.list({
+		filter: { environmentID: { eq: id } },
+	});
+	return (data ?? []).map(toEvent).sort((e1: Event, e2: Event) => {
 		if (e1.type === EventType.Initialize) return -1;
 		if (e1.type === EventType.Finish) return 1;
 		return e1.occurredAt.getTime() - e2.occurredAt.getTime();
 	});
 }
 
-function toEvent(data: EventEntity): Event {
-	const payload = toPayload(data.payload);
-	const occurredAt = new Date(data.occurredAt);
-	return { ...data, payload, occurredAt } as Event;
+function toEvent(model: EventModel): Event {
+	const payload = toPayload(model.payload);
+	const occurredAt = new Date(model.occurredAt);
+	return {
+		id: model.id,
+		type: model.type as EventType,
+		payload,
+		occurredAt,
+	} as Event;
 }
 
-function toPayload<E>(payload: string | object): E {
-	if (typeof payload !== "string") return payload as E;
+function toPayload(payload: unknown): EventPayload["payload"] {
+	if (typeof payload !== "string") return payload as EventPayload["payload"];
 	return JSON.parse(payload);
 }
 

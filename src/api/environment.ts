@@ -1,23 +1,19 @@
-import { DataStore } from "@aws-amplify/datastore";
 import ms from "ms";
-import { Environment } from "./models";
+import { client } from "./client";
 
 const ttl = (lifetime: number) => Math.floor((Date.now() + lifetime) / 1000);
 
-export const createEnvironment = async () => {
-	return await DataStore.save(
-		new Environment({
-			ttl: ttl(ms("7d")),
-		}),
-	);
-};
+export async function createEnvironment(): Promise<{ id: string }> {
+	const { data } = await client.models.Environment.create({
+		ttl: ttl(ms("7d")),
+	});
+	if (!data) throw new Error("Failed to create environment");
+	return { id: data.id };
+}
 
-export const finishEnvironment = async (id: string) => {
-	const entity = await DataStore.query(Environment, id);
-	if (!entity) return;
-	await DataStore.save(
-		Environment.copyOf(entity, (updated) => {
-			updated.finishedAt = new Date().toISOString();
-		}),
-	);
-};
+export async function finishEnvironment(id: string): Promise<void> {
+	await client.models.Environment.update({
+		id,
+		finishedAt: new Date().toISOString(),
+	});
+}
