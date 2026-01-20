@@ -45,14 +45,14 @@
   - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
 ## Task 3: コア機能コンポーネントのテスト実装
-- [ ] 3.1 (P) Main コンポーネントのテスト
+- [x] 3.1 (P) Main コンポーネントのテスト
   - 初期設定画面とゲーム画面の条件分岐を検証する
   - 設定が未完了の場合は InitialSettingPane が表示されることを確認する
   - 設定完了後は GamePane が表示されることを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 6.1_
 
-- [ ] 3.2 (P) InitialSettingPane コンポーネントのテスト
+- [x] 3.2 (P) InitialSettingPane コンポーネントのテスト
   - コート数選択の動作を検証する
   - メンバー数入力の動作を検証する
   - アルゴリズム選択の動作を検証する
@@ -60,14 +60,14 @@
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
-- [ ] 3.3 (P) GamePane コンポーネントのテスト
+- [x] 3.3 (P) GamePane コンポーネントのテスト
   - メンバー数増減ボタンの動作を検証する
   - 生成ボタンのクリックでメンバー生成が行われることを確認する
   - 各操作ボタン（履歴、共有、リセット）が正常に動作することを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
-- [ ] 3.4 (P) GenerateButton コンポーネントのテスト
+- [x] 3.4 (P) GenerateButton コンポーネントのテスト
   - ボタンクリックで生成ロジックが呼び出されることを検証する
   - ローディング状態の表示を確認する
   - 生成済みの場合のリトライ表示を確認する
@@ -75,46 +75,46 @@
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
 ## Task 4: 入力コンポーネントのテスト実装
-- [ ] 4.1 (P) CourtCountInput コンポーネントのテスト
+- [x] 4.1 (P) CourtCountInput コンポーネントのテスト
   - コート数の選択が正常に動作することを検証する
   - 選択状態の視覚的フィードバックを確認する
   - onChange コールバックが適切に呼ばれることを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
-- [ ] 4.2 (P) AlgorithmInput コンポーネントのテスト
+- [x] 4.2 (P) AlgorithmInput コンポーネントのテスト
   - アルゴリズムの切り替えが正常に動作することを検証する
   - 選択状態の視覚的フィードバックを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
-- [ ] 4.3 (P) InitMemberCountInput コンポーネントのテスト
+- [x] 4.3 (P) InitMemberCountInput コンポーネントのテスト
   - 増減ボタンの動作を検証する
   - 最小値の境界条件を確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
 ## Task 5: ダイアログコンポーネントのテスト実装
-- [ ] 5.1 (P) ConfirmDialog コンポーネントのテスト
+- [x] 5.1 (P) ConfirmDialog コンポーネントのテスト
   - ダイアログの開閉動作を検証する
   - 確認・キャンセルボタンのクリックで適切なコールバックが呼ばれることを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
-- [ ] 5.2 (P) ShareDialog コンポーネントのテスト
+- [x] 5.2 (P) ShareDialog コンポーネントのテスト
   - URL 表示を検証する
   - コピーボタンの動作を検証する（クリップボード API のモック）
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.5_
 
-- [ ] 5.3 (P) LeaveDialog コンポーネントのテスト
+- [x] 5.3 (P) LeaveDialog コンポーネントのテスト
   - メンバー選択の動作を検証する
   - 離脱確定時のコールバックを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 6.1_
 
 ## Task 6: ドラッグ&ドロップ機能のテスト実装
-- [ ] 6.1 AdjustmentPane コンポーネントのテスト
+- [x] 6.1 AdjustmentPane コンポーネントのテスト
   - DnD コンテキストの初期化を検証する
   - メンバーボックスの表示を確認する
   - ドラッグ&ドロップによるメンバー入れ替えの結果を検証する
@@ -122,31 +122,31 @@
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.5, 6.2_
 
-- [ ] 6.2 (P) MemberBox コンポーネントのテスト
+- [x] 6.2 (P) MemberBox コンポーネントのテスト
   - ドラッグ可能状態の検証（useDraggable フックの動作確認）
   - メンバー ID の表示を確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.5_
 
-- [ ] 6.3 (P) MemberDroppable コンポーネントのテスト
+- [x] 6.3 (P) MemberDroppable コンポーネントのテスト
   - ドロップターゲットとしての動作を検証する（useDroppable フックの動作確認）
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.5_
 
 ## Task 7: 統計・表示コンポーネントのテスト実装
-- [ ] 7.1 (P) StatisticsPane コンポーネントのテスト
+- [x] 7.1 (P) StatisticsPane コンポーネントのテスト
   - 統計情報の表示を検証する
   - 調整ダイアログの開閉動作を確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 6.3, 6.4_
 
-- [ ] 7.2 (P) HistoryPane コンポーネントのテスト
+- [x] 7.2 (P) HistoryPane コンポーネントのテスト
   - 履歴一覧の表示を検証する
   - 各履歴エントリのフォーマットを確認する
   - npm run typecheck と npm run lint が通ることを確認する
   - _Requirements: 1.1, 1.2, 6.3_
 
-- [ ] 7.3 (P) CourtMembersPane コンポーネントのテスト
+- [x] 7.3 (P) CourtMembersPane コンポーネントのテスト
   - コート別メンバー表示を検証する
   - メンバー ID の表示フォーマットを確認する
   - npm run typecheck と npm run lint が通ることを確認する
