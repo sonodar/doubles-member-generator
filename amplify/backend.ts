@@ -26,11 +26,11 @@ cfnGraphqlApi.name = `DoublesMemberGenerator-${process.env.AWS_BRANCH || "sandbo
 
 // DynamoDB テーブルへの参照を取得
 const { tables, cfnResources } = backend.data.resources;
-const environmentTable = tables["Environment"];
-const eventTable = tables["Event"];
+const environmentTable = tables.Environment;
+const eventTable = tables.Event;
 
 // Environment テーブルの TTL を有効化（ttl フィールドを使用）
-cfnResources.amplifyDynamoDbTables["Environment"].timeToLiveAttribute = {
+cfnResources.amplifyDynamoDbTables.Environment.timeToLiveAttribute = {
 	attributeName: "ttl",
 	enabled: true,
 };

@@ -21,7 +21,7 @@ vi.mock("./client", () => ({
 }));
 
 // テスト対象のインポートはモック設定後に行う
-import { eventEmitter, findAllEvents, subscribeEvent, EventType, replayEvent } from "./event";
+import { eventEmitter, findAllEvents, subscribeEvent, EventType, replayEvent, type Event } from "./event";
 
 describe("event", () => {
 	beforeEach(() => {
@@ -204,13 +204,13 @@ describe("event", () => {
 				gameCounts: {},
 				algorithm: "evenness" as const,
 			};
-			const event = {
+			const event: Event = {
 				id: "event-1",
 				type: EventType.Join,
 				occurredAt: new Date(),
 			};
 
-			const result = replayEvent(settings, event as any);
+			const result = replayEvent(settings, event);
 
 			// join は members に新しいメンバーを追加
 			expect(result.members.length).toBe(5);
@@ -224,14 +224,14 @@ describe("event", () => {
 				gameCounts: {},
 				algorithm: "evenness" as const,
 			};
-			const event = {
+			const event: Event = {
 				id: "event-1",
 				type: EventType.Leave,
 				payload: { memberId: 3 },
 				occurredAt: new Date(),
 			};
 
-			const result = replayEvent(settings, event as any);
+			const result = replayEvent(settings, event);
 
 			expect(result.members).not.toContain(3);
 		});
@@ -244,13 +244,13 @@ describe("event", () => {
 				gameCounts: {},
 				algorithm: "evenness" as const,
 			};
-			const event = {
+			const event: Event = {
 				id: "event-1",
 				type: EventType.Finish,
 				occurredAt: new Date(),
 			};
 
-			const result = replayEvent(settings, event as any);
+			const result = replayEvent(settings, event);
 
 			expect(result).toEqual(settings);
 		});

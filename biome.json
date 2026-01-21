@@ -24,6 +24,6 @@
 	},
 	"files": {
 		"include": ["."],
-		"ignore": ["package*.json"]
+		"ignore": ["package*.json", "coverage"]
 	}
 }
