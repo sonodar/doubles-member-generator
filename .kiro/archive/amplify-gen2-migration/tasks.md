@@ -271,7 +271,7 @@ Amplify Gen 1 から Gen 2 への移行、および Astro から Vite + React (S
 
   _Requirements: 10.3_
 
-- [ ] 5.5 カスタムドメインの移行（手動・AWS コンソール）
+- [x] 5.5 カスタムドメインの移行（手動・AWS コンソール）
 
   > **注意**: ダウンタイムが発生する可能性があります。計画的に実施してください。
 
@@ -300,7 +300,7 @@ Amplify Gen 1 から Gen 2 への移行、および Astro から Vite + React (S
 
   _Requirements: 6.3, 6.4_
 
-- [ ] 5.6 Gen 1 アプリの削除（手動・AWS コンソール）
+- [x] 5.6 Gen 1 アプリの削除（手動・AWS コンソール）
 
   > **警告**: この操作は取り消せません。Gen 2 アプリが正常に動作していることを確認してから実行してください。
 
@@ -310,8 +310,8 @@ Amplify Gen 1 から Gen 2 への移行、および Astro から Vite + React (S
   3. 確認ダイアログでアプリ名を入力して削除
 
   **確認ポイント**:
-  - [ ] Gen 1 アプリが削除された
-  - [ ] 関連する CloudFormation スタックが削除された（AWS CloudFormation コンソールで確認）
+  - [x] Gen 1 アプリが削除された
+  - [x] 関連する CloudFormation スタックが削除された（AWS CloudFormation コンソールで確認）
 
   _Requirements: 11.1_
 
@@ -333,9 +333,9 @@ Amplify Gen 1 から Gen 2 への移行、および Astro から Vite + React (S
   6. デプロイ完了まで待機
 
   **確認ポイント（main）**:
-  - [ ] main ブランチのビルドが成功する
-  - [ ] ビルドログに `npx ampx pipeline-deploy --branch main` が実行されている
-  - [ ] main 用のバックエンドリソースが作成される（develop とは別）
+  - [x] main ブランチのビルドが成功する
+  - [x] ビルドログに `npx ampx pipeline-deploy --branch main` が実行されている
+  - [x] main 用のバックエンドリソースが作成される（develop とは別）
 
   **C. カスタムドメインを main ブランチに切り替え（AWS コンソール）**
 
@@ -347,8 +347,8 @@ Amplify Gen 1 から Gen 2 への移行、および Astro から Vite + React (S
   4. SSL 証明書の再プロビジョニングを待機
 
   **確認ポイント（ドメイン切り替え）**:
-  - [ ] カスタムドメインが main ブランチを指している
-  - [ ] カスタムドメインでアクセスできる
+  - [x] カスタムドメインが main ブランチを指している
+  - [x] カスタムドメインでアクセスできる
 
   **D. feature ブランチの動作確認（オプション）**
 
