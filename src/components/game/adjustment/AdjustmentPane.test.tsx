@@ -2,6 +2,16 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "../../../testing/utils";
 import { AdjustmentPane } from "./AdjustmentPane";
 import type { CourtMembers, History } from "@logic";
+import * as swapModule from "@logic";
+
+// swapGameMemberをモック
+vi.mock("@logic", async () => {
+	const actual = await vi.importActual("@logic");
+	return {
+		...actual,
+		swapGameMember: vi.fn(actual.swapGameMember),
+	};
+});
 
 describe("AdjustmentPane", () => {
 	const mockOnChange = vi.fn();
@@ -21,6 +31,7 @@ describe("AdjustmentPane", () => {
 
 	beforeEach(() => {
 		mockOnChange.mockClear();
+		vi.mocked(swapModule.swapGameMember).mockClear();
 	});
 
 	describe("基本表示", () => {
@@ -51,6 +62,23 @@ describe("AdjustmentPane", () => {
 			expect(screen.getByText("9")).toBeInTheDocument();
 			expect(screen.getByText("10")).toBeInTheDocument();
 		});
+
+		it("休憩メンバーがいない場合、休憩エリアは表示されない", () => {
+			const exactMembers = [1, 2, 3, 4, 5, 6, 7, 8];
+			render(
+				<AdjustmentPane
+					courtCount={courtCount}
+					members={exactMembers}
+					histories={histories}
+					onChange={mockOnChange}
+				/>,
+			);
+
+			// コートメンバーは表示される
+			expect(screen.getByText("コート 1")).toBeInTheDocument();
+			// 休憩見出しは表示されない（休憩メンバーなし）
+			expect(screen.queryByText("休憩")).not.toBeInTheDocument();
+		});
 	});
 
 	describe("コートメンバーの表示", () => {
@@ -80,6 +108,37 @@ describe("AdjustmentPane", () => {
 			// コート情報が表示されない
 			expect(screen.queryByText("コート 1")).not.toBeInTheDocument();
 			expect(screen.queryByText("コート 2")).not.toBeInTheDocument();
+		});
+	});
+
+	describe("ドラッグ&ドロップ操作", () => {
+		it("履歴が最新の履歴に基づくメンバー配置を表示する", () => {
+			const multipleHistories: History[] = [
+				{
+					members: [
+						[10, 9, 8, 7],
+						[6, 5, 4, 3],
+					],
+					time: "2026-01-21T00:00:00+09:00",
+				},
+				{
+					members: courtMembers,
+					time: "2026-01-21T01:00:00+09:00",
+				},
+			];
+
+			render(
+				<AdjustmentPane
+					courtCount={courtCount}
+					members={members}
+					histories={multipleHistories}
+					onChange={mockOnChange}
+				/>,
+			);
+
+			// 最新履歴のメンバーが表示される（courtMembers: [1,2,3,4], [5,6,7,8]）
+			expect(screen.getByText("1")).toBeInTheDocument();
+			expect(screen.getByText("5")).toBeInTheDocument();
 		});
 	});
 });
