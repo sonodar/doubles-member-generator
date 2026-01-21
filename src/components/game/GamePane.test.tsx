@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import GamePane from "./GamePane";
 import { settingsAtom, shareIdAtom } from "../state";
 import { Algorithms, type CurrentSettings } from "@logic";
@@ -116,6 +116,34 @@ describe("GamePane", () => {
 
 			// モーダルが開くことを確認（メンバー選出見出しが表示される）
 			expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+		});
+	});
+
+	describe("履歴追加", () => {
+		it("ゲーム生成後に履歴が追加され、コートメンバーが表示される", async () => {
+			render(<GamePane onReset={mockOnReset} />, {
+				initialAtomValues: [
+					[settingsAtom, initialSettings],
+					[shareIdAtom, ""],
+				],
+			});
+
+			// メンバー決めボタンをクリック
+			const generateButton = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(generateButton);
+
+			// モーダルが開いたことを確認
+			expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+
+			// 確定ボタンをクリック
+			const okButton = screen.getByRole("button", { name: "確定" });
+			fireEvent.click(okButton);
+
+			// コートメンバーが表示される（履歴が追加された証拠）
+			// 履歴が追加されると「今回」というラベルが表示される
+			await waitFor(() => {
+				expect(screen.getByText("今回")).toBeInTheDocument();
+			});
 		});
 	});
 });

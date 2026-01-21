@@ -6,7 +6,7 @@ import * as swapModule from "@logic";
 
 // swapGameMemberをモック
 vi.mock("@logic", async () => {
-	const actual = await vi.importActual("@logic");
+	const actual = await vi.importActual<typeof import("@logic")>("@logic");
 	return {
 		...actual,
 		swapGameMember: vi.fn(actual.swapGameMember),
@@ -66,12 +66,7 @@ describe("AdjustmentPane", () => {
 		it("休憩メンバーがいない場合、休憩エリアは表示されない", () => {
 			const exactMembers = [1, 2, 3, 4, 5, 6, 7, 8];
 			render(
-				<AdjustmentPane
-					courtCount={courtCount}
-					members={exactMembers}
-					histories={histories}
-					onChange={mockOnChange}
-				/>,
+				<AdjustmentPane courtCount={courtCount} members={exactMembers} histories={histories} onChange={mockOnChange} />,
 			);
 
 			// コートメンバーは表示される

@@ -80,6 +80,5 @@ describe("MemberDroppable", () => {
 			const box = container.firstChild as HTMLElement;
 			expect(box.style.background).toBe("var(--chakra-colors-gray-100)");
 		});
-
 	});
 });

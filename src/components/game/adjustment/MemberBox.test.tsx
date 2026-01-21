@@ -4,7 +4,13 @@ import { MemberBox } from "./MemberBox";
 import { DndContext } from "@dnd-kit/core";
 
 // useDraggable のモック状態
-const mockDraggableState = {
+const mockDraggableState: {
+	isDragging: boolean;
+	attributes: Record<string, unknown>;
+	listeners: Record<string, unknown>;
+	setNodeRef: ReturnType<typeof vi.fn>;
+	transform: { x: number; y: number } | null;
+} = {
 	isDragging: false,
 	attributes: {},
 	listeners: {},

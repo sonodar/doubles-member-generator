@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen } from "../../testing/utils";
+import { render, screen, fireEvent } from "../../testing/utils";
 import { CourtCountInput } from "./CourtCountInput";
 
 describe("CourtCountInput", () => {
@@ -34,6 +34,17 @@ describe("CourtCountInput", () => {
 			// value=3 の input が checked
 			const checkedRadio = container.querySelector('input[value="3"]') as HTMLInputElement;
 			expect(checkedRadio?.checked).toBe(true);
+		});
+	});
+
+	describe("onChange コールバック", () => {
+		it("別のコート数をクリックすると onChange が呼ばれる", () => {
+			render(<CourtCountInput value={2} onChange={mockOnChange} />);
+
+			const court3 = screen.getByText("3");
+			fireEvent.click(court3);
+
+			expect(mockOnChange).toHaveBeenCalledWith(3);
 		});
 	});
 });

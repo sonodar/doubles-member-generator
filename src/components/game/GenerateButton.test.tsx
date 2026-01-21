@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "../../testing/utils";
 import { GenerateButton } from "./GenerateButton";
 import { Algorithms, type CurrentSettings } from "@logic";
+import * as logic from "@logic";
 
 describe("GenerateButton", () => {
 	const mockOnGenerate = vi.fn();
@@ -101,6 +102,62 @@ describe("GenerateButton", () => {
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			expect(button).toBeDisabled();
+		});
+	});
+
+	describe("アルゴリズム選択", () => {
+		it("DISCRETENESSアルゴリズムの設定でgenerate関数が呼ばれる", () => {
+			const generateSpy = vi.spyOn(logic, "generate");
+			const discretenessSettings: CurrentSettings = {
+				...baseSettings,
+				algorithm: Algorithms.DISCRETENESS,
+			};
+
+			render(
+				<GenerateButton
+					settings={discretenessSettings}
+					onGenerate={mockOnGenerate}
+					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
+				/>,
+			);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			expect(generateSpy).toHaveBeenCalledWith(
+				expect.objectContaining({
+					algorithm: Algorithms.DISCRETENESS,
+				}),
+			);
+
+			generateSpy.mockRestore();
+		});
+
+		it("EVENNESSアルゴリズムの設定でgenerate関数が呼ばれる", () => {
+			const generateSpy = vi.spyOn(logic, "generate");
+			const evennessSettings: CurrentSettings = {
+				...baseSettings,
+				algorithm: Algorithms.EVENNESS,
+			};
+
+			render(
+				<GenerateButton
+					settings={evennessSettings}
+					onGenerate={mockOnGenerate}
+					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
+				/>,
+			);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			expect(generateSpy).toHaveBeenCalledWith(
+				expect.objectContaining({
+					algorithm: Algorithms.EVENNESS,
+				}),
+			);
+
+			generateSpy.mockRestore();
 		});
 	});
 });
