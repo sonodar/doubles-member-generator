@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import MemberCountPane from "./MemberCountPane";
 import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
 import { settingsAtom } from "../state";
@@ -35,49 +35,57 @@ describe("MemberCountPane", () => {
 	};
 
 	describe("基本表示", () => {
-		it("メンバーIDとプレイ回数が表示される", () => {
+		it("メンバーIDとプレイ回数が表示される", async () => {
 			render(<MemberCountPane settings={settingsWithHistory} />);
 
 			// メンバーIDが表示される
-			expect(screen.getByText("1 :")).toBeInTheDocument();
-			expect(screen.getByText("10 :")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("1 :")).toBeInTheDocument();
+				expect(screen.getByText("10 :")).toBeInTheDocument();
+			});
 		});
 
-		it("propsなしの場合、settingsAtomから値を取得する", () => {
+		it("propsなしの場合、settingsAtomから値を取得する", async () => {
 			render(<MemberCountPane />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
-			expect(screen.getByText("1 :")).toBeInTheDocument();
+			await waitFor(() => expect(screen.getByText("1 :")).toBeInTheDocument());
 		});
 	});
 
 	describe("タブ切り替え", () => {
-		it("タブを切り替えられる", () => {
+		it("タブを切り替えられる", async () => {
 			render(<MemberCountPane settings={settingsWithHistory} />);
 
 			// 初期状態（総プレイタブ）
 			const playCountTab = screen.getByRole("tab", { name: "総プレイ" });
-			expect(playCountTab).toHaveAttribute("aria-selected", "true");
+			await waitFor(() => {
+				expect(playCountTab).toHaveAttribute("aria-selected", "true");
+			});
 
 			// 連続休憩タブに切り替え
 			const restCountTab = screen.getByRole("tab", { name: "連続休憩" });
 			fireEvent.click(restCountTab);
 
-			expect(restCountTab).toHaveAttribute("aria-selected", "true");
+			await waitFor(() => {
+				expect(restCountTab).toHaveAttribute("aria-selected", "true");
+			});
 		});
 
-		it("defaultTabIndexを指定できる", () => {
+		it("defaultTabIndexを指定できる", async () => {
 			render(<MemberCountPane settings={settingsWithHistory} defaultTabIndex={1} />);
 
 			// 連続休憩タブが初期選択されている
 			const restCountTab = screen.getByRole("tab", { name: "連続休憩" });
-			expect(restCountTab).toHaveAttribute("aria-selected", "true");
+			await waitFor(() => {
+				expect(restCountTab).toHaveAttribute("aria-selected", "true");
+			});
 		});
 	});
 
 	describe("離脱メンバー表示", () => {
-		it("showLeftMember=trueの場合、離脱したメンバーも表示される", () => {
+		it("showLeftMember=trueの場合、離脱したメンバーも表示される", async () => {
 			const settingsWithLeftMember: CurrentSettings = {
 				...settingsWithHistory,
 				members: [1, 2, 3, 4, 5, 6, 7, 8], // 9, 10 は離脱
@@ -90,7 +98,7 @@ describe("MemberCountPane", () => {
 			render(<MemberCountPane settings={settingsWithLeftMember} showLeftMember={true} />);
 
 			// 離脱メンバーも表示される
-			expect(screen.getByText("11 :")).toBeInTheDocument();
+			await waitFor(() => expect(screen.getByText("11 :")).toBeInTheDocument());
 		});
 	});
 });

@@ -1,19 +1,18 @@
-import { HStack, Radio, RadioGroup } from "@chakra-ui/react";
+import { SegmentGroup } from "@chakra-ui/react";
 import { type Algorithm, Algorithms } from "@logic";
 
 type Props = { value: Algorithm; onChange: (mode: Algorithm) => void };
 
+const ALGORITHM_ITEMS = [
+	{ value: Algorithms.DISCRETENESS, label: "ばらつき重視" },
+	{ value: Algorithms.EVENNESS, label: "均等性重視" },
+];
+
 export function AlgorithmInput({ value, onChange }: Props) {
 	return (
-		<RadioGroup onChange={onChange} value={value}>
-			<HStack spacing={6}>
-				<Radio value={Algorithms.DISCRETENESS} colorScheme={"brand"}>
-					ばらつき重視
-				</Radio>
-				<Radio value={Algorithms.EVENNESS} colorScheme={"brand"}>
-					均等性重視
-				</Radio>
-			</HStack>
-		</RadioGroup>
+		<SegmentGroup.Root value={value} onValueChange={(e) => e.value && onChange(e.value as Algorithm)}>
+			<SegmentGroup.Indicator />
+			<SegmentGroup.Items items={ALGORITHM_ITEMS} />
+		</SegmentGroup.Root>
 	);
 }

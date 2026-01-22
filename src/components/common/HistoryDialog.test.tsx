@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import { HistoryDialog } from "./HistoryDialog";
 import { settingsAtom } from "../state";
 import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
@@ -30,16 +30,18 @@ describe("HistoryDialog", () => {
 	});
 
 	describe("基本表示", () => {
-		it("isOpen=trueでダイアログが表示される", () => {
-			render(<HistoryDialog isOpen={true} onClose={mockOnClose} />, {
+		it("isOpen=trueでダイアログが表示される", async () => {
+			render(<HistoryDialog open={true} onClose={mockOnClose} />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
-			expect(screen.getByText("履歴")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("履歴")).toBeInTheDocument();
+			});
 		});
 
 		it("isOpen=falseでダイアログが表示されない", () => {
-			render(<HistoryDialog isOpen={false} onClose={mockOnClose} />, {
+			render(<HistoryDialog open={false} onClose={mockOnClose} />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
@@ -48,14 +50,20 @@ describe("HistoryDialog", () => {
 	});
 
 	describe("閉じる操作", () => {
-		it("閉じるボタンをクリックするとonCloseが呼ばれる", () => {
-			render(<HistoryDialog isOpen={true} onClose={mockOnClose} />, {
+		it("閉じるボタンをクリックするとonCloseが呼ばれる", async () => {
+			render(<HistoryDialog open={true} onClose={mockOnClose} />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
+			});
+
+			await waitFor(() => {
+				expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
 			});
 
 			fireEvent.click(screen.getByRole("button", { name: "Close" }));
 
-			expect(mockOnClose).toHaveBeenCalledTimes(1);
+			await waitFor(() => {
+				expect(mockOnClose).toHaveBeenCalledTimes(1);
+			});
 		});
 	});
 });

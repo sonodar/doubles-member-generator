@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor, act } from "../../testing/utils";
 import { GenerateButton } from "./GenerateButton";
 import { Algorithms, type CurrentSettings } from "@logic";
 import * as logic from "@logic";
@@ -34,7 +34,7 @@ describe("GenerateButton", () => {
 			expect(screen.getByRole("button", { name: "メンバー決め" })).toBeInTheDocument();
 		});
 
-		it("ボタンをクリックするとモーダルが開く", () => {
+		it("ボタンをクリックするとモーダルが開く", async () => {
 			render(
 				<GenerateButton
 					settings={baseSettings}
@@ -47,12 +47,14 @@ describe("GenerateButton", () => {
 			fireEvent.click(button);
 
 			// モーダルが開いてメンバー選出見出しが表示される
-			expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			});
 		});
 	});
 
 	describe("確定とやり直しボタン", () => {
-		it("モーダルには確定ボタンとやり直しボタンがある", () => {
+		it("モーダルには確定ボタンとやり直しボタンがある", async () => {
 			render(
 				<GenerateButton
 					settings={baseSettings}
@@ -64,11 +66,13 @@ describe("GenerateButton", () => {
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			fireEvent.click(button);
 
-			expect(screen.getByRole("button", { name: "確定" })).toBeInTheDocument();
-			expect(screen.getByRole("button", { name: "やり直し" })).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByRole("button", { name: "確定" })).toBeInTheDocument();
+				expect(screen.getByRole("button", { name: "やり直し" })).toBeInTheDocument();
+			});
 		});
 
-		it("確定ボタンをクリックすると onGenerate が呼ばれる", () => {
+		it("確定ボタンをクリックすると onGenerate が呼ばれる", async () => {
 			render(
 				<GenerateButton
 					settings={baseSettings}
@@ -81,11 +85,17 @@ describe("GenerateButton", () => {
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			fireEvent.click(button);
 
+			await waitFor(() => {
+				expect(screen.getByRole("button", { name: "確定" })).toBeInTheDocument();
+			});
+
 			// 確定ボタンをクリック
 			const okButton = screen.getByRole("button", { name: "確定" });
 			fireEvent.click(okButton);
 
-			expect(mockOnGenerate).toHaveBeenCalledTimes(1);
+			await waitFor(() => {
+				expect(mockOnGenerate).toHaveBeenCalledTimes(1);
+			});
 		});
 	});
 
@@ -96,7 +106,7 @@ describe("GenerateButton", () => {
 					settings={baseSettings}
 					onGenerate={mockOnGenerate}
 					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-					isDisabled={true}
+					disabled={true}
 				/>,
 			);
 
@@ -106,7 +116,7 @@ describe("GenerateButton", () => {
 	});
 
 	describe("アルゴリズム選択", () => {
-		it("DISCRETENESSアルゴリズムの設定でgenerate関数が呼ばれる", () => {
+		it("DISCRETENESSアルゴリズムの設定でgenerate関数が呼ばれる", async () => {
 			const generateSpy = vi.spyOn(logic, "generate");
 			const discretenessSettings: CurrentSettings = {
 				...baseSettings,
@@ -122,18 +132,20 @@ describe("GenerateButton", () => {
 			);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
-			fireEvent.click(button);
+			act(() => fireEvent.click(button));
 
-			expect(generateSpy).toHaveBeenCalledWith(
-				expect.objectContaining({
-					algorithm: Algorithms.DISCRETENESS,
-				}),
-			);
+			await waitFor(() => {
+				expect(generateSpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						algorithm: Algorithms.DISCRETENESS,
+					}),
+				);
+			});
 
 			generateSpy.mockRestore();
 		});
 
-		it("EVENNESSアルゴリズムの設定でgenerate関数が呼ばれる", () => {
+		it("EVENNESSアルゴリズムの設定でgenerate関数が呼ばれる", async () => {
 			const generateSpy = vi.spyOn(logic, "generate");
 			const evennessSettings: CurrentSettings = {
 				...baseSettings,
@@ -149,13 +161,15 @@ describe("GenerateButton", () => {
 			);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
-			fireEvent.click(button);
+			act(() => fireEvent.click(button));
 
-			expect(generateSpy).toHaveBeenCalledWith(
-				expect.objectContaining({
-					algorithm: Algorithms.EVENNESS,
-				}),
-			);
+			await waitFor(() => {
+				expect(generateSpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						algorithm: Algorithms.EVENNESS,
+					}),
+				);
+			});
 
 			generateSpy.mockRestore();
 		});

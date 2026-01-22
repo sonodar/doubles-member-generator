@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import { HistoryButton } from "./HistoryButton";
 import { settingsAtom } from "../state";
 import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
@@ -51,7 +51,7 @@ describe("HistoryButton", () => {
 		});
 
 		it("isDisabled=trueの場合、ボタンが無効になる", () => {
-			render(<HistoryButton isDisabled={true} />, {
+			render(<HistoryButton disabled={true} />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
@@ -60,14 +60,16 @@ describe("HistoryButton", () => {
 	});
 
 	describe("ダイアログ表示", () => {
-		it("クリック時に履歴ダイアログが表示される", () => {
+		it("クリック時に履歴ダイアログが表示される", async () => {
 			render(<HistoryButton />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
 			fireEvent.click(screen.getByRole("button", { name: "履歴" }));
 
-			expect(screen.getByText("履歴")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("履歴")).toBeInTheDocument();
+			});
 		});
 	});
 });

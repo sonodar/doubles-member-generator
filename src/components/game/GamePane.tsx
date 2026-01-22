@@ -1,5 +1,6 @@
-import { Box, Card, CardBody, CardFooter, Center, Divider, Spacer, Stack, useToast } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { Box, Card, Center, Separator, Spacer, Stack } from "@chakra-ui/react";
+import { useState } from "react";
+import { toaster } from "@components/theme.ts";
 import { useAtom } from "jotai";
 import { ShareButton } from "./ShareButton";
 import { EventType, createEnvironment, eventEmitter, finishEnvironment } from "@api";
@@ -53,21 +54,15 @@ export default function GamePane({ onReset }: Props) {
 
 	const handleIgnoreUsageAlert = () => dispatch("IGNORE_USAGE_ALERT");
 
-	const toast = useToast();
-	const toastRef = useRef<string | number>();
-
 	const handleLeave = (id: number) => {
 		dispatch({ type: EventType.Leave, payload: { memberId: id } });
 		if (environmentId) {
 			eventEmitter(environmentId).leave(id);
 		}
-		toastRef.current = toast({
+		toaster.create({
 			title: `メンバー ${id} が離脱しました`,
-			status: "warning",
+			type: "warning",
 			duration: 2000,
-			isClosable: true,
-			colorScheme: "brand",
-			variant: "subtle",
 		});
 	};
 
@@ -80,11 +75,11 @@ export default function GamePane({ onReset }: Props) {
 	};
 
 	return (
-		<Card m={0} p={0} height={"100dvh"}>
-			<CardBody p={0} pt={3}>
+		<Card.Root m={0} p={0} height={"100dvh"}>
+			<Card.Body p={0} pt={3}>
 				<Center>
-					<Stack spacing={2}>
-						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} isDisabled={progress} />
+					<Stack gap={2}>
+						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} disabled={progress} />
 						<Center>
 							<AlgorithmBadge algorithm={settings.algorithm} />
 						</Center>
@@ -92,7 +87,7 @@ export default function GamePane({ onReset }: Props) {
 							settings={settings}
 							onGenerate={handleGenerate}
 							onIgnoreUsageAlert={handleIgnoreUsageAlert}
-							isDisabled={progress}
+							disabled={progress}
 						/>
 						{latestMembers.length > 0 && (
 							<Box pt={4}>
@@ -101,17 +96,17 @@ export default function GamePane({ onReset }: Props) {
 						)}
 					</Stack>
 				</Center>
-			</CardBody>
-			<Divider color={"gray.300"} />
-			<CardFooter px={10} py={2}>
-				<HistoryButton isDisabled={progress} />
+			</Card.Body>
+			<Separator color={"gray.300"} />
+			<Card.Footer px={10} py={2}>
+				<HistoryButton disabled={progress} />
 				<Spacer />
-				<MemberButton isDisabled={progress} />
+				<MemberButton disabled={progress} />
 				<Spacer />
-				<ShareButton sharedId={environmentId} onIssue={issueShareLink} isDisabled={progress} />
+				<ShareButton sharedId={environmentId} onIssue={issueShareLink} disabled={progress} />
 				<Spacer />
-				<ResetButton onReset={clear} isDisabled={progress} />
-			</CardFooter>
-		</Card>
+				<ResetButton onReset={clear} disabled={progress} />
+			</Card.Footer>
+		</Card.Root>
 	);
 }

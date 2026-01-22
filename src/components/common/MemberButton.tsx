@@ -4,9 +4,9 @@ import { TbUsers } from "react-icons/tb";
 import { MemberDialog } from "@components/common/MemberDialog.tsx";
 import { useSettings } from "@components/state";
 
-export function MemberButton({ isDisabled }: { isDisabled?: boolean }) {
+export function MemberButton({ disabled }: { disabled?: boolean }) {
 	const { histories } = useSettings();
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { open, onOpen, onClose } = useDisclosure();
 	return (
 		<Fragment>
 			<IconButton
@@ -14,11 +14,12 @@ export function MemberButton({ isDisabled }: { isDisabled?: boolean }) {
 				colorScheme={"brand"}
 				fontSize={"2xl"}
 				aria-label="メンバー"
-				icon={<TbUsers />}
-				isDisabled={isDisabled || histories.length === 0}
+				disabled={disabled || histories.length === 0}
 				onClick={onOpen}
-			/>
-			<MemberDialog isOpen={isOpen} onClose={onClose} showLeftMember={true} />
+			>
+				<TbUsers />
+			</IconButton>
+			<MemberDialog open={open} onClose={onClose} showLeftMember={true} />
 		</Fragment>
 	);
 }

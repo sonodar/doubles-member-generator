@@ -1,16 +1,5 @@
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
-import {
-	Box,
-	HStack,
-	IconButton,
-	Input,
-	Slider,
-	SliderFilledTrack,
-	SliderThumb,
-	SliderTrack,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { MdAdd, MdRemove } from "react-icons/md";
+import { Box, HStack, IconButton, Input, Slider, Text, VStack } from "@chakra-ui/react";
 import { BsArrowsExpandVertical } from "react-icons/bs";
 import { MEMBER_COUNT_LIMIT } from "@logic";
 
@@ -22,17 +11,18 @@ type Props = {
 
 export function InitMemberCountInput({ min, value, onChange }: Props) {
 	return (
-		<VStack spacing={4}>
+		<VStack gap={4}>
 			<HStack maxW={"320px"} minW={"320px"}>
 				<IconButton
 					colorScheme={"brand"}
 					aria-label="decrement"
 					borderRadius="sm"
-					isDisabled={value <= min}
-					icon={<MinusIcon />}
+					disabled={value <= min}
 					size={"sm"}
 					onClick={() => value > min && onChange(value - 1)}
-				/>
+				>
+					<MdRemove />
+				</IconButton>
 				<Input
 					type={"number"}
 					value={value}
@@ -49,27 +39,30 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 					colorScheme={"brand"}
 					aria-label="increment"
 					borderRadius="sm"
-					isDisabled={value >= MEMBER_COUNT_LIMIT}
-					icon={<AddIcon />}
+					disabled={value >= MEMBER_COUNT_LIMIT}
 					size={"sm"}
 					onClick={() => value < MEMBER_COUNT_LIMIT && onChange(value + 1)}
-				/>
+				>
+					<MdAdd />
+				</IconButton>
 				<Text fontSize="md">(上限 {MEMBER_COUNT_LIMIT} 人)</Text>
 			</HStack>
-			<Slider
-				colorScheme={"brand"}
+			<Slider.Root
+				colorPalette={"brand"}
 				min={4}
 				max={MEMBER_COUNT_LIMIT}
-				value={value}
-				onChange={(value) => onChange(Math.max(min, value))}
+				value={[value]}
+				onValueChange={(details) => onChange(Math.max(min, details.value[0]))}
 			>
-				<SliderTrack>
-					<SliderFilledTrack />
-				</SliderTrack>
-				<SliderThumb boxSize={6}>
-					<Box color="brand.600" as={BsArrowsExpandVertical} />
-				</SliderThumb>
-			</Slider>
+				<Slider.Control>
+					<Slider.Track>
+						<Slider.Range />
+					</Slider.Track>
+					<Slider.Thumb index={0} boxSize={6}>
+						<Box color="brand.600" as={BsArrowsExpandVertical} />
+					</Slider.Thumb>
+				</Slider.Control>
+			</Slider.Root>
 		</VStack>
 	);
 }

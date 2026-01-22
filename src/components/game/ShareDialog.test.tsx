@@ -21,20 +21,20 @@ describe("ShareDialog", () => {
 
 	describe("基本表示", () => {
 		it("isOpen=true の場合、ダイアログが表示される", () => {
-			render(<ShareDialog isOpen={true} onClose={mockOnClose} value={testUrl} />);
+			render(<ShareDialog open={true} onClose={mockOnClose} value={testUrl} />);
 
 			expect(screen.getByText("共有")).toBeInTheDocument();
 		});
 
 		it("URL が入力欄に表示される", () => {
-			render(<ShareDialog isOpen={true} onClose={mockOnClose} value={testUrl} />);
+			render(<ShareDialog open={true} onClose={mockOnClose} value={testUrl} />);
 
 			const input = screen.getByRole("textbox");
 			expect(input).toHaveValue(testUrl);
 		});
 
 		it("URLコピーボタンが表示される", () => {
-			render(<ShareDialog isOpen={true} onClose={mockOnClose} value={testUrl} />);
+			render(<ShareDialog open={true} onClose={mockOnClose} value={testUrl} />);
 
 			expect(screen.getByRole("button", { name: "URLコピー" })).toBeInTheDocument();
 		});
@@ -42,7 +42,7 @@ describe("ShareDialog", () => {
 
 	describe("コピー機能", () => {
 		it("URLコピーボタンをクリックするとクリップボードにコピーされる", async () => {
-			render(<ShareDialog isOpen={true} onClose={mockOnClose} value={testUrl} />);
+			render(<ShareDialog open={true} onClose={mockOnClose} value={testUrl} />);
 
 			const copyButton = screen.getByRole("button", { name: "URLコピー" });
 			fireEvent.click(copyButton);
@@ -51,7 +51,7 @@ describe("ShareDialog", () => {
 		});
 
 		it("コピー後に onClose が呼ばれる", () => {
-			render(<ShareDialog isOpen={true} onClose={mockOnClose} value={testUrl} />);
+			render(<ShareDialog open={true} onClose={mockOnClose} value={testUrl} />);
 
 			const copyButton = screen.getByRole("button", { name: "URLコピー" });
 			fireEvent.click(copyButton);
@@ -62,7 +62,7 @@ describe("ShareDialog", () => {
 
 	describe("非表示", () => {
 		it("isOpen=false の場合、ダイアログが非表示", () => {
-			render(<ShareDialog isOpen={false} onClose={mockOnClose} value={testUrl} />);
+			render(<ShareDialog open={false} onClose={mockOnClose} value={testUrl} />);
 
 			expect(screen.queryByText("共有")).not.toBeInTheDocument();
 		});

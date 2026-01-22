@@ -12,9 +12,9 @@ describe("ConfirmDialog", () => {
 	});
 
 	describe("基本表示", () => {
-		it("isOpen=true の場合、ダイアログが表示される", () => {
+		it("open=true の場合、ダイアログが表示される", () => {
 			render(
-				<ConfirmDialog isOpen={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
+				<ConfirmDialog open={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
 					確認メッセージ
 				</ConfirmDialog>,
 			);
@@ -25,7 +25,7 @@ describe("ConfirmDialog", () => {
 
 		it("isOpen=false の場合、ダイアログが非表示", () => {
 			render(
-				<ConfirmDialog isOpen={false} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
+				<ConfirmDialog open={false} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
 					確認メッセージ
 				</ConfirmDialog>,
 			);
@@ -37,7 +37,7 @@ describe("ConfirmDialog", () => {
 	describe("ボタン表示", () => {
 		it("デフォルトのボタンテキストが表示される", () => {
 			render(
-				<ConfirmDialog isOpen={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
+				<ConfirmDialog open={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
 					確認メッセージ
 				</ConfirmDialog>,
 			);
@@ -49,7 +49,7 @@ describe("ConfirmDialog", () => {
 		it("カスタムボタンテキストが表示される", () => {
 			render(
 				<ConfirmDialog
-					isOpen={true}
+					open={true}
 					onCancel={mockOnCancel}
 					onOk={mockOnOk}
 					title="確認"
@@ -68,7 +68,7 @@ describe("ConfirmDialog", () => {
 	describe("ボタン操作", () => {
 		it("キャンセルボタンをクリックすると onCancel が呼ばれる", () => {
 			render(
-				<ConfirmDialog isOpen={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
+				<ConfirmDialog open={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
 					確認メッセージ
 				</ConfirmDialog>,
 			);
@@ -79,7 +79,7 @@ describe("ConfirmDialog", () => {
 
 		it("OKボタンをクリックすると onOk が呼ばれる", () => {
 			render(
-				<ConfirmDialog isOpen={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
+				<ConfirmDialog open={true} onCancel={mockOnCancel} onOk={mockOnOk} title="確認">
 					確認メッセージ
 				</ConfirmDialog>,
 			);

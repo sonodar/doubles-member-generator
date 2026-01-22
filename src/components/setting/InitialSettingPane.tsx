@@ -1,16 +1,15 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { MdArrowForward } from "react-icons/md";
 import {
 	Button,
 	Card,
-	CardBody,
 	Center,
-	Divider,
 	Flex,
 	HStack,
 	Heading,
 	IconButton,
 	Image,
 	Link,
+	Separator,
 	Spacer,
 	Stack,
 	Text,
@@ -55,10 +54,10 @@ export default function InitialSettingPane({ onStart }: Props) {
 	};
 
 	return (
-		<Card m={0} p={0} height={"100dvh"}>
-			<CardBody p={0} pt={6}>
+		<Card.Root m={0} p={0} height={"100dvh"}>
+			<Card.Body p={0} pt={6}>
 				<Center>
-					<Stack spacing={6}>
+					<Stack gap={6}>
 						<HStack>
 							<Image src={logo} boxSize="24px" borderRadius={"md"} />
 							<Heading as="h1" size="sm">
@@ -68,7 +67,7 @@ export default function InitialSettingPane({ onStart }: Props) {
 						<Heading as="h2" size="lg">
 							初期設定
 						</Heading>
-						<HStack spacing={0}>
+						<HStack gap={0}>
 							<Heading as="h3" size="md">
 								コート数
 							</Heading>
@@ -86,15 +85,19 @@ export default function InitialSettingPane({ onStart }: Props) {
 							<HelpButton title={"アルゴリズム"} items={["algorithm"]} />
 						</HStack>
 						<AlgorithmInput value={algorithm} onChange={setAlgorithm} />
-						<Divider />
+						<Separator />
 						<Flex>
-							<Link isExternal={true} href={"https://github.com/sonodar/badminton-court-member-randomizer"}>
-								<IconButton aria-label={"github"} icon={<ImGithub />} />
+							<Link
+								target="_blank"
+								rel="noopener noreferrer"
+								href={"https://github.com/sonodar/doubles-member-generator"}
+							>
+								<IconButton aria-label={"github"}>
+									<ImGithub />
+								</IconButton>
 							</Link>
 							<Spacer />
 							<Button
-								leftIcon={<GiTennisCourt />}
-								rightIcon={<ArrowForwardIcon />}
 								colorScheme={"brand"}
 								variant="outline"
 								onClick={() =>
@@ -105,12 +108,14 @@ export default function InitialSettingPane({ onStart }: Props) {
 									})
 								}
 							>
+								<GiTennisCourt />
 								開始
+								<MdArrowForward />
 							</Button>
 						</Flex>
 					</Stack>
 				</Center>
-			</CardBody>
-		</Card>
+			</Card.Body>
+		</Card.Root>
 	);
 }

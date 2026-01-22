@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor, act } from "../../testing/utils";
 import { InitMemberCountInput } from "./InitMemberCountInput";
 
 describe("InitMemberCountInput", () => {
@@ -10,61 +10,73 @@ describe("InitMemberCountInput", () => {
 	});
 
 	describe("基本表示", () => {
-		it("数値入力欄が表示される", () => {
+		it("数値入力欄が表示される", async () => {
 			render(<InitMemberCountInput min={8} value={8} onChange={mockOnChange} />);
 
 			const input = screen.getByRole("spinbutton");
-			expect(input).toBeInTheDocument();
-			expect(input).toHaveValue(8);
+
+			await waitFor(() => {
+				expect(input).toBeInTheDocument();
+				expect(input).toHaveValue(8);
+			});
 		});
 
-		it("増減ボタンが表示される", () => {
+		it("増減ボタンが表示される", async () => {
 			render(<InitMemberCountInput min={8} value={8} onChange={mockOnChange} />);
 
-			expect(screen.getByRole("button", { name: "increment" })).toBeInTheDocument();
-			expect(screen.getByRole("button", { name: "decrement" })).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByRole("button", { name: "increment" })).toBeInTheDocument();
+				expect(screen.getByRole("button", { name: "decrement" })).toBeInTheDocument();
+			});
 		});
 
-		it("スライダーが表示される", () => {
+		it("スライダーが表示される", async () => {
 			render(<InitMemberCountInput min={8} value={8} onChange={mockOnChange} />);
 
-			expect(screen.getByRole("slider")).toBeInTheDocument();
+			await waitFor(() => {
+				// Chakra UI v3 の Slider は visibility: hidden を使うため、hidden オプションを指定
+				expect(screen.getByRole("slider", { hidden: true })).toBeInTheDocument();
+			});
 		});
 	});
 
 	describe("増減ボタンの動作", () => {
-		it("増加ボタンをクリックすると value + 1 で onChange が呼ばれる", () => {
+		it("増加ボタンをクリックすると value + 1 で onChange が呼ばれる", async () => {
 			render(<InitMemberCountInput min={8} value={10} onChange={mockOnChange} />);
 
 			const incrementButton = screen.getByRole("button", { name: "increment" });
-			fireEvent.click(incrementButton);
+			act(() => fireEvent.click(incrementButton));
 
-			expect(mockOnChange).toHaveBeenCalledWith(11);
+			await waitFor(() => {
+				expect(mockOnChange).toHaveBeenCalledWith(11);
+			});
 		});
 
-		it("減少ボタンをクリックすると value - 1 で onChange が呼ばれる", () => {
+		it("減少ボタンをクリックすると value - 1 で onChange が呼ばれる", async () => {
 			render(<InitMemberCountInput min={8} value={10} onChange={mockOnChange} />);
 
 			const decrementButton = screen.getByRole("button", { name: "decrement" });
-			fireEvent.click(decrementButton);
+			act(() => fireEvent.click(decrementButton));
 
-			expect(mockOnChange).toHaveBeenCalledWith(9);
+			await waitFor(() => {
+				expect(mockOnChange).toHaveBeenCalledWith(9);
+			});
 		});
 	});
 
 	describe("境界値", () => {
-		it("value が min の場合、減少ボタンが無効になる", () => {
+		it("value が min の場合、減少ボタンが無効になる", async () => {
 			render(<InitMemberCountInput min={8} value={8} onChange={mockOnChange} />);
 
 			const decrementButton = screen.getByRole("button", { name: "decrement" });
-			expect(decrementButton).toBeDisabled();
+			await waitFor(() => expect(decrementButton).toBeDisabled());
 		});
 
-		it("value が min より大きい場合、減少ボタンが有効", () => {
+		it("value が min より大きい場合、減少ボタンが有効", async () => {
 			render(<InitMemberCountInput min={8} value={10} onChange={mockOnChange} />);
 
 			const decrementButton = screen.getByRole("button", { name: "decrement" });
-			expect(decrementButton).not.toBeDisabled();
+			await waitFor(() => expect(decrementButton).not.toBeDisabled());
 		});
 	});
 });

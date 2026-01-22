@@ -3,7 +3,7 @@ import { render as rtlRender, type RenderOptions, type RenderResult } from "@tes
 import { ChakraProvider } from "@chakra-ui/react";
 import { Provider, createStore, type WritableAtom } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
-import customTheme from "@components/theme";
+import system from "@components/theme";
 
 // biome-ignore lint/suspicious/noExplicitAny: jotai の型定義に合わせる必要がある
 type AnyWritableAtom = WritableAtom<unknown, any[], any>;
@@ -32,7 +32,7 @@ interface AllProvidersProps {
 function AllProviders({ children, initialAtomValues = [] }: AllProvidersProps) {
 	const store = createStore();
 	return (
-		<ChakraProvider theme={customTheme}>
+		<ChakraProvider value={system}>
 			<Provider store={store}>
 				{initialAtomValues.length > 0 ? (
 					<HydrateAtoms initialValues={initialAtomValues}>{children}</HydrateAtoms>

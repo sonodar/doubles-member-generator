@@ -24,6 +24,6 @@
 	},
 	"files": {
 		"include": ["."],
-		"ignore": ["package*.json", "coverage"]
+		"ignore": ["package*.json", "coverage", ".amplify", "dist"]
 	}
 }

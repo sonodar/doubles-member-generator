@@ -23,7 +23,7 @@ describe("UsageAlertDialog", () => {
 
 	describe("基本表示", () => {
 		it("isOpen=trueでアラートダイアログが表示される", () => {
-			render(<UsageAlertDialog isOpen={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
+			render(<UsageAlertDialog open={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
 				initialAtomValues: [[settingsAtom, baseSettings]],
 			});
 
@@ -31,7 +31,7 @@ describe("UsageAlertDialog", () => {
 		});
 
 		it("isOpen=falseでアラートダイアログが表示されない", () => {
-			render(<UsageAlertDialog isOpen={false} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
+			render(<UsageAlertDialog open={false} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
 				initialAtomValues: [[settingsAtom, baseSettings]],
 			});
 
@@ -41,7 +41,7 @@ describe("UsageAlertDialog", () => {
 
 	describe("ボタン操作", () => {
 		it("「組み合わせ決定をやめる」ボタンをクリックするとonCloseが呼ばれる", () => {
-			render(<UsageAlertDialog isOpen={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
+			render(<UsageAlertDialog open={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
 				initialAtomValues: [[settingsAtom, baseSettings]],
 			});
 
@@ -51,7 +51,7 @@ describe("UsageAlertDialog", () => {
 		});
 
 		it("「テスト目的のため〜」ボタンをクリックするとonDismissとonCloseが呼ばれる", () => {
-			render(<UsageAlertDialog isOpen={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
+			render(<UsageAlertDialog open={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
 				initialAtomValues: [[settingsAtom, baseSettings]],
 			});
 
@@ -70,7 +70,7 @@ describe("UsageAlertDialog", () => {
 				members: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 			};
 
-			render(<UsageAlertDialog isOpen={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
+			render(<UsageAlertDialog open={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />, {
 				initialAtomValues: [[settingsAtom, unfairSettings]],
 			});
 

@@ -103,7 +103,7 @@ describe("GamePane", () => {
 	});
 
 	describe("メンバー決めボタン", () => {
-		it("メンバー決めボタンをクリックするとモーダルが開く", () => {
+		it("メンバー決めボタンをクリックするとモーダルが開く", async () => {
 			render(<GamePane onReset={mockOnReset} />, {
 				initialAtomValues: [
 					[settingsAtom, initialSettings],
@@ -115,7 +115,9 @@ describe("GamePane", () => {
 			fireEvent.click(generateButton);
 
 			// モーダルが開くことを確認（メンバー選出見出しが表示される）
-			expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			});
 		});
 	});
 
@@ -133,7 +135,9 @@ describe("GamePane", () => {
 			fireEvent.click(generateButton);
 
 			// モーダルが開いたことを確認
-			expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			});
 
 			// 確定ボタンをクリック
 			const okButton = screen.getByRole("button", { name: "確定" });

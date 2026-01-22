@@ -313,15 +313,49 @@ export { render };
 | CopyIcon | MdContentCopy (md) | ShareDialog.tsx |
 | SmallCloseIcon | MdClose (md) | ResetButton.tsx |
 
-#### Chakra v3 API 変更対応
+#### Chakra v3 コンポーネント名変更
+
+| v2 コンポーネント | v3 コンポーネント | 影響ファイル |
+|-------------------|-------------------|--------------|
+| Modal | Dialog.Root | HelpButton, GenerateButton, ShareDialog, HistoryDialog, AdjustmentDialog, LeaveDialog, UsageAlertDialog |
+| ModalOverlay | Dialog.Backdrop | 同上 |
+| ModalContent | Dialog.Content | 同上 |
+| ModalHeader | Dialog.Header | 同上 |
+| ModalBody | Dialog.Body | 同上 |
+| ModalFooter | Dialog.Footer | 同上 |
+| ModalCloseButton | Dialog.CloseTrigger | 同上 |
+| AlertDialog | Dialog.Root | ConfirmDialog |
+| AlertDialogOverlay | Dialog.Backdrop | 同上 |
+| AlertDialogContent | Dialog.Content | 同上 |
+| AlertDialogHeader | Dialog.Header | 同上 |
+| AlertDialogBody | Dialog.Body | 同上 |
+| AlertDialogFooter | Dialog.Footer | 同上 |
+| Divider | Separator | HelpButton, InitialSettingPane, HistoryPane |
+| Slider + SliderTrack + SliderFilledTrack + SliderThumb | Slider.Root + Slider.Control + Slider.Track + Slider.Range + Slider.Thumb | InitMemberCountInput |
+| Card + CardBody | Card.Root + Card.Body | InitialSettingPane, GamePane, SharedPane |
+| Alert + AlertIcon + AlertTitle | Alert.Root + Alert.Indicator + Alert.Title | UsageAlertDialog, SharedPane |
+
+#### Chakra v3 Props 変更
+
+| v2 Props | v3 Props | 影響範囲 |
+|----------|----------|----------|
+| spacing | gap | Stack, VStack, HStack 全て |
+| icon | children | IconButton 全て |
+| isDisabled | disabled | Button, IconButton 全て |
+| isRound | rounded="full" | IconButton |
+| leftIcon / rightIcon | children 内に配置 | Button 全て |
+| isOpen (useDisclosure) | open | 全ダイアログ |
+| isExternal (Link) | external | InitialSettingPane, UsageAlertDialog |
+| colorScheme | colorPalette | 全ボタン |
+| isReadOnly | readOnly | Input (ShareDialog) |
+
+#### Chakra v3 フック変更
 
 | v2 API | v3 API | 影響範囲 |
 |--------|--------|----------|
-| ChakraProvider + theme | Provider (from snippets) | Main.tsx 相当 |
-| useToast | toaster (from snippets) | GamePane, AdjustmentPane |
-| useDisclosure | Dialog 状態管理 | 複数ダイアログ |
-| isExternal (Link) | external | InitialSettingPane |
-| colorScheme prop | colorPalette prop | 全ボタン |
+| ChakraProvider + theme | ChakraProvider + value (createSystem) | App.tsx, testing/utils.tsx |
+| useToast | toaster (from snippets) | GamePane, ShareDialog, SharedPane |
+| useDisclosure().isOpen | useDisclosure().open | 全ダイアログ |
 | useRadio/useRadioGroup | SegmentedControl | CourtCountInput, AlgorithmInput |
 
 #### SegmentedControl 移行対象
@@ -416,15 +450,32 @@ flowchart LR
 - ChakraProvider を v3 形式に更新
 - 必要に応じて createSystem 設定
 
-### Phase 5: コンポーネント移行
-- v3 API に合わせてプロップス更新
-- 名前空間インポートへの変更（必要に応じて）
-
-### Phase 6: アイコン移行
+### Phase 5: アイコン移行
 - @chakra-ui/icons → react-icons に置換
 - アイコンマッピング表に従って更新
 
-### Phase 7: 回帰テスト・検証
+### Phase 6: コンポーネント名変更
+- Modal → Dialog への置換
+- AlertDialog → Dialog への置換
+- Divider → Separator への置換
+- Slider → Slider.* namespace への置換
+- Card → Card.* namespace への置換
+- Alert → Alert.* namespace への置換
+
+### Phase 7: Props 変更
+- spacing → gap
+- icon → children (IconButton)
+- isDisabled → disabled
+- leftIcon/rightIcon → children 内に配置
+- isOpen → open
+- colorScheme → colorPalette
+- その他の Props 変更
+
+### Phase 8: フック移行
+- useToast → toaster への移行
+- useRadio/useRadioGroup → SegmentedControl への移行
+
+### Phase 9: 回帰テスト・検証
 - 全テスト実行
 - 手動での UI 確認
 - ビルド・lint・型チェック
