@@ -22,5 +22,4 @@ export type CurrentSettings = {
 	histories: History[];
 	gameCounts: PlayCountPerMember;
 	algorithm: Algorithm;
-	ignoreUsageAlert?: boolean;
 };

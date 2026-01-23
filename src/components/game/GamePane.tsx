@@ -52,8 +52,6 @@ export default function GamePane({ onReset }: Props) {
 		}
 	};
 
-	const handleIgnoreUsageAlert = () => dispatch("IGNORE_USAGE_ALERT");
-
 	const handleLeave = (id: number) => {
 		dispatch({ type: EventType.Leave, payload: { memberId: id } });
 		if (environmentId) {
@@ -83,12 +81,7 @@ export default function GamePane({ onReset }: Props) {
 						<Center>
 							<AlgorithmBadge algorithm={settings.algorithm} />
 						</Center>
-						<GenerateButton
-							settings={settings}
-							onGenerate={handleGenerate}
-							onIgnoreUsageAlert={handleIgnoreUsageAlert}
-							disabled={progress}
-						/>
+						<GenerateButton settings={settings} onGenerate={handleGenerate} disabled={progress} />
 						{latestMembers.length > 0 && (
 							<Box pt={4}>
 								<CourtMembersPane members={latestMembers} />

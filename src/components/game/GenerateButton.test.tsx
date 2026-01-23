@@ -6,7 +6,6 @@ import * as logic from "@logic";
 
 describe("GenerateButton", () => {
 	const mockOnGenerate = vi.fn();
-	const mockOnIgnoreUsageAlert = vi.fn();
 
 	const baseSettings: CurrentSettings = {
 		courtCount: 2,
@@ -18,30 +17,17 @@ describe("GenerateButton", () => {
 
 	beforeEach(() => {
 		mockOnGenerate.mockClear();
-		mockOnIgnoreUsageAlert.mockClear();
 	});
 
 	describe("基本表示", () => {
 		it("メンバー決めボタンが表示される", () => {
-			render(
-				<GenerateButton
-					settings={baseSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-				/>,
-			);
+			render(<GenerateButton settings={baseSettings} onGenerate={mockOnGenerate} />);
 
 			expect(screen.getByRole("button", { name: "メンバー決め" })).toBeInTheDocument();
 		});
 
 		it("ボタンをクリックするとモーダルが開く", async () => {
-			render(
-				<GenerateButton
-					settings={baseSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-				/>,
-			);
+			render(<GenerateButton settings={baseSettings} onGenerate={mockOnGenerate} />);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			fireEvent.click(button);
@@ -55,13 +41,7 @@ describe("GenerateButton", () => {
 
 	describe("確定とやり直しボタン", () => {
 		it("モーダルには確定ボタンとやり直しボタンがある", async () => {
-			render(
-				<GenerateButton
-					settings={baseSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-				/>,
-			);
+			render(<GenerateButton settings={baseSettings} onGenerate={mockOnGenerate} />);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			fireEvent.click(button);
@@ -73,13 +53,7 @@ describe("GenerateButton", () => {
 		});
 
 		it("確定ボタンをクリックすると onGenerate が呼ばれる", async () => {
-			render(
-				<GenerateButton
-					settings={baseSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-				/>,
-			);
+			render(<GenerateButton settings={baseSettings} onGenerate={mockOnGenerate} />);
 
 			// モーダルを開く
 			const button = screen.getByRole("button", { name: "メンバー決め" });
@@ -101,14 +75,7 @@ describe("GenerateButton", () => {
 
 	describe("無効状態", () => {
 		it("isDisabled が true の場合、ボタンが無効になる", () => {
-			render(
-				<GenerateButton
-					settings={baseSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-					disabled={true}
-				/>,
-			);
+			render(<GenerateButton settings={baseSettings} onGenerate={mockOnGenerate} disabled={true} />);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			expect(button).toBeDisabled();
@@ -123,13 +90,7 @@ describe("GenerateButton", () => {
 				algorithm: Algorithms.DISCRETENESS,
 			};
 
-			render(
-				<GenerateButton
-					settings={discretenessSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-				/>,
-			);
+			render(<GenerateButton settings={discretenessSettings} onGenerate={mockOnGenerate} />);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			act(() => fireEvent.click(button));
@@ -152,13 +113,7 @@ describe("GenerateButton", () => {
 				algorithm: Algorithms.EVENNESS,
 			};
 
-			render(
-				<GenerateButton
-					settings={evennessSettings}
-					onGenerate={mockOnGenerate}
-					onIgnoreUsageAlert={mockOnIgnoreUsageAlert}
-				/>,
-			);
+			render(<GenerateButton settings={evennessSettings} onGenerate={mockOnGenerate} />);
 
 			const button = screen.getByRole("button", { name: "メンバー決め" });
 			act(() => fireEvent.click(button));
