@@ -5,10 +5,10 @@ import { createEnvironment, EventType, eventEmitter, finishEnvironment } from ".
 import { type CurrentSettings, getLatestMembers } from "../../logic";
 import { AlgorithmBadge } from "../common/AlgorithmBadge";
 import { HistoryButton } from "../common/HistoryButton.tsx";
+import HistoryPane from "../common/HistoryPane.tsx";
 import { MemberButton } from "../common/MemberButton.tsx";
 import { shareIdAtom, useSettingsReducer } from "../state";
 import { toaster } from "../theme.ts";
-import CourtMembersPane from "./CourtMembersPane";
 import { CurrentMemberCountInput } from "./CurrentMemberCountInput";
 import { GenerateButton } from "./GenerateButton.tsx";
 import { ResetButton } from "./ResetButton";
@@ -24,7 +24,7 @@ export default function GamePane({ onReset }: Props) {
 	const [environmentId, setEnvironmentId] = useAtom(shareIdAtom);
 	const [progress, setProgress] = useState(false);
 
-	const latestMembers = getLatestMembers(settings) || [];
+	const histories = settings.histories;
 
 	const openProgress = () => setProgress(true);
 	const closeProgress = () => setProgress(false);
@@ -76,22 +76,24 @@ export default function GamePane({ onReset }: Props) {
 	};
 
 	return (
-		<Card.Root w={"100%"} height={"100dvh"} borderWidth={0} boxShadow={"none"}>
-			<Card.Body px={4} py={2}>
-				<Center>
-					<Stack gap={2} w={"100%"}>
-						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} disabled={progress} />
-						<Center>
-							<AlgorithmBadge algorithm={settings.algorithm} />
-						</Center>
-						<GenerateButton settings={settings} onGenerate={handleGenerate} disabled={progress} />
-						{latestMembers.length > 0 && (
-							<Box pt={4}>
-								<CourtMembersPane members={latestMembers} />
-							</Box>
-						)}
-					</Stack>
-				</Center>
+		<Card.Root w={"100%"} height={"100dvh"} borderWidth={0} boxShadow={"none"} display="flex" flexDirection="column">
+			<Card.Body px={4} py={2} display="flex" flexDirection="column" flex={1} minH={0}>
+				<Stack gap={2} w={"100%"}>
+					<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} disabled={progress} />
+					<Center>
+						<AlgorithmBadge algorithm={settings.algorithm} />
+					</Center>
+					<GenerateButton settings={settings} onGenerate={handleGenerate} disabled={progress} />
+				</Stack>
+				{histories.length > 0 && (
+					<Box flex={1} overflowY="auto" pt={4}>
+						<HistoryPane
+							histories={histories.slice(-3)}
+							showPairMessage={false}
+							offset={Math.max(0, histories.length - 3)}
+						/>
+					</Box>
+				)}
 			</Card.Body>
 			<Separator color={"gray.300"} />
 			<Card.Footer px={4} py={2} pb="max(12px, env(safe-area-inset-bottom))">

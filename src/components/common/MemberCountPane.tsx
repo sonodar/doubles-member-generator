@@ -18,9 +18,9 @@ type Props = {
 
 const outlierLevelColors = {
 	none: "",
-	low: "yellow.100",
-	medium: "orange.200",
-	high: "red.200",
+	low: "highlight.100",
+	medium: "highlight.300",
+	high: "danger.200",
 } as const;
 
 export default function MemberCountPane({ settings, showLeftMember, defaultTabIndex }: Props) {

@@ -146,7 +146,7 @@ describe("GamePane", () => {
 			// コートメンバーが表示される（履歴が追加された証拠）
 			// 履歴が追加されると「今回」というラベルが表示される
 			await waitFor(() => {
-				expect(screen.getByText("今回")).toBeInTheDocument();
+				expect(screen.getByText(/今回/)).toBeInTheDocument();
 			});
 		});
 	});
