@@ -193,7 +193,7 @@ describe("SharedPane", () => {
 
 			// 履歴が更新される
 			await waitFor(() => {
-				expect(screen.getByText("今回")).toBeInTheDocument();
+				expect(screen.getByText(/今回/)).toBeInTheDocument();
 			});
 		});
 
@@ -407,7 +407,7 @@ describe("SharedPane", () => {
 			render(<SharedPane sharedId="test-id" />);
 
 			await waitFor(() => {
-				expect(screen.getByText("今回")).toBeInTheDocument();
+				expect(screen.getByText(/今回/)).toBeInTheDocument();
 			});
 		});
 	});

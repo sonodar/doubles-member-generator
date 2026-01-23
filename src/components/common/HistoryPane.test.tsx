@@ -27,8 +27,8 @@ describe("HistoryPane", () => {
 		it("履歴がある場合、「今回」「前回」などのラベルが表示される", () => {
 			render(<HistoryPane histories={histories} />);
 
-			expect(screen.getByText("今回")).toBeInTheDocument();
-			expect(screen.getByText("前回")).toBeInTheDocument();
+			expect(screen.getByText(/今回（3 回目）/)).toBeInTheDocument();
+			expect(screen.getByText(/前回（2 回目）/)).toBeInTheDocument();
 		});
 
 		it("履歴の日時が表示される", () => {
@@ -53,8 +53,8 @@ describe("HistoryPane", () => {
 			render(<HistoryPane histories={[]} />);
 
 			// 今回/前回のラベルがない
-			expect(screen.queryByText("今回")).not.toBeInTheDocument();
-			expect(screen.queryByText("前回")).not.toBeInTheDocument();
+			expect(screen.queryByText(/今回/)).not.toBeInTheDocument();
+			expect(screen.queryByText(/前回/)).not.toBeInTheDocument();
 		});
 	});
 
@@ -62,8 +62,8 @@ describe("HistoryPane", () => {
 		it("「今回」のみ表示される", () => {
 			render(<HistoryPane histories={[histories[0]]} />);
 
-			expect(screen.getByText("今回")).toBeInTheDocument();
-			expect(screen.queryByText("前回")).not.toBeInTheDocument();
+			expect(screen.getByText(/今回（1 回目）/)).toBeInTheDocument();
+			expect(screen.queryByText(/前回/)).not.toBeInTheDocument();
 		});
 	});
 });
