@@ -1,8 +1,6 @@
 export {
 	emptySettings,
-	getPreviousSettings,
 	previousSettingsAtom,
-	setSettings,
 	settingsAtom,
 	shareIdAtom,
 	useResetAll,
