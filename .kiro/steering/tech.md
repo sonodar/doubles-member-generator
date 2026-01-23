@@ -14,7 +14,7 @@ SPAベースのフルスタックWebアプリケーション。Viteをビルド�
 
 ## Key Libraries
 
-- **UI**: Chakra UI + Framer Motion（アクセシブルでアニメーション対応）
+- **UI**: Chakra UI v3（アクセシブル）
 - **State**: Jotai（軽量アトミック状態管理、localStorage永続化）
 - **DnD**: @dnd-kit/core（ドラッグ&ドロップによるメンバー調整）
 - **Validation**: Zod（スキーマベースのバリデーション）
@@ -61,7 +61,7 @@ SPAベースのフルスタックWebアプリケーション。Viteをビルド�
 - **Vite + React**: 高速な開発サーバーとHMR、シンプルなSPA構成
 - **Amplify Gen2**: TypeScriptベースのインフラ定義、型安全なスキーマ、CDKによるカスタマイズ
 - **Jotai over Redux**: 小規模アプリに適した軽量な状態管理、localStorage連携が容易
-- **Chakra UI**: アクセシビリティとカスタマイズ性のバランス
+- **Chakra UI v3**: Recipe/Slot パターンによるスタイル定義、Ark UI ベースのアクセシブルコンポーネント
 - **Biome**: ESLint + Prettierより高速、設定が簡潔
 - **React Router DOM**: ファイルベースルーティングからプログラマティックルーティングへ
 
