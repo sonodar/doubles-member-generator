@@ -1,4 +1,4 @@
-import { Box, Card, Center, Separator, Spacer, Stack } from "@chakra-ui/react";
+import { Box, Card, Center, HStack, Separator, Stack } from "@chakra-ui/react";
 import { useAtom } from "jotai";
 import { useState } from "react";
 import { createEnvironment, EventType, eventEmitter, finishEnvironment } from "../../api";
@@ -94,14 +94,13 @@ export default function GamePane({ onReset }: Props) {
 				</Center>
 			</Card.Body>
 			<Separator color={"gray.300"} />
-			<Card.Footer px={8} py={2} pb="max(8px, env(safe-area-inset-bottom))">
-				<HistoryButton disabled={progress} />
-				<Spacer />
-				<MemberButton disabled={progress} />
-				<Spacer />
-				<ShareButton sharedId={environmentId} onIssue={issueShareLink} disabled={progress} />
-				<Spacer />
-				<ResetButton onReset={clear} disabled={progress} />
+			<Card.Footer px={4} py={2} pb="max(12px, env(safe-area-inset-bottom))">
+				<HStack w="100%" justify="space-evenly">
+					<HistoryButton disabled={progress} />
+					<MemberButton disabled={progress} />
+					<ShareButton sharedId={environmentId} onIssue={issueShareLink} disabled={progress} />
+					<ResetButton onReset={clear} disabled={progress} />
+				</HStack>
 			</Card.Footer>
 		</Card.Root>
 	);
