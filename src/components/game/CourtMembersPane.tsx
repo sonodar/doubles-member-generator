@@ -26,14 +26,16 @@ type ChildProps = {
 };
 
 function CourtCard({ id, members, archive }: ChildProps) {
-	const headColor = archive ? "gray.500" : "gray.600";
+	const headColor = archive ? "gray.500" : "primary.700";
 	const color = archive ? "gray.500" : "primary.900";
+	const bgColor = archive ? "white" : "primary.100";
+	const fontWeight = archive ? "normal" : "bold";
 
 	return (
-		<Card.Root p={2} w="100%">
+		<Card.Root p={2} w="100%" bg={bgColor}>
 			<Stack w={"100%"}>
 				<Center>
-					<Heading as={"label"} size={"sm"} color={headColor}>{`コート${id + 1}`}</Heading>
+					<Heading as={"label"} size={"sm"} color={headColor} fontWeight={fontWeight}>{`コート${id + 1}`}</Heading>
 				</Center>
 				<Separator />
 				<HStack w="100%" justify="space-evenly" color={color}>

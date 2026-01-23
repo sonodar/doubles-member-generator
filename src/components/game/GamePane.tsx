@@ -5,10 +5,10 @@ import { createEnvironment, EventType, eventEmitter, finishEnvironment } from ".
 import { type CurrentSettings, getLatestMembers } from "../../logic";
 import { AlgorithmBadge } from "../common/AlgorithmBadge";
 import { HistoryButton } from "../common/HistoryButton.tsx";
+import HistoryPane from "../common/HistoryPane.tsx";
 import { MemberButton } from "../common/MemberButton.tsx";
 import { shareIdAtom, useSettingsReducer } from "../state";
 import { toaster } from "../theme.ts";
-import CourtMembersPane from "./CourtMembersPane";
 import { CurrentMemberCountInput } from "./CurrentMemberCountInput";
 import { GenerateButton } from "./GenerateButton.tsx";
 import { ResetButton } from "./ResetButton";
@@ -24,7 +24,7 @@ export default function GamePane({ onReset }: Props) {
 	const [environmentId, setEnvironmentId] = useAtom(shareIdAtom);
 	const [progress, setProgress] = useState(false);
 
-	const latestMembers = getLatestMembers(settings) || [];
+	const recentHistories = settings.histories.slice(-3);
 
 	const openProgress = () => setProgress(true);
 	const closeProgress = () => setProgress(false);
@@ -85,9 +85,9 @@ export default function GamePane({ onReset }: Props) {
 							<AlgorithmBadge algorithm={settings.algorithm} />
 						</Center>
 						<GenerateButton settings={settings} onGenerate={handleGenerate} disabled={progress} />
-						{latestMembers.length > 0 && (
+						{recentHistories.length > 0 && (
 							<Box pt={4}>
-								<CourtMembersPane members={latestMembers} />
+								<HistoryPane histories={recentHistories} />
 							</Box>
 						)}
 					</Stack>

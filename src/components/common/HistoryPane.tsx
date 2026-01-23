@@ -15,18 +15,26 @@ export default function HistoryPane(props: { histories?: History[] }) {
 	const [current, previous, ...olds] = rawHistories.map((history, index) => ({ index, history })).reverse();
 
 	const CurrentHistoryPane = ({ members, time }: History) => (
-		<Box key={members.flat().join(",")} px={2}>
+		<Box
+			key={members.flat().join(",")}
+			px={2}
+			py={3}
+			bg="primary.50"
+			borderRadius="md"
+			borderWidth="2px"
+			borderColor="primary.500"
+		>
 			<Flex p={2}>
-				<Heading as={"label"} size={"sm"} color={"primary.900"}>
+				<Heading as={"label"} size={"md"} color={"primary.900"} fontWeight="bold">
 					{" 今回 "}
 				</Heading>
 				<Spacer />
-				<Text fontSize={"xs"} color="gray.500">
+				<Text fontSize={"xs"} color="gray.600" fontWeight="medium">
 					{formatDate(time)}
 				</Text>
 			</Flex>
 			<CourtMembersPane members={members} single={false} />
-			<Text fontSize={"xs"} p={2} color="red.500">
+			<Text fontSize={"xs"} p={2} color="red.600" fontWeight="medium">
 				ペアは各コートでじゃんけんなどで決めてください
 			</Text>
 		</Box>
