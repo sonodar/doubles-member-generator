@@ -28,11 +28,10 @@ type ChildProps = {
 function CourtCard({ id, members, archive }: ChildProps) {
 	const headColor = archive ? "gray.500" : "primary.700";
 	const color = archive ? "gray.500" : "primary.900";
-	const bgColor = archive ? "white" : "primary.100";
 	const fontWeight = archive ? "normal" : "bold";
 
 	return (
-		<Card.Root p={2} w="100%" bg={bgColor}>
+		<Card.Root p={2} w="100%">
 			<Stack w={"100%"}>
 				<Center>
 					<Heading as={"label"} size={"sm"} color={headColor} fontWeight={fontWeight}>{`コート${id + 1}`}</Heading>

@@ -15,15 +15,7 @@ export default function HistoryPane(props: { histories?: History[] }) {
 	const [current, previous, ...olds] = rawHistories.map((history, index) => ({ index, history })).reverse();
 
 	const CurrentHistoryPane = ({ members, time }: History) => (
-		<Box
-			key={members.flat().join(",")}
-			px={2}
-			py={3}
-			bg="primary.50"
-			borderRadius="md"
-			borderWidth="2px"
-			borderColor="primary.500"
-		>
+		<Box key={members.flat().join(",")} px={2} py={3} borderRadius="md" borderWidth="3px" borderColor="orange.500">
 			<Flex p={2}>
 				<Heading as={"label"} size={"md"} color={"primary.900"} fontWeight="bold">
 					{" 今回 "}
