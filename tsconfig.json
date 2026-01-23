@@ -21,7 +21,8 @@
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
       "@api": ["src/api"],
-      "@logic": ["src/logic"]
+      "@logic": ["src/logic"],
+      "@hooks": ["src/hooks"]
     }
   },
   "include": ["src/**/*"]
