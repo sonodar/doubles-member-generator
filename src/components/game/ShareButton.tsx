@@ -1,8 +1,8 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
-import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
-import { toaster } from "@components/theme.ts";
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { GoShare } from "react-icons/go";
+import ConfirmDialog from "../common/ConfirmDialog.tsx";
+import { toaster } from "../theme.ts";
 import { ShareDialog } from "./ShareDialog";
 
 type Props = {
@@ -18,6 +18,7 @@ function makeShareLink(sharedId?: string) {
 
 export function ShareButton({ sharedId, onIssue, disabled }: Props) {
 	const shareLink = useMemo(() => makeShareLink(sharedId), [sharedId]);
+	const [loading, setLoading] = useState(false);
 
 	const { open: isIssueOpen, onOpen: onIssueOpen, onClose: onIssueClose } = useDisclosure();
 	const { open: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure();
@@ -31,14 +32,25 @@ export function ShareButton({ sharedId, onIssue, disabled }: Props) {
 	};
 
 	const handleOk = async () => {
-		await onIssue();
-		onIssueClose();
-		toaster.create({
-			title: "共有リンクを発行しました",
-			type: "success",
-			duration: 2000,
-		});
-		onShareOpen();
+		setLoading(true);
+		try {
+			await onIssue();
+			onIssueClose();
+			toaster.create({
+				title: "共有リンクを発行しました",
+				type: "success",
+				duration: 2000,
+			});
+			onShareOpen();
+		} catch {
+			toaster.create({
+				title: "共有リンクの発行に失敗しました",
+				type: "error",
+				duration: 3000,
+			});
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -46,7 +58,13 @@ export function ShareButton({ sharedId, onIssue, disabled }: Props) {
 			<IconButton variant={"ghost"} aria-label="シェア" onClick={handleClick} disabled={disabled}>
 				<GoShare />
 			</IconButton>
-			<ConfirmDialog open={isIssueOpen} onCancel={onIssueClose} onOk={handleOk} title={"共有リンクの発行"}>
+			<ConfirmDialog
+				open={isIssueOpen}
+				onCancel={onIssueClose}
+				onOk={handleOk}
+				title={"共有リンクの発行"}
+				loading={loading}
+			>
 				共有リンクを発行すると、現在の状態を他の人とリアルタイムで共有できます。共有リンクを発行しますか？
 			</ConfirmDialog>
 			<ShareDialog value={shareLink} open={isShareOpen} onClose={onShareClose} />

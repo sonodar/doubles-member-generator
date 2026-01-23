@@ -1,5 +1,5 @@
-import { type Event, findAllEvents, subscribeEvent } from "@api";
 import { useCallback, useEffect, useRef } from "react";
+import { type Event, findAllEvents, subscribeEvent } from "../api";
 
 export interface UseRealtimeSyncOptions {
 	/** 共有ID */

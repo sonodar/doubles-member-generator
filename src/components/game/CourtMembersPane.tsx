@@ -1,6 +1,6 @@
-import { Card, Center, HStack, Heading, Separator, SimpleGrid, Stack } from "@chakra-ui/react";
-import type { CourtMembers, GameMembers } from "@logic";
-import { array } from "@logic";
+import { Card, Center, Heading, HStack, Separator, SimpleGrid, Stack } from "@chakra-ui/react";
+import type { CourtMembers, GameMembers } from "../../logic";
+import { array } from "../../logic";
 
 type ParentProps = {
 	members: GameMembers;

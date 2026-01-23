@@ -1,11 +1,10 @@
-import logo from "@assets/logo.svg";
 import {
 	Button,
 	Card,
 	Center,
 	Flex,
-	HStack,
 	Heading,
+	HStack,
 	IconButton,
 	Image,
 	Link,
@@ -14,23 +13,20 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import HelpButton from "@components/common/HelpButton.tsx";
-import { type Algorithm, Algorithms, COURT_CAPACITY, type CurrentSettings } from "@logic";
 import { useState } from "react";
 import { GiTennisCourt } from "react-icons/gi";
 import { ImGithub } from "react-icons/im";
 import { MdArrowForward } from "react-icons/md";
+import logo from "../../assets/logo.svg";
+import { type Algorithm, Algorithms, COURT_CAPACITY, type CurrentSettings } from "../../logic";
+import HelpButton from "../common/HelpButton.tsx";
 import { AlgorithmInput } from "./AlgorithmInput";
 import { CourtCountInput } from "./CourtCountInput";
 import { InitMemberCountInput } from "./InitMemberCountInput";
 
 type Props = {
 	previousSettings: CurrentSettings | null;
-	onStart: (env: {
-		courtCount: number;
-		memberCount: number;
-		algorithm: Algorithm;
-	}) => void;
+	onStart: (env: { courtCount: number; memberCount: number; algorithm: Algorithm }) => void;
 };
 
 export default function InitialSettingPane({ previousSettings, onStart }: Props) {

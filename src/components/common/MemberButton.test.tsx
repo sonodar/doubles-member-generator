@@ -1,5 +1,5 @@
-import { Algorithms, type CourtMembers, type CurrentSettings } from "@logic";
 import { describe, expect, it } from "vitest";
+import { Algorithms, type CourtMembers, type CurrentSettings } from "../../logic";
 import { fireEvent, render, screen, waitFor } from "../../testing/utils";
 import { settingsAtom } from "../state";
 import { MemberButton } from "./MemberButton";

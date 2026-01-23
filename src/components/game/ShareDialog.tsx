@@ -1,7 +1,7 @@
 import { Button, Center, CloseButton, Dialog, Heading, Input, Spacer, Stack } from "@chakra-ui/react";
-import LineShareButton from "@components/common/LineShareButton.tsx";
-import { toaster } from "@components/theme.ts";
 import { MdContentCopy } from "react-icons/md";
+import LineShareButton from "../common/LineShareButton.tsx";
+import { toaster } from "../theme.ts";
 
 type Props = {
 	open: boolean;
@@ -26,7 +26,7 @@ export function ShareDialog({ open, onClose, value }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW="480px">
+				<Dialog.Content maxW="min(90dvw, 480px)">
 					<Dialog.Header maxH={"xs"}>
 						<Heading as={"label"} size={"md"}>
 							リアルタイム共有

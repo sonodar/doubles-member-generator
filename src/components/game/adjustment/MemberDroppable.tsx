@@ -1,18 +1,18 @@
 import { Box } from "@chakra-ui/react";
-import { useDroppable } from "@dnd-kit/core";
-import type { RestOrCourtMember } from "@logic";
-import React from "react";
+import { useDroppable } from "@dnd-kit/react";
+import type React from "react";
+import type { RestOrCourtMember } from "../../../logic";
 
 export function MemberDroppable({ children, ...member }: RestOrCourtMember & { children: React.ReactNode }) {
-	const { isOver, setNodeRef } = useDroppable({
+	const { ref, isDropTarget } = useDroppable({
 		id: `${member.type}Droppable-${member.memberId}`,
 		data: member,
 	});
 	const style = {
-		background: isOver ? "var(--chakra-colors-gray-100)" : "transparent",
+		background: isDropTarget ? "var(--chakra-colors-gray-100)" : "transparent",
 	};
 	return (
-		<Box w={12} h={12} p={2} rounded={"sm"} ref={setNodeRef} style={style}>
+		<Box w={12} h={12} p={2} rounded={"sm"} ref={ref} style={style}>
 			{children}
 		</Box>
 	);

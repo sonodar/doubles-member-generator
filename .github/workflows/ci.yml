@@ -2,16 +2,62 @@ name: CI
 
 on:
   push:
+    branches-ignore: [develop, main]
   pull_request:
-    branches: [main]
+    branches: [develop, main]
   schedule:
     # 毎週金曜日 3:00 JST (= 木曜日 18:00 UTC)
     - cron: '0 18 * * 4'
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'schedule'
+    permissions:
+      pull-requests: read
+    outputs:
+      lint: ${{ steps.filter.outputs.lint }}
+      typecheck: ${{ steps.filter.outputs.typecheck }}
+      test: ${{ steps.filter.outputs.test }}
+    steps:
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: filter
+        with:
+          # push 時: develop と比較
+          # pull_request 時: デフォルトで PR ベースブランチと比較
+          base: ${{ github.event_name == 'push' && 'develop' || '' }}
+          filters: |
+            lint:
+              - '.github/**'
+              - 'src/**'
+              - 'amplify/**'
+              - '*.md'
+              - '*.json'
+              - '*.ts'
+              - '*.html'
+              - '.kiro/**'
+            typecheck:
+              - 'src/**'
+              - 'amplify/**'
+              - 'tsconfig.json'
+              - 'vite.config.ts'
+              - 'vitest.config.ts'
+              - 'package.json'
+              - 'package-lock.json'
+            test:
+              - 'src/**'
+              - 'vitest.config.ts'
+              - 'vite.config.ts'
+              - 'package.json'
+              - 'package-lock.json'
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      !(failure() || cancelled())
+        && (needs.changes.outputs.lint == 'true' || github.event_name == 'schedule')
     steps:
       - uses: actions/checkout@v4
 
@@ -24,6 +70,10 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      !(failure() || cancelled())
+        && (needs.changes.outputs.typecheck == 'true' || github.event_name == 'schedule')
     steps:
       - uses: actions/checkout@v4
 
@@ -37,6 +87,10 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      !(failure() || cancelled())
+        && (needs.changes.outputs.test == 'true' || github.event_name == 'schedule')
     env:
       TZ: Asia/Tokyo
     steps:
@@ -74,3 +128,16 @@ jobs:
           else
             echo "Coverage summary not available" >> $GITHUB_STEP_SUMMARY
           fi
+
+  check:
+    name: CI Status Check
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - typecheck
+      - test
+    if: always()
+    steps:
+      - name: CI 結果チェック
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1

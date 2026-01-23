@@ -1,7 +1,8 @@
-import { Algorithms, type CurrentSettings } from "@logic";
 import { useAtomValue, useSetAtom } from "jotai";
-import { RESET, atomWithStorage, useReducerAtom } from "jotai/utils";
+import { atomWithStorage, RESET } from "jotai/utils";
+import { Algorithms, type CurrentSettings } from "../../logic";
 import { settingsReducer } from "./reducer";
+import { useReducerAtom } from "./useReducerAtom";
 
 export const emptySettings: CurrentSettings = {
 	courtCount: 0,
@@ -30,7 +31,4 @@ export function useResetAll() {
 }
 
 export const useSettings = () => useAtomValue(settingsAtom);
-export const setSettings = (settings: CurrentSettings) => useSetAtom(settingsAtom)(settings);
 export const useSettingsReducer = () => useReducerAtom(settingsAtom, settingsReducer);
-
-export const getPreviousSettings = () => useAtomValue(previousSettingsAtom);

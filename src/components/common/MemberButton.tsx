@@ -1,8 +1,8 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
-import { MemberDialog } from "@components/common/MemberDialog.tsx";
-import { useSettings } from "@components/state";
 import { Fragment } from "react";
 import { TbUsers } from "react-icons/tb";
+import { useSettings } from "../state";
+import { MemberDialog } from "./MemberDialog.tsx";
 
 export function MemberButton({ disabled }: { disabled?: boolean }) {
 	const { histories } = useSettings();

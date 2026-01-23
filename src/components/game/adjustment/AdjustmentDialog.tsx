@@ -1,10 +1,10 @@
 import { Button, Center, CloseButton, Dialog, Heading, Spacer, Stack } from "@chakra-ui/react";
-import MemberCountPane from "@components/common/MemberCountPane.tsx";
-import { AdjustmentPane } from "@components/game/adjustment/AdjustmentPane.tsx";
-import { type CurrentSettings, type GameMembers, replace } from "@logic";
 import { useState } from "react";
 import { IoMdDownload } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
+import { type CurrentSettings, type GameMembers, replace } from "../../../logic";
+import MemberCountPane from "../../common/MemberCountPane.tsx";
+import { AdjustmentPane } from "./AdjustmentPane.tsx";
 
 type Props = {
 	settings: CurrentSettings;

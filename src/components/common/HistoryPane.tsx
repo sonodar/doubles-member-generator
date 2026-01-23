@@ -1,15 +1,16 @@
 import { Box, Flex, Heading, Separator, Spacer, Stack, Text } from "@chakra-ui/react";
-import CourtMembersPane from "@components/game/CourtMembersPane.tsx";
-import { useSettings } from "@components/state";
 import { format } from "@formkit/tempo";
-import type { History } from "@logic";
+import type { History } from "../../logic";
+import CourtMembersPane from "../game/CourtMembersPane.tsx";
+import { useSettings } from "../state";
 
 function formatDate(date: string) {
 	return format(new Date(date), "YYYY/MM/DD HH:mm");
 }
 
 export default function HistoryPane(props: { histories?: History[] }) {
-	const rawHistories = props.histories || useSettings().histories;
+	const settingsHistories = useSettings().histories;
+	const rawHistories = props.histories || settingsHistories;
 
 	const [current, previous, ...olds] = rawHistories.map((history, index) => ({ index, history })).reverse();
 

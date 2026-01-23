@@ -1,6 +1,6 @@
-import type { EventPayload } from "@api";
-import { type CurrentSettings, join, leave, replayGenerate, replayRetry } from "@logic";
 import { match } from "ts-pattern";
+import type { EventPayload } from "../../api";
+import { type CurrentSettings, join, leave, replayGenerate, replayRetry } from "../../logic";
 
 export function settingsReducer(settings: CurrentSettings, action: EventPayload): CurrentSettings {
 	return match(action)

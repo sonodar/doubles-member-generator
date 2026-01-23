@@ -1,5 +1,5 @@
 import { Badge } from "@chakra-ui/react";
-import { type Algorithm, Algorithms } from "@logic";
+import { type Algorithm, Algorithms } from "../../logic";
 
 const badgeLabels: Record<Algorithm, string> = {
 	[Algorithms.DISCRETENESS]: "ばらつき重視",

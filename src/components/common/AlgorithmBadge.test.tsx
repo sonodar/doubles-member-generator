@@ -1,5 +1,5 @@
-import { Algorithms } from "@logic";
 import { describe, expect, it } from "vitest";
+import { Algorithms } from "../../logic";
 import { render, screen } from "../../testing/utils";
 import { AlgorithmBadge } from "./AlgorithmBadge";
 

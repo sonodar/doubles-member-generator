@@ -1,4 +1,4 @@
-import { Button, Dialog } from "@chakra-ui/react";
+import { AbsoluteCenter, Box, Button, Dialog, Spinner } from "@chakra-ui/react";
 import { type ReactNode, useRef } from "react";
 import { prettyFont } from "../theme.ts";
 
@@ -11,6 +11,7 @@ type Props = {
 	okButtonText?: string;
 	okColorPalette?: string;
 	cancelButtonText?: string;
+	loading?: boolean;
 } & Record<string, unknown>;
 
 export default function ConfirmDialog({
@@ -22,6 +23,7 @@ export default function ConfirmDialog({
 	cancelButtonText = "キャンセル",
 	okButtonText = "OK",
 	okColorPalette = "brand",
+	loading = false,
 	...attrs
 }: Props) {
 	const cancel = useRef<HTMLButtonElement | null>(null);
@@ -34,16 +36,23 @@ export default function ConfirmDialog({
 		>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW="480px">
+				<Dialog.Content maxW="min(90dvw, 480px)" position="relative">
+					{loading && (
+						<Box position="absolute" inset={0} bg="whiteAlpha.800" zIndex={10} borderRadius="md">
+							<AbsoluteCenter>
+								<Spinner size="lg" color="brand.500" />
+							</AbsoluteCenter>
+						</Box>
+					)}
 					<Dialog.Header fontSize="lg" fontWeight="bold" {...prettyFont}>
 						{title}
 					</Dialog.Header>
 					<Dialog.Body {...attrs}>{children}</Dialog.Body>
 					<Dialog.Footer>
-						<Button ref={cancel} onClick={onCancel} variant={"outline"}>
+						<Button ref={cancel} onClick={onCancel} variant={"outline"} disabled={loading}>
 							{cancelButtonText}
 						</Button>
-						<Button colorPalette={okColorPalette} onClick={onOk} ml={3}>
+						<Button colorPalette={okColorPalette} onClick={onOk} ml={3} disabled={loading}>
 							{okButtonText}
 						</Button>
 					</Dialog.Footer>

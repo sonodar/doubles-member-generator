@@ -1,6 +1,6 @@
-import { emptySettings, previousSettingsAtom, settingsAtom } from "@components/state";
-import { type Algorithm, Algorithms, type CourtMembers, type CurrentSettings, type History } from "@logic";
 import type { WritableAtom } from "jotai";
+import { emptySettings, previousSettingsAtom, settingsAtom } from "../components/state";
+import { type Algorithm, Algorithms, type CourtMembers, type CurrentSettings, type History } from "../logic";
 
 // biome-ignore lint/suspicious/noExplicitAny: jotai の型定義に合わせる必要がある
 type AnyWritableAtom = WritableAtom<unknown, any[], any>;

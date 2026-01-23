@@ -7,11 +7,11 @@ afterEach(() => {
 });
 
 // コンポーネントをモック
-vi.mock("@components/Main", () => ({
+vi.mock("./components/Main", () => ({
 	default: () => <div data-testid="main-component">Main Component</div>,
 }));
 
-vi.mock("@components/Share", () => ({
+vi.mock("./components/Share", () => ({
 	default: ({ sharedId }: { sharedId: string }) => <div data-testid="share-component">Share Component: {sharedId}</div>,
 }));
 

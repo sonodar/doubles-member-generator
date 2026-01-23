@@ -1,11 +1,11 @@
-import { Algorithms, type CurrentSettings } from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Algorithms, type CurrentSettings } from "../../logic";
 import { fireEvent, render, screen, waitFor } from "../../testing/utils";
 import { settingsAtom, shareIdAtom } from "../state";
 import GamePane from "./GamePane";
 
 // API モック
-vi.mock("@api", () => ({
+vi.mock("../../api", () => ({
 	EventType: {
 		Join: "JOIN",
 		Leave: "LEAVE",

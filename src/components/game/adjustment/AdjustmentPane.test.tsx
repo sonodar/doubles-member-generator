@@ -1,12 +1,12 @@
-import type { CourtMembers, History } from "@logic";
-import * as swapModule from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { CourtMembers, History } from "../../../logic";
+import * as swapModule from "../../../logic";
 import { render, screen } from "../../../testing/utils";
 import { AdjustmentPane } from "./AdjustmentPane";
 
 // swapGameMemberをモック
-vi.mock("@logic", async () => {
-	const actual = await vi.importActual<typeof import("@logic")>("@logic");
+vi.mock("../../../logic", async () => {
+	const actual = await vi.importActual<typeof import("../../../logic")>("../../../logic");
 	return {
 		...actual,
 		swapGameMember: vi.fn(actual.swapGameMember),

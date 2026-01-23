@@ -1,7 +1,7 @@
 import { Box, HStack, IconButton, Input, Slider, Text, VStack } from "@chakra-ui/react";
-import { MEMBER_COUNT_LIMIT } from "@logic";
 import { BsArrowsExpandVertical } from "react-icons/bs";
 import { MdAdd, MdRemove } from "react-icons/md";
+import { MEMBER_COUNT_LIMIT } from "../../logic";
 
 type Props = {
 	min: number;
@@ -33,7 +33,7 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 					width={"20"}
 					size={"sm"}
 					fontSize={"md"}
-					onChange={(e) => onChange(parseInt(e.target.value))}
+					onChange={(e) => onChange(parseInt(e.target.value, 10))}
 				/>
 				<IconButton
 					colorPalette={"brand"}

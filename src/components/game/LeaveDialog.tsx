@@ -1,5 +1,6 @@
 import { Button, Dialog, HStack, NativeSelect } from "@chakra-ui/react";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 
 type Props = {
 	members: number[];
@@ -24,7 +25,7 @@ export function LeaveDialog({ members, open, onClose, onLeave }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"xs"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW="480px">
+				<Dialog.Content maxW="min(80dvw, 480px)">
 					<Dialog.Body py={4}>
 						<HStack>
 							<NativeSelect.Root>
