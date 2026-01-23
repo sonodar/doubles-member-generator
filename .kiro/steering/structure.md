@@ -53,6 +53,22 @@ components/
 - スキーマ型は `amplify/data/resource.ts` から直接インポート
 - `environment.ts`, `event.ts` でドメイン固有のAPI操作をラップ
 
+### Hooks Layer (`src/hooks/`)
+**Location**: `src/hooks/`
+**Purpose**: カスタムReactフック
+**Pattern**:
+- `index.ts`で公開APIを集約re-export
+- `*.test.ts`でテスト併置
+- データ同期、状態管理などの共通フック
+
+### Testing Utilities (`src/testing/`)
+**Location**: `src/testing/`
+**Purpose**: テスト用ユーティリティとプリセット
+**Pattern**:
+- テスト用の状態プリセット（statePresets.ts）
+- テストヘルパー関数（utils.tsx）
+- コンポーネントテストの共通セットアップ
+
 ### Pages (`src/pages/`)
 **Location**: `src/pages/`
 **Purpose**: React Routerベースのページコンポーネント
@@ -95,8 +111,8 @@ import { settingsAtom } from "./state/index.ts";
 - `@logic` → `src/logic`
 - `@components/*` → `src/components/*`
 - `@api` → `src/api`
+- `@hooks` → `src/hooks`
 - `@assets/*` → `src/assets/*`
-- `@layouts/*` → `src/layouts/*`
 
 ## Code Organization Principles
 
