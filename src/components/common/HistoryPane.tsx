@@ -1,8 +1,8 @@
-import { Box, Divider, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/react";
-import type { History } from "@logic";
+import { Box, Flex, Heading, Separator, Spacer, Stack, Text } from "@chakra-ui/react";
 import CourtMembersPane from "@components/game/CourtMembersPane.tsx";
 import { useSettings } from "@components/state";
 import { format } from "@formkit/tempo";
+import type { History } from "@logic";
 
 function formatDate(date: string) {
 	return format(new Date(date), "YYYY/MM/DD HH:mm");
@@ -68,7 +68,7 @@ export default function HistoryPane(props: { histories?: History[] }) {
 	);
 
 	return (
-		<Stack spacing={3} divider={<Divider />}>
+		<Stack gap={3} separator={<Separator />} w={"100%"}>
 			{current && <CurrentHistoryPane {...current.history} />}
 			{previous && <PreviousHistoryPane {...previous.history} />}
 			{olds &&

@@ -6,7 +6,7 @@ import { defineAuth } from "@aws-amplify/backend";
  * Cognito Identity Pool を作成するために定義
  */
 export const auth = defineAuth({
-  loginWith: {
-    email: true,
-  },
+	loginWith: {
+		email: true,
+	},
 });

@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-import { Provider, createStore } from "jotai";
 import Main from "@components/Main";
 import Share from "@components/Share";
-import customTheme from "@components/theme";
+import system from "@components/theme";
+import { Provider, createStore } from "jotai";
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 
 const store = createStore();
 
@@ -14,7 +14,7 @@ function ShareWrapper() {
 
 export default function App() {
 	return (
-		<ChakraProvider theme={customTheme}>
+		<ChakraProvider value={system}>
 			<Provider store={store}>
 				<BrowserRouter>
 					<Routes>

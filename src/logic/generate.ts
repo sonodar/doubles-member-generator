@@ -1,10 +1,10 @@
 import { array } from "./array";
-import type { CurrentSettings, GameMembers, PlayCountPerMember, MemberId } from "./types";
-import { Algorithms } from "./types";
 import { COURT_CAPACITY } from "./consts";
-import { toHistoryKey, makeHistoryKeys, selectRandomMembers, rotateFirstHistory } from "./util";
 import { getDiscretenessRandomMembers } from "./discreteness";
 import { getEvennessRandomMembers, isEvenness } from "./evenness";
+import type { CurrentSettings, GameMembers, MemberId, PlayCountPerMember } from "./types";
+import { Algorithms } from "./types";
+import { makeHistoryKeys, rotateFirstHistory, selectRandomMembers, toHistoryKey } from "./util";
 
 // ソート用のプロパティを持ったオブジェクトの配列
 type SortableMembers = {

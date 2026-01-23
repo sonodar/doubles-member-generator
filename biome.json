@@ -23,7 +23,7 @@
 		}
 	},
 	"files": {
-		"include": ["src"],
-		"ignore": ["*.js", "src/api/API.ts", "src/api/models", "src/api/graphql"]
+		"include": ["."],
+		"ignore": ["package*.json", "coverage", ".amplify", "dist"]
 	}
 }

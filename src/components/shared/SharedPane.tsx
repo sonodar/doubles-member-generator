@@ -1,30 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import {
-	Alert,
-	AlertIcon,
-	AlertTitle,
-	Card,
-	CardBody,
-	CardHeader,
-	Center,
-	HStack,
-	Heading,
-	IconButton,
-	Link,
-	Spacer,
-	useToast,
-} from "@chakra-ui/react";
-import { MdRefresh } from "react-icons/md";
-import { match } from "ts-pattern";
-import { atom } from "jotai";
-import { useReducerAtom } from "jotai/utils";
-import HistoryPane from "../common/HistoryPane.tsx";
-import { EventType, type Event, findAllEvents, replayEvent, subscribeEvent } from "@api";
+import { type Event, EventType, replayEvent } from "@api";
+import { Alert, Card, Center, HStack, Heading, IconButton, Link, Spacer } from "@chakra-ui/react";
+import { AlgorithmBadge } from "@components/common/AlgorithmBadge.tsx";
 import { MemberButton } from "@components/common/MemberButton.tsx";
 import { emptySettings, settingsReducer } from "@components/state";
+import { toaster } from "@components/theme.ts";
 import type { CurrentSettings } from "@logic";
-import { AlgorithmBadge } from "@components/common/AlgorithmBadge.tsx";
+import { atom } from "jotai";
+import { useReducerAtom } from "jotai/utils";
+import { useCallback, useState } from "react";
+import { MdRefresh } from "react-icons/md";
 import { MdHome } from "react-icons/md";
+import { match } from "ts-pattern";
+import { useRealtimeSync } from "../../hooks";
+import HistoryPane from "../common/HistoryPane.tsx";
 
 // ゲーム画面と違い、オンメモリの atom を利用する。
 // こうしないと同一ブラウザで共有画面を開いたときに同じ localStorage に書き込みをしてしまう。
@@ -61,83 +49,62 @@ function getMessageStatus(type: EventType): "success" | "warning" | "info" | "er
 
 export default function SharedPane({ sharedId }: { sharedId: string }) {
 	const [settings, dispatch] = useReducerAtom(settingsAtom, settingsReducer);
-
 	const [finished, setFinished] = useState(false);
-	const [event, setEvent] = useState<Event | null>(null);
-	const [subscribed, setSubscribed] = useState(false);
 
-	const proceededEvents: Record<string, Event> = {};
+	// onEvent: 個別イベント受信時のコールバック
+	const handleEvent = useCallback(
+		(event: Event) => {
+			if (event.type === EventType.Initialize) return;
 
-	useEffect(() => {
-		findAllEvents(sharedId).then((events) => {
-			if (!subscribed) {
-				startSubscribe(sharedId);
+			if (event.type === EventType.Finish) {
+				setFinished(true);
+			} else {
+				match(event)
+					.with({ type: EventType.Generate }, ({ payload }) => dispatch({ type: EventType.Generate, payload }))
+					.with({ type: EventType.Retry }, ({ payload }) => dispatch({ type: EventType.Retry, payload }))
+					.with({ type: EventType.Join }, () => dispatch({ type: EventType.Join }))
+					.with({ type: EventType.Leave }, ({ payload }) => dispatch({ type: EventType.Leave, payload }))
+					.exhaustive();
 			}
+
+			toaster.create({
+				title: getMessage(event.type)(event.payload),
+				type: getMessageStatus(event.type),
+				duration: 2000,
+			});
+		},
+		[dispatch],
+	);
+
+	// onSync: 全イベント取得後のコールバック（初期化・復帰時）
+	const handleSync = useCallback(
+		(events: Event[]) => {
 			if (events.length === 0) {
 				return;
 			}
-			const { settings, finished, proceeded } = replayEvents(events);
-			for (const [id, event] of Object.entries(proceeded)) {
-				proceededEvents[id] = event;
-			}
+			const { settings, finished } = replayEvents(events);
 			dispatch({ type: EventType.Initialize, payload: settings });
 			setFinished(finished);
-		});
-	}, [sharedId, dispatch, subscribed]);
+		},
+		[dispatch],
+	);
 
-	const startSubscribe = (id: string) => {
-		setSubscribed(true);
-		const { unsubscribe } = subscribeEvent(id, (event: Event) => {
-			// 処理済みのイベントなら何もしない
-			if (proceededEvents[event.id]) return;
-
-			// 終了イベントなら unsubscribe する
-			if (event.type === EventType.Finish) {
-				unsubscribe();
-				// setFinished(true) // setEvent の後に呼ばれるのでここではやらない
-			}
-
-			// イベントの各処理をトリガー（useEffectが発火する）
-			setEvent(event);
-		});
-	};
-
-	const toast = useToast();
-	const toastRef = useRef<string | number>();
-
-	useEffect(() => {
-		if (!event || event.type === EventType.Initialize) return;
-		proceededEvents[event.id] = event;
-
-		if (event.type === EventType.Finish) {
-			setFinished(true);
-		} else {
-			match(event)
-				.with({ type: EventType.Generate }, ({ payload }) => dispatch({ type: EventType.Generate, payload }))
-				.with({ type: EventType.Retry }, ({ payload }) => dispatch({ type: EventType.Retry, payload }))
-				.with({ type: EventType.Join }, () => dispatch({ type: EventType.Join }))
-				.with({ type: EventType.Leave }, ({ payload }) => dispatch({ type: EventType.Leave, payload }))
-				.exhaustive();
-		}
-
-		toastRef.current = toast({
-			title: getMessage(event.type)(event.payload),
-			status: getMessageStatus(event.type),
-			duration: 2000,
-			isClosable: true,
-			variant: "subtle",
-		});
-	}, [event, dispatch, toast]);
+	// useRealtimeSync フックを使用してライフサイクル管理を委譲
+	useRealtimeSync({
+		sharedId,
+		onEvent: handleEvent,
+		onSync: handleSync,
+	});
 
 	return (
-		<Card my={1} py={4}>
+		<Card.Root w="100%" my={1} py={4} borderWidth={0} boxShadow="none">
 			{finished && (
-				<Alert status="error" mb={2}>
-					<AlertIcon />
-					<AlertTitle>すでに終了しています</AlertTitle>
-				</Alert>
+				<Alert.Root status="error" mb={2}>
+					<Alert.Indicator />
+					<Alert.Title>すでに終了しています</Alert.Title>
+				</Alert.Root>
 			)}
-			<CardHeader my={0} py={0}>
+			<Card.Header my={0} py={0}>
 				<HStack>
 					<Heading size={"md"}>
 						{settings.members.length} 人が参加{!finished && "中"}
@@ -147,36 +114,38 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 					{!finished && (
 						<IconButton
 							size={"sm"}
-							isRound={true}
+							rounded={"full"}
 							variant={"solid"}
-							colorScheme={"brand"}
+							colorPalette={"brand"}
 							fontSize={"md"}
-							icon={<MdRefresh />}
 							onClick={() => window.location.reload()}
 							aria-label={"reload"}
-						/>
+						>
+							<MdRefresh />
+						</IconButton>
 					)}
 					{finished && (
 						<Link href={"/"}>
-							<IconButton size={"sm"} variant={"solid"} fontSize={"md"} aria-label={"Home"} icon={<MdHome />} />
+							<IconButton size={"sm"} variant={"solid"} fontSize={"md"} aria-label={"Home"}>
+								<MdHome />
+							</IconButton>
 						</Link>
 					)}
 				</HStack>
-			</CardHeader>
-			<CardBody>
+			</Card.Header>
+			<Card.Body>
 				<Center mb={4}>
 					<AlgorithmBadge algorithm={settings.algorithm} />
 				</Center>
 				<Center>
 					<HistoryPane histories={settings.histories} />
 				</Center>
-			</CardBody>
-		</Card>
+			</Card.Body>
+		</Card.Root>
 	);
 }
 
 function replayEvents(allEvents: Event[]) {
-	const proceeded: Record<string, Event> = {};
 	const [init, ...events] = allEvents;
 
 	if (init.type !== EventType.Initialize) {
@@ -184,14 +153,12 @@ function replayEvents(allEvents: Event[]) {
 	}
 
 	let finished = false;
-	proceeded[init.id] = init;
 
 	const settings = events.reduce((settings, event) => {
 		if (event.type === EventType.Initialize) return settings;
 		finished = finished || event.type === EventType.Finish;
-		proceeded[event.id] = event;
 		return replayEvent(settings, event);
 	}, init.payload);
 
-	return { settings, proceeded, finished };
+	return { settings, finished };
 }

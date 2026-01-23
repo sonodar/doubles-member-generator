@@ -1,11 +1,8 @@
-import { match } from "ts-pattern";
-import { join, type CurrentSettings, leave, replayGenerate, replayRetry } from "@logic";
 import type { EventPayload } from "@api";
+import { type CurrentSettings, join, leave, replayGenerate, replayRetry } from "@logic";
+import { match } from "ts-pattern";
 
-export function settingsReducer(
-	settings: CurrentSettings,
-	action: EventPayload | "IGNORE_USAGE_ALERT",
-): CurrentSettings {
+export function settingsReducer(settings: CurrentSettings, action: EventPayload): CurrentSettings {
 	return match(action)
 		.with({ type: "INITIALIZE" }, ({ payload }) => payload)
 		.with({ type: "JOIN" }, () => join(settings))
@@ -13,6 +10,5 @@ export function settingsReducer(
 		.with({ type: "GENERATE" }, ({ payload }) => replayGenerate(settings, payload.members))
 		.with({ type: "RETRY" }, ({ payload }) => replayRetry(settings, payload.members))
 		.with({ type: "FINISH" }, () => settings)
-		.with("IGNORE_USAGE_ALERT", () => ({ ...settings, ignoreUsageAlert: true }))
 		.exhaustive();
 }

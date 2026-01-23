@@ -2,18 +2,19 @@
 
 ## Architecture
 
-SSR対応のフルスタックWebアプリケーション。Astroをメタフレームワークとして採用し、ReactコンポーネントとAWS Amplifyバックエンドを統合。
+SPAベースのフルスタックWebアプリケーション。ViteをビルドツールとしてReactフロントエンドを構築し、AWS Amplify Gen2バックエンドと統合。
 
 ## Core Technologies
 
 - **Language**: TypeScript（strict mode）
-- **Framework**: Astro 4.x + React 18
-- **Runtime**: Node.js 20+
-- **Backend**: AWS Amplify（AppSync GraphQL + DynamoDB）
+- **Framework**: Vite + React 18
+- **Runtime**: Node.js 22+
+- **Backend**: AWS Amplify Gen2（AppSync GraphQL + DynamoDB）
+- **Routing**: React Router DOM 7.x
 
 ## Key Libraries
 
-- **UI**: Chakra UI + Framer Motion（アクセシブルでアニメーション対応）
+- **UI**: Chakra UI v3（アクセシブル）
 - **State**: Jotai（軽量アトミック状態管理、localStorage永続化）
 - **DnD**: @dnd-kit/core（ドラッグ&ドロップによるメンバー調整）
 - **Validation**: Zod（スキーマベースのバリデーション）
@@ -24,7 +25,7 @@ SSR対応のフルスタックWebアプリケーション。Astroをメタフレ
 ### Type Safety
 - TypeScriptのstrict mode必須
 - `any`の使用禁止（Biome linterで検出）
-- 自動生成コード（`src/api/API.ts`, `src/api/models`, `src/api/graphql`）はlint対象外
+- Amplify Gen2 スキーマ型は `amplify/data/resource.ts` で定義し、フロントエンドから直接参照
 
 ### Code Quality
 - **Formatter/Linter**: Biome（ESLint/Prettierの代替）
@@ -41,7 +42,7 @@ SSR対応のフルスタックWebアプリケーション。Astroをメタフレ
 ### Required Tools
 - Node.js 22+
 - npm
-- AWS Amplify CLI（バックエンド操作時）
+- AWS Amplify Gen2 CLI（`@aws-amplify/backend-cli`）
 
 ### Common Commands
 ```bash
@@ -52,14 +53,17 @@ SSR対応のフルスタックWebアプリケーション。Astroをメタフレ
 # Format: npm run format
 # TypeCheck: npm run typecheck
 # All fixes: npm run fix
+# Amplify Sandbox: npm run sandbox (ampx sandbox)
 ```
 
 ## Key Technical Decisions
 
-- **Astro + React**: 静的部分はAstroで最適化、インタラクティブ部分のみReactをハイドレート
+- **Vite + React**: 高速な開発サーバーとHMR、シンプルなSPA構成
+- **Amplify Gen2**: TypeScriptベースのインフラ定義、型安全なスキーマ、CDKによるカスタマイズ
 - **Jotai over Redux**: 小規模アプリに適した軽量な状態管理、localStorage連携が容易
-- **Chakra UI**: アクセシビリティとカスタマイズ性のバランス
+- **Chakra UI v3**: Recipe/Slot パターンによるスタイル定義、Ark UI ベースのアクセシブルコンポーネント
 - **Biome**: ESLint + Prettierより高速、設定が簡潔
+- **React Router DOM**: ファイルベースルーティングからプログラマティックルーティングへ
 
 ---
 _Document standards and patterns, not every dependency_

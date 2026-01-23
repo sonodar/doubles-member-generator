@@ -1,14 +1,14 @@
-import { Box, Center, Divider, HStack, Heading, SimpleGrid, Text, Tabs, TabList, Tab } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Center, HStack, Heading, Separator, SimpleGrid, Tabs, Text } from "@chakra-ui/react";
+import { useSettings } from "@components/state";
 import {
 	type CurrentSettings,
-	array,
 	type MemberCountVariant,
 	OutlierLevelProvider,
+	array,
 	memberCountVariantLabels,
 	memberCountVariants,
 } from "@logic";
-import { useSettings } from "@components/state";
+import { useState } from "react";
 
 type Props = {
 	settings?: Pick<CurrentSettings, "histories" | "members" | "gameCounts">;
@@ -52,30 +52,30 @@ export default function MemberCountPane({ settings, showLeftMember, defaultTabIn
 		return (
 			<Box bg={color} color={members.includes(id) ? "" : "white"}>
 				<Center>
-					<HStack spacing={3}>
+					<HStack gap={3}>
 						<Heading as={"label"} size={"md"}>{`${id} :`}</Heading>
 						<Text fontSize={"md"}>{value} 回</Text>
 					</HStack>
 				</Center>
-				{members.includes(id) && <Divider />}
+				{members.includes(id) && <Separator />}
 			</Box>
 		);
 	}
 
 	return (
-		<Tabs index={tabIndex} onChange={setTabIndex} variant={"enclosed"}>
-			<TabList mb="1em">
-				{Object.values(memberCountVariantLabels).map((label) => (
-					<Tab key={label}>
+		<Tabs.Root value={String(tabIndex)} onValueChange={(e) => setTabIndex(Number(e.value))} variant={"enclosed"}>
+			<Tabs.List mb="1em">
+				{Object.entries(memberCountVariantLabels).map(([key, label]) => (
+					<Tabs.Trigger key={key} value={String(memberCountVariants.indexOf(key as MemberCountVariant))}>
 						<Heading size="xs">{label}</Heading>
-					</Tab>
+					</Tabs.Trigger>
 				))}
-			</TabList>
-			<SimpleGrid minChildWidth="110px" spacing={0} color={"gray.600"}>
+			</Tabs.List>
+			<SimpleGrid minChildWidth="110px" gap={0} color={"gray.600"}>
 				{memberIds.map((id) => (
 					<CountPain key={id} id={id} variant={memberCountVariant} />
 				))}
 			</SimpleGrid>
-		</Tabs>
+		</Tabs.Root>
 	);
 }

@@ -1,30 +1,34 @@
-import { Heading, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
-import MemberCountPane from "./MemberCountPane.tsx";
+import { CloseButton, Dialog, Heading } from "@chakra-ui/react";
 import { type CurrentSettings } from "@logic";
+import MemberCountPane from "./MemberCountPane.tsx";
 
 type Props = {
 	settings?: CurrentSettings;
 	defaultTabIndex?: number;
-	isOpen: boolean;
+	open: boolean;
 	onClose: () => void;
 	showLeftMember?: boolean;
 };
 
-export function MemberDialog({ settings, defaultTabIndex, isOpen, onClose, showLeftMember }: Props) {
+export function MemberDialog({ settings, defaultTabIndex, open, onClose, showLeftMember }: Props) {
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} scrollBehavior={"inside"} isCentered motionPreset={"slideInTop"}>
-			<ModalOverlay />
-			<ModalContent maxW={"350px"}>
-				<ModalHeader>
-					<Heading as={"label"} size={"sm"}>
-						プレイ回数・休憩回数
-					</Heading>
-				</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody pt={0} px={2} mt={-2}>
-					<MemberCountPane settings={settings} showLeftMember={showLeftMember} defaultTabIndex={defaultTabIndex} />
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
+			<Dialog.Backdrop />
+			<Dialog.Positioner>
+				<Dialog.Content w="100%" maxW="480px">
+					<Dialog.Header>
+						<Heading as={"label"} size={"sm"}>
+							プレイ回数・休憩回数
+						</Heading>
+					</Dialog.Header>
+					<Dialog.CloseTrigger asChild>
+						<CloseButton size="sm" />
+					</Dialog.CloseTrigger>
+					<Dialog.Body pt={0} px={2} mt={-2}>
+						<MemberCountPane settings={settings} showLeftMember={showLeftMember} defaultTabIndex={defaultTabIndex} />
+					</Dialog.Body>
+				</Dialog.Content>
+			</Dialog.Positioner>
+		</Dialog.Root>
 	);
 }

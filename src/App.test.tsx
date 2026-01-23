@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
-import { MemoryRouter, Routes, Route, useParams } from "react-router-dom";
+import { cleanup, render, screen } from "@testing-library/react";
+import { MemoryRouter, Route, Routes, useParams } from "react-router-dom";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 afterEach(() => {
 	cleanup();

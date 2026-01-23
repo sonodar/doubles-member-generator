@@ -1,32 +1,19 @@
-import {
-	Button,
-	Center,
-	Heading,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Spacer,
-	Stack,
-} from "@chakra-ui/react";
-import { useState } from "react";
-import { MdOutlineCancel } from "react-icons/md";
-import { IoMdDownload } from "react-icons/io";
-import { type CurrentSettings, type GameMembers, replace } from "@logic";
-import { AdjustmentPane } from "@components/game/adjustment/AdjustmentPane.tsx";
+import { Button, Center, CloseButton, Dialog, Heading, Spacer, Stack } from "@chakra-ui/react";
 import MemberCountPane from "@components/common/MemberCountPane.tsx";
+import { AdjustmentPane } from "@components/game/adjustment/AdjustmentPane.tsx";
+import { type CurrentSettings, type GameMembers, replace } from "@logic";
+import { useState } from "react";
+import { IoMdDownload } from "react-icons/io";
+import { MdOutlineCancel } from "react-icons/md";
 
 type Props = {
 	settings: CurrentSettings;
-	isOpen: boolean;
+	open: boolean;
 	onClose: () => void;
 	onChange: (settings: CurrentSettings) => void;
 };
 
-export function AdjustmentDialog({ settings, isOpen, onClose, onChange }: Props) {
+export function AdjustmentDialog({ settings, open, onClose, onChange }: Props) {
 	const [newSettings, setNewSettings] = useState(settings);
 
 	const handleAdjust = (gameMembers: GameMembers) => {
@@ -45,49 +32,47 @@ export function AdjustmentDialog({ settings, isOpen, onClose, onChange }: Props)
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={handleCancel} scrollBehavior={"inside"} isCentered motionPreset={"slideInTop"}>
-			<ModalOverlay />
-			<ModalContent maxW={"350px"} maxH={"100dvh"}>
-				<ModalHeader>
-					<Stack spacing={3}>
-						<Heading as={"h3"} size={"md"}>
-							プレイ回数
-						</Heading>
-					</Stack>
-				</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody pt={0} px={2} mt={-2}>
-					<Stack spacing={4}>
-						<MemberCountPane settings={newSettings} />
-						<Center>
-							<AdjustmentPane {...newSettings} onChange={handleAdjust} />
-						</Center>
-					</Stack>
-				</ModalBody>
-				<ModalFooter>
-					<Button
-						w={"45%"}
-						colorScheme={"brand"}
-						leftIcon={<IoMdDownload />}
-						onClick={handleOk}
-						size={"sm"}
-						rounded={"full"}
-					>
-						調整反映
-					</Button>
-					<Spacer />
-					<Button
-						w={"45%"}
-						variant={"outline"}
-						leftIcon={<MdOutlineCancel />}
-						onClick={handleCancel}
-						size={"sm"}
-						rounded={"full"}
-					>
-						キャンセル
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+		<Dialog.Root
+			open={open}
+			onOpenChange={(e) => !e.open && handleCancel()}
+			scrollBehavior={"inside"}
+			placement="center"
+			motionPreset={"slide-in-bottom"}
+		>
+			<Dialog.Backdrop />
+			<Dialog.Positioner>
+				<Dialog.Content w="100%" maxW="480px" maxH={"100dvh"}>
+					<Dialog.Header>
+						<Stack gap={3}>
+							<Heading as={"h3"} size={"md"}>
+								プレイ回数
+							</Heading>
+						</Stack>
+					</Dialog.Header>
+					<Dialog.CloseTrigger asChild>
+						<CloseButton size="sm" />
+					</Dialog.CloseTrigger>
+					<Dialog.Body pt={0} px={2} mt={-2}>
+						<Stack gap={4}>
+							<MemberCountPane settings={newSettings} />
+							<Center>
+								<AdjustmentPane {...newSettings} onChange={handleAdjust} />
+							</Center>
+						</Stack>
+					</Dialog.Body>
+					<Dialog.Footer>
+						<Button w={"45%"} colorPalette={"brand"} onClick={handleOk} size={"sm"} rounded={"full"}>
+							<IoMdDownload />
+							調整反映
+						</Button>
+						<Spacer />
+						<Button w={"45%"} variant={"outline"} onClick={handleCancel} size={"sm"} rounded={"full"}>
+							<MdOutlineCancel />
+							キャンセル
+						</Button>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Positioner>
+		</Dialog.Root>
 	);
 }

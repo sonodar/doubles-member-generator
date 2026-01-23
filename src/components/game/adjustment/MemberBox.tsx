@@ -1,5 +1,5 @@
-import { useDraggable } from "@dnd-kit/core";
 import { Box, Center } from "@chakra-ui/react";
+import { useDraggable } from "@dnd-kit/core";
 import type { RestOrCourtMember } from "@logic";
 
 export function MemberBox({ color, ...member }: RestOrCourtMember & { color: string }) {

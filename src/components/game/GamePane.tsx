@@ -1,17 +1,18 @@
-import { Box, Card, CardBody, CardFooter, Center, Divider, Spacer, Stack, useToast } from "@chakra-ui/react";
-import { useRef, useState } from "react";
-import { useAtom } from "jotai";
-import { ShareButton } from "./ShareButton";
 import { EventType, createEnvironment, eventEmitter, finishEnvironment } from "@api";
-import { getLatestMembers, type CurrentSettings } from "@logic";
-import CourtMembersPane from "@components/game/CourtMembersPane";
-import { CurrentMemberCountInput } from "@components/game/CurrentMemberCountInput";
+import { Box, Card, Center, Separator, Spacer, Stack } from "@chakra-ui/react";
+import { AlgorithmBadge } from "@components/common/AlgorithmBadge";
 import { HistoryButton } from "@components/common/HistoryButton.tsx";
 import { MemberButton } from "@components/common/MemberButton.tsx";
-import { ResetButton } from "@components/game/ResetButton";
-import { useSettingsReducer, shareIdAtom } from "@components/state";
+import CourtMembersPane from "@components/game/CourtMembersPane";
+import { CurrentMemberCountInput } from "@components/game/CurrentMemberCountInput";
 import { GenerateButton } from "@components/game/GenerateButton.tsx";
-import { AlgorithmBadge } from "@components/common/AlgorithmBadge";
+import { ResetButton } from "@components/game/ResetButton";
+import { shareIdAtom, useSettingsReducer } from "@components/state";
+import { toaster } from "@components/theme.ts";
+import { type CurrentSettings, getLatestMembers } from "@logic";
+import { useAtom } from "jotai";
+import { useState } from "react";
+import { ShareButton } from "./ShareButton";
 
 type Props = {
 	onReset: () => void;
@@ -51,23 +52,15 @@ export default function GamePane({ onReset }: Props) {
 		}
 	};
 
-	const handleIgnoreUsageAlert = () => dispatch("IGNORE_USAGE_ALERT");
-
-	const toast = useToast();
-	const toastRef = useRef<string | number>();
-
 	const handleLeave = (id: number) => {
 		dispatch({ type: EventType.Leave, payload: { memberId: id } });
 		if (environmentId) {
 			eventEmitter(environmentId).leave(id);
 		}
-		toastRef.current = toast({
+		toaster.create({
 			title: `メンバー ${id} が離脱しました`,
-			status: "warning",
+			type: "warning",
 			duration: 2000,
-			isClosable: true,
-			colorScheme: "brand",
-			variant: "subtle",
 		});
 	};
 
@@ -80,20 +73,15 @@ export default function GamePane({ onReset }: Props) {
 	};
 
 	return (
-		<Card m={0} p={0} height={"100dvh"}>
-			<CardBody p={0} pt={3}>
+		<Card.Root w={"100%"} height={"100dvh"} borderWidth={0} boxShadow={"none"}>
+			<Card.Body px={4} py={2}>
 				<Center>
-					<Stack spacing={2}>
-						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} isDisabled={progress} />
+					<Stack gap={2} w={"100%"}>
+						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} disabled={progress} />
 						<Center>
 							<AlgorithmBadge algorithm={settings.algorithm} />
 						</Center>
-						<GenerateButton
-							settings={settings}
-							onGenerate={handleGenerate}
-							onIgnoreUsageAlert={handleIgnoreUsageAlert}
-							isDisabled={progress}
-						/>
+						<GenerateButton settings={settings} onGenerate={handleGenerate} disabled={progress} />
 						{latestMembers.length > 0 && (
 							<Box pt={4}>
 								<CourtMembersPane members={latestMembers} />
@@ -101,17 +89,17 @@ export default function GamePane({ onReset }: Props) {
 						)}
 					</Stack>
 				</Center>
-			</CardBody>
-			<Divider color={"gray.300"} />
-			<CardFooter px={10} py={2}>
-				<HistoryButton isDisabled={progress} />
+			</Card.Body>
+			<Separator color={"gray.300"} />
+			<Card.Footer px={8} py={2} pb="max(8px, env(safe-area-inset-bottom))">
+				<HistoryButton disabled={progress} />
 				<Spacer />
-				<MemberButton isDisabled={progress} />
+				<MemberButton disabled={progress} />
 				<Spacer />
-				<ShareButton sharedId={environmentId} onIssue={issueShareLink} isDisabled={progress} />
+				<ShareButton sharedId={environmentId} onIssue={issueShareLink} disabled={progress} />
 				<Spacer />
-				<ResetButton onReset={clear} isDisabled={progress} />
-			</CardFooter>
-		</Card>
+				<ResetButton onReset={clear} disabled={progress} />
+			</Card.Footer>
+		</Card.Root>
 	);
 }

@@ -1,36 +1,37 @@
-import { SmallCloseIcon } from "@chakra-ui/icons";
 import { IconButton, useDisclosure } from "@chakra-ui/react";
-import { Fragment } from "react";
 import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
+import { Fragment } from "react";
+import { MdClose } from "react-icons/md";
 
 export function ResetButton({
-	isDisabled,
+	disabled,
 	onReset,
 }: {
-	isDisabled?: boolean;
+	disabled?: boolean;
 	onReset: () => void;
 }) {
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { open, onOpen, onClose } = useDisclosure();
 	return (
 		<Fragment>
 			<IconButton
-				colorScheme={"danger"}
+				colorPalette={"danger"}
 				size={"sm"}
 				mt={1}
 				fontSize={"lg"}
 				aria-label="メンバー"
-				icon={<SmallCloseIcon />}
 				onClick={onOpen}
-				isDisabled={isDisabled}
-			/>
+				disabled={disabled}
+			>
+				<MdClose />
+			</IconButton>
 			<ConfirmDialog
-				isOpen={isOpen}
+				open={open}
 				onCancel={onClose}
 				onOk={() => {
 					onClose();
 					onReset();
 				}}
-				okColorScheme={"danger"}
+				okColorPalette={"danger"}
 				title={"本当に終了しますか？"}
 			>
 				プレイ履歴をリセットして初期設定に戻ります。今回の設定は次回に引き継がれます。

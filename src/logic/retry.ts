@@ -1,6 +1,6 @@
+import { addHistory, generate } from "./generate";
 import type { CurrentSettings, GameMembers } from "./types";
 import { getLatestMembers, removeLatestHistory, toHistoryKey } from "./util";
-import { addHistory, generate } from "./generate";
 
 export function retry(settings: CurrentSettings): CurrentSettings {
 	if (settings.histories.length === 0) {

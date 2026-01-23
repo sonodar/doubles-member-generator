@@ -1,14 +1,14 @@
-import { Button, HStack, Modal, ModalBody, ModalContent, ModalOverlay, Select } from "@chakra-ui/react";
+import { Button, Dialog, HStack, NativeSelect } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 type Props = {
 	members: number[];
-	isOpen: boolean;
+	open: boolean;
 	onClose: () => void;
 	onLeave(id: number): void;
 };
 
-export function LeaveDialog({ members, isOpen, onClose, onLeave }: Props) {
+export function LeaveDialog({ members, open, onClose, onLeave }: Props) {
 	const [value, setValue] = useState<number>(0);
 
 	const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -21,24 +21,28 @@ export function LeaveDialog({ members, isOpen, onClose, onLeave }: Props) {
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
-			<ModalOverlay />
-			<ModalContent>
-				<ModalBody py={4}>
-					<HStack>
-						<Select placeholder="番号を選択してください" onChange={handleSelect}>
-							{members.map((id) => (
-								<option key={id} value={id}>
-									{id}
-								</option>
-							))}
-						</Select>
-						<Button colorScheme={"brand"} variant={"outline"} size={"sm"} onClick={handleLeave}>
-							離脱
-						</Button>
-					</HStack>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"xs"}>
+			<Dialog.Backdrop />
+			<Dialog.Positioner>
+				<Dialog.Content maxW="480px">
+					<Dialog.Body py={4}>
+						<HStack>
+							<NativeSelect.Root>
+								<NativeSelect.Field placeholder="離脱する番号" onChange={handleSelect}>
+									{members.map((id) => (
+										<option key={id} value={id}>
+											{id}
+										</option>
+									))}
+								</NativeSelect.Field>
+							</NativeSelect.Root>
+							<Button colorPalette={"brand"} variant={"outline"} size={"sm"} onClick={handleLeave}>
+								離脱
+							</Button>
+						</HStack>
+					</Dialog.Body>
+				</Dialog.Content>
+			</Dialog.Positioner>
+		</Dialog.Root>
 	);
 }

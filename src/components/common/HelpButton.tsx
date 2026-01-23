@@ -1,25 +1,20 @@
-import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import {
 	Button,
-	Divider,
+	CloseButton,
+	Dialog,
 	Heading,
 	IconButton,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
+	Separator,
 	Stack,
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
 import { Fragment } from "react";
+import { MdHelpOutline } from "react-icons/md";
 
 const Help = {
 	algorithm: (
-		<Stack spacing={4}>
+		<Stack gap={4}>
 			<Heading as="span" size="md">
 				ばらつき重視
 			</Heading>
@@ -39,42 +34,39 @@ const Help = {
 type Props = { title?: string; items: (keyof typeof Help)[] };
 
 export default function HelpButton({ title, items }: Props) {
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { open, onOpen, onClose } = useDisclosure();
 
 	return (
 		<Fragment>
-			<IconButton
-				isRound={true}
-				variant="ghost"
-				colorScheme="brand"
-				aria-label="Help"
-				size={"xs"}
-				fontSize={"md"}
-				icon={<QuestionOutlineIcon />}
-				onClick={onOpen}
-			/>
-			<Modal onClose={onClose} size={"full"} isOpen={isOpen} scrollBehavior={"inside"}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>
-						<Heading as="h3" size="md">
-							{title || "ヘルプ"}
-						</Heading>
-					</ModalHeader>
-					<ModalCloseButton />
-					<Divider />
-					<ModalBody mt={2}>
-						{items.map((item) => (
-							<Stack key={item} spacing={4}>
-								{Help[item]}
-							</Stack>
-						))}
-					</ModalBody>
-					<ModalFooter>
-						<Button onClick={onClose}>閉じる</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
+			<IconButton rounded="full" variant="ghost" aria-label="Help" size={"xs"} fontSize={"md"} onClick={onOpen}>
+				<MdHelpOutline />
+			</IconButton>
+			<Dialog.Root onOpenChange={(e) => !e.open && onClose()} size={"full"} open={open} scrollBehavior={"inside"}>
+				<Dialog.Backdrop />
+				<Dialog.Positioner>
+					<Dialog.Content maxW="480px">
+						<Dialog.Header>
+							<Heading as="h3" size="md">
+								{title || "ヘルプ"}
+							</Heading>
+						</Dialog.Header>
+						<Dialog.CloseTrigger asChild>
+							<CloseButton size="sm" />
+						</Dialog.CloseTrigger>
+						<Separator />
+						<Dialog.Body mt={2}>
+							{items.map((item) => (
+								<Stack key={item} gap={4}>
+									{Help[item]}
+								</Stack>
+							))}
+						</Dialog.Body>
+						<Dialog.Footer>
+							<Button onClick={onClose}>閉じる</Button>
+						</Dialog.Footer>
+					</Dialog.Content>
+				</Dialog.Positioner>
+			</Dialog.Root>
 		</Fragment>
 	);
 }

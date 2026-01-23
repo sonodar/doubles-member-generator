@@ -1,8 +1,8 @@
 import { match } from "ts-pattern";
+import { array } from "./array";
 import type { CurrentSettings, History, PlayCountPerMember } from "./types";
 import type { CountPerMember } from "./util";
 import { getContinuousRestCount, getLatestMembers, getRestMembers } from "./util";
-import { array } from "./array";
 
 export const memberCountVariants = ["playCount", "restCount", "totalRestCount"] as const;
 export type MemberCountVariant = (typeof memberCountVariants)[number];
