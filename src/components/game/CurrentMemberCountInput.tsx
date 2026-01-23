@@ -1,4 +1,4 @@
-import { Button, HStack, Input, Spacer, useDisclosure } from "@chakra-ui/react";
+import { Button, HStack, Input, Spacer, Text, useDisclosure } from "@chakra-ui/react";
 import { TbUserOff, TbUserPlus } from "react-icons/tb";
 import { COURT_CAPACITY, MEMBER_COUNT_LIMIT } from "@logic";
 import { LeaveDialog } from "@components/game/LeaveDialog";
@@ -16,8 +16,8 @@ export function CurrentMemberCountInput({ onIncrement, onDecrement, disabled }: 
 	const { open, onOpen, onClose } = useDisclosure();
 
 	return (
-		<HStack maxW={"320px"} minW={"320px"}>
-			<span>現在</span>
+		<HStack w={"100%"}>
+			<Text fontSize={"sm"}>現在</Text>
 			<Input
 				type={"number"}
 				value={members.length}
@@ -31,7 +31,7 @@ export function CurrentMemberCountInput({ onIncrement, onDecrement, disabled }: 
 				borderBottom="none"
 				readOnly
 			/>
-			<span>人</span>
+			<Text fontSize={"sm"}>人</Text>
 			<Spacer />
 			<Button
 				size={"xs"}

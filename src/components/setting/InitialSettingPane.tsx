@@ -46,10 +46,10 @@ export default function InitialSettingPane({ previousSettings, onStart }: Props)
 	};
 
 	return (
-		<Card.Root m={0} p={0} height={"100dvh"}>
-			<Card.Body px={4} pt={6}>
+		<Card.Root w="100%" height={"100dvh"} borderWidth={0} boxShadow="none">
+			<Card.Body p={6}>
 				<Center>
-					<Stack gap={5}>
+					<Stack gap={5} w="100%">
 						<HStack>
 							<Image src={logo} boxSize="24px" borderRadius={"md"} />
 							<Heading as="h1" size="sm">

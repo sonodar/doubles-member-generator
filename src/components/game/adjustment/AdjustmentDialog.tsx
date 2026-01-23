@@ -41,7 +41,7 @@ export function AdjustmentDialog({ settings, open, onClose, onChange }: Props) {
 		>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW={"350px"} maxH={"100dvh"}>
+				<Dialog.Content w="100%" maxH={"100dvh"}>
 					<Dialog.Header>
 						<Stack gap={3}>
 							<Heading as={"h3"} size={"md"}>

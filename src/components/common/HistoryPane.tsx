@@ -68,7 +68,7 @@ export default function HistoryPane(props: { histories?: History[] }) {
 	);
 
 	return (
-		<Stack gap={3} separator={<Separator />}>
+		<Stack gap={3} separator={<Separator />} w={"100%"}>
 			{current && <CurrentHistoryPane {...current.history} />}
 			{previous && <PreviousHistoryPane {...previous.history} />}
 			{olds &&

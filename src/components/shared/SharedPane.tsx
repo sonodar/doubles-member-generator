@@ -112,7 +112,7 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 	}, [event, dispatch]);
 
 	return (
-		<Card.Root my={1} py={4}>
+		<Card.Root w="100%" my={1} py={4} borderWidth={0} boxShadow="none">
 			{finished && (
 				<Alert.Root status="error" mb={2}>
 					<Alert.Indicator />

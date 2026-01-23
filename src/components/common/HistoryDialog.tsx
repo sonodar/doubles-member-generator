@@ -9,17 +9,17 @@ type Props = {
 
 export function HistoryDialog({ open, onClose }: Props) {
 	return (
-		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"}>
+		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"} size={"full"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW={"350px"}>
+				<Dialog.Content w="100%">
 					<Dialog.Header maxH={"xs"} style={{ ...prettyFont }}>
 						履歴
 					</Dialog.Header>
 					<Dialog.CloseTrigger asChild>
 						<CloseButton size="sm" />
 					</Dialog.CloseTrigger>
-					<Dialog.Body py={4} px={0}>
+					<Dialog.Body p={4}>
 						<Center>
 							<HistoryPane />
 						</Center>
