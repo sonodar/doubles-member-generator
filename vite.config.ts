@@ -11,6 +11,7 @@ export default defineConfig({
 			"@layouts": path.resolve(__dirname, "src/layouts"),
 			"@api": path.resolve(__dirname, "src/api"),
 			"@logic": path.resolve(__dirname, "src/logic"),
+			"@hooks": path.resolve(__dirname, "src/hooks"),
 		},
 	},
 	define: {
