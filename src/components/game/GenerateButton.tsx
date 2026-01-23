@@ -55,9 +55,9 @@ export function GenerateButton({ settings, onGenerate, disabled, onIgnoreUsageAl
 			<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
 				<Dialog.Backdrop />
 				<Dialog.Positioner>
-					<Dialog.Content maxW={"350px"}>
+					<Dialog.Content>
 						<Dialog.Header>
-							<Stack gap={3}>
+							<Stack gap={3} w={"100%"}>
 								<Heading as={"h3"} size={"md"}>
 									メンバー選出
 								</Heading>

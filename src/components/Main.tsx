@@ -34,7 +34,7 @@ export default function Main() {
 	const onReset = useResetAll();
 
 	return (
-		<Container maxW={"sm"} minW={"sm"} centerContent>
+		<Container w="100%" maxW="480px" mx="auto" p={0} centerContent pb="env(safe-area-inset-bottom)">
 			{settings.courtCount === 0 && <InitialSettingPane previousSettings={previousSettings} onStart={onStart} />}
 			{settings.courtCount !== 0 && <GamePane onReset={onReset} />}
 		</Container>

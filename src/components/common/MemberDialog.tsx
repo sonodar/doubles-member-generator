@@ -12,10 +12,10 @@ type Props = {
 
 export function MemberDialog({ settings, defaultTabIndex, open, onClose, showLeftMember }: Props) {
 	return (
-		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} placement="center">
+		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW={"350px"}>
+				<Dialog.Content w="100%">
 					<Dialog.Header>
 						<Heading as={"label"} size={"sm"}>
 							プレイ回数・休憩回数

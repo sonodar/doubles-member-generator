@@ -24,7 +24,7 @@ export function StatisticsPane({ settings, onAdjusted }: Props) {
 	};
 
 	return (
-		<Stack gap={3}>
+		<Stack gap={3} w={"100%"} px={4}>
 			<HistoryPane histories={histories} />
 			{showStatistics && (
 				<Center mt={4}>

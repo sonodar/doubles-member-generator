@@ -26,7 +26,7 @@ export function ShareDialog({ open, onClose, value }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW={"350px"}>
+				<Dialog.Content maxW={"90dvw"}>
 					<Dialog.Header maxH={"xs"}>
 						<Heading as={"label"} size={"md"}>
 							リアルタイム共有
@@ -42,7 +42,7 @@ export function ShareDialog({ open, onClose, value }: Props) {
 								<Center>
 									<LineShareButton url={value} />
 									<Spacer />
-									<Button size={"sm"} w={"8rem"} onClick={handleCopy}>
+									<Button size={"xs"} w={"7rem"} onClick={handleCopy}>
 										<MdContentCopy />
 										URLコピー
 									</Button>

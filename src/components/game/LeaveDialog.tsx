@@ -24,11 +24,11 @@ export function LeaveDialog({ members, open, onClose, onLeave }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"xs"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content>
+				<Dialog.Content maxW={"80dvw"}>
 					<Dialog.Body py={4}>
 						<HStack>
 							<NativeSelect.Root>
-								<NativeSelect.Field placeholder="番号を選択してください" onChange={handleSelect}>
+								<NativeSelect.Field placeholder="離脱する番号" onChange={handleSelect}>
 									{members.map((id) => (
 										<option key={id} value={id}>
 											{id}

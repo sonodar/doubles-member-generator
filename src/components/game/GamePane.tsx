@@ -75,10 +75,10 @@ export default function GamePane({ onReset }: Props) {
 	};
 
 	return (
-		<Card.Root m={0} p={0} height={"100dvh"}>
-			<Card.Body px={4} pt={2}>
+		<Card.Root w={"100%"} height={"100dvh"} borderWidth={0} boxShadow={"none"}>
+			<Card.Body px={4} py={2}>
 				<Center>
-					<Stack gap={2}>
+					<Stack gap={2} w={"100%"}>
 						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} disabled={progress} />
 						<Center>
 							<AlgorithmBadge algorithm={settings.algorithm} />
@@ -98,7 +98,7 @@ export default function GamePane({ onReset }: Props) {
 				</Center>
 			</Card.Body>
 			<Separator color={"gray.300"} />
-			<Card.Footer px={10} py={2}>
+			<Card.Footer px={8} py={2} pb="max(8px, env(safe-area-inset-bottom))">
 				<HistoryButton disabled={progress} />
 				<Spacer />
 				<MemberButton disabled={progress} />

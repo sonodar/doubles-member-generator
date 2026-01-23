@@ -79,7 +79,7 @@ describe("CurrentMemberCountInput", () => {
 
 			// LeaveDialog が表示される（番号選択のセレクトボックス）
 			await waitFor(() => {
-				expect(screen.getByText("番号を選択してください")).toBeInTheDocument();
+				expect(screen.getByText("離脱する番号")).toBeInTheDocument();
 			});
 		});
 

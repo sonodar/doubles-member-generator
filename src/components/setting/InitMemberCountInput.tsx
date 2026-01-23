@@ -12,7 +12,7 @@ type Props = {
 export function InitMemberCountInput({ min, value, onChange }: Props) {
 	return (
 		<VStack gap={4}>
-			<HStack maxW={"320px"} minW={"320px"}>
+			<HStack w={"100%"}>
 				<IconButton
 					colorPalette={"brand"}
 					aria-label="decrement"
@@ -53,7 +53,7 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 				max={MEMBER_COUNT_LIMIT}
 				value={[value]}
 				onValueChange={(details) => onChange(Math.max(min, details.value[0]))}
-				width={"320px"}
+				w={"100%"}
 			>
 				<Slider.Control>
 					<Slider.Track>
