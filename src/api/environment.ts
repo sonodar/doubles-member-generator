@@ -17,3 +17,8 @@ export async function finishEnvironment(id: string): Promise<void> {
 		finishedAt: new Date().toISOString(),
 	});
 }
+
+export async function getEnvironment(id: string): Promise<{ id: string } | null> {
+	const { data } = await client.models.Environment.get({ id });
+	return data ? { id: data.id } : null;
+}

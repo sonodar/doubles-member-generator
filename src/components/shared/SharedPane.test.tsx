@@ -22,6 +22,7 @@ vi.mock("../../api", async () => {
 		...actual,
 		findAllEvents: vi.fn(),
 		subscribeEvent: vi.fn(() => ({ unsubscribe: vi.fn() })),
+		getEnvironment: vi.fn(),
 	};
 });
 
@@ -49,34 +50,40 @@ describe("SharedPane", () => {
 	});
 
 	describe("useRealtimeSync フックの統合（Task 2.1）", () => {
-		it("useRealtimeSync フックが sharedId とコールバックで呼び出される", () => {
+		it("useRealtimeSync フックが sharedId とコールバックで呼び出される", async () => {
 			setupMockWithEvents([]);
 
 			render(<SharedPane sharedId="test-shared-id" />);
 
-			expect(mockUseRealtimeSync).toHaveBeenCalledWith({
-				sharedId: "test-shared-id",
-				onEvent: expect.any(Function),
-				onSync: expect.any(Function),
+			await waitFor(() => {
+				expect(mockUseRealtimeSync).toHaveBeenCalledWith({
+					sharedId: "test-shared-id",
+					onEvent: expect.any(Function),
+					onSync: expect.any(Function),
+				});
 			});
 		});
 
-		it("subscribed state は使用されず、フック内部で管理される", () => {
+		it("subscribed state は使用されず、フック内部で管理される", async () => {
 			setupMockWithEvents([]);
 
 			render(<SharedPane sharedId="test-id" />);
 
 			// subscribeEvent が直接呼ばれないことを確認（フック経由のみ）
-			expect(api.subscribeEvent).not.toHaveBeenCalled();
+			await waitFor(() => {
+				expect(api.subscribeEvent).not.toHaveBeenCalled();
+			});
 		});
 
-		it("findAllEvents が直接呼ばれないことを確認（フック経由のみ）", () => {
+		it("findAllEvents が直接呼ばれないことを確認（フック経由のみ）", async () => {
 			setupMockWithEvents([]);
 
 			render(<SharedPane sharedId="test-id" />);
 
 			// findAllEvents が直接呼ばれないことを確認
-			expect(api.findAllEvents).not.toHaveBeenCalled();
+			await waitFor(() => {
+				expect(api.findAllEvents).not.toHaveBeenCalled();
+			});
 		});
 	});
 
@@ -408,6 +415,53 @@ describe("SharedPane", () => {
 
 			await waitFor(() => {
 				expect(screen.getByText(/今回/)).toBeInTheDocument();
+			});
+		});
+	});
+
+	describe("存在しない ID", () => {
+		it("存在しない ID の場合、エラー状態の Alert が表示される", async () => {
+			// getEnvironment が null を返すようモック
+			vi.mocked(api.getEnvironment).mockResolvedValue(null);
+
+			let called = false;
+			mockUseRealtimeSync.mockImplementation((options) => {
+				if (!called) {
+					called = true;
+					Promise.resolve().then(() => {
+						options.onSync([]);
+					});
+				}
+				return { sync: vi.fn() };
+			});
+
+			render(<SharedPane sharedId="non-existent-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByTestId("not-found-alert")).toBeInTheDocument();
+			});
+		});
+
+		it("環境は存在するがイベントが空の場合、Alert は表示されない", async () => {
+			// getEnvironment が環境を返すようモック
+			vi.mocked(api.getEnvironment).mockResolvedValue({ id: "existing-env" });
+
+			let called = false;
+			mockUseRealtimeSync.mockImplementation((options) => {
+				if (!called) {
+					called = true;
+					Promise.resolve().then(() => {
+						options.onSync([]);
+					});
+				}
+				return { sync: vi.fn() };
+			});
+
+			render(<SharedPane sharedId="existing-env" />);
+
+			// 少し待ってから Alert がないことを確認
+			await waitFor(() => {
+				expect(screen.queryByTestId("not-found-alert")).not.toBeInTheDocument();
 			});
 		});
 	});

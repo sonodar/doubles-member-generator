@@ -11,6 +11,7 @@ vi.mock("../api", async () => {
 		...actual,
 		findAllEvents: vi.fn(),
 		subscribeEvent: vi.fn(() => ({ unsubscribe: vi.fn() })),
+		getEnvironment: vi.fn(),
 	};
 });
 
