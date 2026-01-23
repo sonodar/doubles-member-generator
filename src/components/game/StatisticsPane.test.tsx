@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { Algorithms, type CourtMembers, type CurrentSettings } from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "../../testing/utils";
 import { StatisticsPane } from "./StatisticsPane";
-import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
 
 describe("StatisticsPane", () => {
 	const mockOnAdjusted = vi.fn();

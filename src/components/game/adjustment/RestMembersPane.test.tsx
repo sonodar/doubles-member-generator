@@ -1,7 +1,7 @@
+import { DndContext } from "@dnd-kit/core";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "../../../testing/utils";
 import { RestMembersPane } from "./RestMembersPane";
-import { DndContext } from "@dnd-kit/core";
 
 // @dnd-kit/core のモック
 const mockDroppableState = {

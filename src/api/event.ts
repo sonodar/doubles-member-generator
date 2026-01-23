@@ -1,6 +1,6 @@
-import { match } from "ts-pattern";
-import { client, type Schema } from "./client";
 import { type CurrentSettings, type GameMembers, join, leave, replayGenerate, replayRetry } from "@logic";
+import { match } from "ts-pattern";
+import { type Schema, client } from "./client";
 
 export const EventType = {
 	Initialize: "INITIALIZE",

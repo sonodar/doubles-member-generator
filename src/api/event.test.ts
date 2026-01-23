@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // vi.hoisted でモック関数を先に作成
 const { mockCreate, mockList, mockObserveQuery } = vi.hoisted(() => ({
@@ -21,7 +21,7 @@ vi.mock("./client", () => ({
 }));
 
 // テスト対象のインポートはモック設定後に行う
-import { eventEmitter, findAllEvents, subscribeEvent, EventType, replayEvent, type Event } from "./event";
+import { type Event, EventType, eventEmitter, findAllEvents, replayEvent, subscribeEvent } from "./event";
 
 describe("event", () => {
 	beforeEach(() => {

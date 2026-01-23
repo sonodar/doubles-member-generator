@@ -1,6 +1,6 @@
-import { type CurrentSettings, type GameMembers, type History, type PlayCountPerMember } from "./types";
 import { array } from "./array";
 import { COURT_CAPACITY } from "./consts";
+import { type CurrentSettings, type GameMembers, type History, type PlayCountPerMember } from "./types";
 
 export type CountPerMember = Record<number, number>;
 

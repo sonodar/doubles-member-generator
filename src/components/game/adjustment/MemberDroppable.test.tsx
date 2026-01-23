@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { DndContext } from "@dnd-kit/core";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "../../../testing/utils";
 import { MemberDroppable } from "./MemberDroppable";
-import { DndContext } from "@dnd-kit/core";
 
 // useDroppable のモック状態
 const mockDroppableState = {

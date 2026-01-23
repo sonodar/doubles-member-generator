@@ -1,4 +1,4 @@
-import { MdArrowForward } from "react-icons/md";
+import logo from "@assets/logo.svg";
 import {
 	Button,
 	Card,
@@ -14,15 +14,15 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
+import HelpButton from "@components/common/HelpButton.tsx";
+import { type Algorithm, Algorithms, COURT_CAPACITY, type CurrentSettings } from "@logic";
 import { useState } from "react";
 import { GiTennisCourt } from "react-icons/gi";
 import { ImGithub } from "react-icons/im";
+import { MdArrowForward } from "react-icons/md";
 import { AlgorithmInput } from "./AlgorithmInput";
-import { InitMemberCountInput } from "./InitMemberCountInput";
 import { CourtCountInput } from "./CourtCountInput";
-import { COURT_CAPACITY, type Algorithm, Algorithms, type CurrentSettings } from "@logic";
-import logo from "@assets/logo.svg";
-import HelpButton from "@components/common/HelpButton.tsx";
+import { InitMemberCountInput } from "./InitMemberCountInput";
 
 type Props = {
 	previousSettings: CurrentSettings | null;

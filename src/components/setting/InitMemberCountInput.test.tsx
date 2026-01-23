@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "../../testing/utils";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen, waitFor } from "../../testing/utils";
 import { InitMemberCountInput } from "./InitMemberCountInput";
 
 describe("InitMemberCountInput", () => {

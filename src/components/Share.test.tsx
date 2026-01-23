@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { Algorithms } from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as api from "../api";
 import { render, screen, waitFor } from "../testing/utils";
 import Share from "./Share";
-import * as api from "../api";
-import { Algorithms } from "@logic";
 
 // APIモック
 vi.mock("../api", async () => {

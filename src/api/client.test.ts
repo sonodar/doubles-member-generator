@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 // Amplify Data API のモック
 vi.mock("aws-amplify/data", () => ({

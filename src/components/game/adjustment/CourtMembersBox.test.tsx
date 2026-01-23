@@ -1,8 +1,8 @@
+import { DndContext } from "@dnd-kit/core";
+import type { CourtMembers } from "@logic";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "../../../testing/utils";
 import { CourtMembersBox } from "./CourtMembersBox";
-import { DndContext } from "@dnd-kit/core";
-import type { CourtMembers } from "@logic";
 
 // @dnd-kit/core のモック
 const mockDroppableState = {

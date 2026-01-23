@@ -1,8 +1,8 @@
 import { Box, Flex, Heading, Separator, Spacer, Stack, Text } from "@chakra-ui/react";
-import type { History } from "@logic";
 import CourtMembersPane from "@components/game/CourtMembersPane.tsx";
 import { useSettings } from "@components/state";
 import { format } from "@formkit/tempo";
+import type { History } from "@logic";
 
 function formatDate(date: string) {
 	return format(new Date(date), "YYYY/MM/DD HH:mm");

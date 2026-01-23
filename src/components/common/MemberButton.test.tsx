@@ -1,8 +1,8 @@
+import { Algorithms, type CourtMembers, type CurrentSettings } from "@logic";
 import { describe, expect, it } from "vitest";
-import { render, screen, fireEvent, waitFor } from "../../testing/utils";
-import { MemberButton } from "./MemberButton";
+import { fireEvent, render, screen, waitFor } from "../../testing/utils";
 import { settingsAtom } from "../state";
-import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
+import { MemberButton } from "./MemberButton";
 
 describe("MemberButton", () => {
 	const courtMembers: CourtMembers[] = [

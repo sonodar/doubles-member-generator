@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "../../testing/utils";
-import GamePane from "./GamePane";
-import { settingsAtom, shareIdAtom } from "../state";
 import { Algorithms, type CurrentSettings } from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "../../testing/utils";
+import { settingsAtom, shareIdAtom } from "../state";
+import GamePane from "./GamePane";
 
 // API モック
 vi.mock("@api", () => ({

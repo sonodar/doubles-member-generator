@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, fireEvent, waitFor } from "../../testing/utils";
+import { fireEvent, render, screen, waitFor } from "../../testing/utils";
 import HelpButton from "./HelpButton";
 
 describe("HelpButton", () => {

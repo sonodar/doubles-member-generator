@@ -1,6 +1,6 @@
 import { Heading, SimpleGrid, Stack } from "@chakra-ui/react";
-import { MemberDroppable } from "./MemberDroppable.tsx";
 import { MemberBox } from "./MemberBox.tsx";
+import { MemberDroppable } from "./MemberDroppable.tsx";
 
 type Props = {
 	restMembers: number[];

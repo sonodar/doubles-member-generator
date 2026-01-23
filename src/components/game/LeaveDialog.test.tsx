@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "../../testing/utils";
 import { LeaveDialog } from "./LeaveDialog";
 
 describe("LeaveDialog", () => {

@@ -1,7 +1,7 @@
+import type { GameMembers } from "@logic";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "../../testing/utils";
 import CourtMembersPane from "./CourtMembersPane";
-import type { GameMembers } from "@logic";
 
 describe("CourtMembersPane", () => {
 	const gameMembers: GameMembers = [

@@ -1,10 +1,10 @@
-import { Button, Stack, Center, useDisclosure } from "@chakra-ui/react";
-import { type ComponentProps } from "react";
-import { TbUsers } from "react-icons/tb";
-import { COURT_CAPACITY } from "@logic";
-import { type CurrentSettings } from "@logic";
+import { Button, Center, Stack, useDisclosure } from "@chakra-ui/react";
 import HistoryPane from "@components/common/HistoryPane.tsx";
 import { AdjustmentDialog } from "@components/game/adjustment/AdjustmentDialog.tsx";
+import { COURT_CAPACITY } from "@logic";
+import { type CurrentSettings } from "@logic";
+import { type ComponentProps } from "react";
+import { TbUsers } from "react-icons/tb";
 
 type AdjustedHandler = ComponentProps<typeof AdjustmentDialog>["onChange"];
 

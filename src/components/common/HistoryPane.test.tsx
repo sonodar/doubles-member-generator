@@ -1,7 +1,7 @@
+import type { CourtMembers, History } from "@logic";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "../../testing/utils";
 import HistoryPane from "./HistoryPane";
-import type { History, CourtMembers } from "@logic";
 
 describe("HistoryPane", () => {
 	const courtMembers1: CourtMembers[] = [

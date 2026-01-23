@@ -1,6 +1,6 @@
 import { CloseButton, Dialog, Heading } from "@chakra-ui/react";
-import MemberCountPane from "./MemberCountPane.tsx";
 import { type CurrentSettings } from "@logic";
+import MemberCountPane from "./MemberCountPane.tsx";
 
 type Props = {
 	settings?: CurrentSettings;

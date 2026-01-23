@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "../../testing/utils";
-import { AlgorithmInput } from "./AlgorithmInput";
 import { Algorithms } from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "../../testing/utils";
+import { AlgorithmInput } from "./AlgorithmInput";
 
 describe("AlgorithmInput", () => {
 	const mockOnChange = vi.fn();

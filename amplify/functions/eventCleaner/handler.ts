@@ -1,6 +1,6 @@
-import type { DynamoDBStreamHandler } from "aws-lambda";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, QueryCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import type { DynamoDBStreamHandler } from "aws-lambda";
 
 // 環境変数から Event テーブル名を取得
 // CDK で設定される環境変数

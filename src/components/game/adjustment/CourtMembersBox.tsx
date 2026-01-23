@@ -1,7 +1,7 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
-import { MemberDroppable } from "./MemberDroppable.tsx";
-import { MemberBox } from "./MemberBox.tsx";
 import type { CourtMembers } from "@logic";
+import { MemberBox } from "./MemberBox.tsx";
+import { MemberDroppable } from "./MemberDroppable.tsx";
 
 type Props = {
 	courtId: number;

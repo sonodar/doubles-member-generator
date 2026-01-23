@@ -1,7 +1,7 @@
-import { MdContentCopy } from "react-icons/md";
-import { Center, Button, CloseButton, Dialog, Input, Stack, Spacer, Heading } from "@chakra-ui/react";
-import { toaster } from "@components/theme.ts";
+import { Button, Center, CloseButton, Dialog, Heading, Input, Spacer, Stack } from "@chakra-ui/react";
 import LineShareButton from "@components/common/LineShareButton.tsx";
+import { toaster } from "@components/theme.ts";
+import { MdContentCopy } from "react-icons/md";
 
 type Props = {
 	open: boolean;

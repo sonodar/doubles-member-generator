@@ -1,9 +1,9 @@
 import { Container } from "@chakra-ui/react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { settingsAtom, previousSettingsAtom, useResetAll } from "./state/index.ts";
-import { array, type Algorithm } from "@logic";
 import GamePane from "@components/game/GamePane";
 import InitialSettingPane from "@components/setting/InitialSettingPane";
+import { type Algorithm, array } from "@logic";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { previousSettingsAtom, settingsAtom, useResetAll } from "./state/index.ts";
 
 export default function Main() {
 	const [settings, setSettings] = useAtom(settingsAtom);

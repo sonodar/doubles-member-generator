@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback } from "react";
-import { subscribeEvent, findAllEvents, type Event } from "@api";
+import { type Event, findAllEvents, subscribeEvent } from "@api";
+import { useCallback, useEffect, useRef } from "react";
 
 export interface UseRealtimeSyncOptions {
 	/** 共有ID */
@@ -75,7 +75,7 @@ export function useRealtimeSync(options: UseRealtimeSyncOptions): UseRealtimeSyn
 
 				// アンマウント済みなら subscription 解除して終了
 				if (!mountedRef.current) {
-					subscriptionRef.current.unsubscribe();
+					subscriptionRef.current?.unsubscribe();
 					subscriptionRef.current = null;
 					return;
 				}
@@ -171,7 +171,7 @@ export function useRealtimeSync(options: UseRealtimeSyncOptions): UseRealtimeSyn
 			window.removeEventListener("pagehide", handlePageHide);
 			window.removeEventListener("online", handleOnline);
 		};
-	}, [sync, cleanup, unsubscribe]);
+	}, [sync, unsubscribe]);
 
 	return { sync };
 }

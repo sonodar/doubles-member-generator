@@ -1,4 +1,3 @@
-import { MdHelpOutline } from "react-icons/md";
 import {
 	Button,
 	CloseButton,
@@ -11,6 +10,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import { Fragment } from "react";
+import { MdHelpOutline } from "react-icons/md";
 
 const Help = {
 	algorithm: (

@@ -1,18 +1,18 @@
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import { Grid, GridItem, Heading, Stack, Text } from "@chakra-ui/react";
+import { CourtMembersBox } from "@components/game/adjustment/CourtMembersBox.tsx";
+import { RestMembersPane } from "@components/game/adjustment/RestMembersPane.tsx";
+import { toaster } from "@components/theme.ts";
+import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import {
-	array,
 	type CurrentSettings,
 	type GameMembers,
+	type RestOrCourtMember,
+	array,
 	getLatestMembers,
 	getRestMembers,
 	isMemberType,
-	type RestOrCourtMember,
 	swapGameMember,
 } from "@logic";
-import { RestMembersPane } from "@components/game/adjustment/RestMembersPane.tsx";
-import { CourtMembersBox } from "@components/game/adjustment/CourtMembersBox.tsx";
-import { toaster } from "@components/theme.ts";
 
 type Props = Pick<CurrentSettings, "courtCount" | "members" | "histories"> & {
 	onChange: (gameMembers: GameMembers) => void;

@@ -1,10 +1,10 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, act } from "../../testing/utils";
-import SharedPane from "./SharedPane";
-import * as api from "../../api";
 import { Algorithms, type CourtMembers } from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as api from "../../api";
 import { useRealtimeSync } from "../../hooks";
 import type { UseRealtimeSyncOptions } from "../../hooks";
+import { act, render, screen, waitFor } from "../../testing/utils";
+import SharedPane from "./SharedPane";
 
 // useRealtimeSync のモック
 vi.mock("../../hooks", async () => {

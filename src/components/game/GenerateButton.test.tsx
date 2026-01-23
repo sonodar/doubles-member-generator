@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "../../testing/utils";
-import { GenerateButton } from "./GenerateButton";
 import { Algorithms, type CurrentSettings } from "@logic";
 import * as logic from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen, waitFor } from "../../testing/utils";
+import { GenerateButton } from "./GenerateButton";
 
 describe("GenerateButton", () => {
 	const mockOnGenerate = vi.fn();

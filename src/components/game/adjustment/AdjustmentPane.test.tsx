@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen } from "../../../testing/utils";
-import { AdjustmentPane } from "./AdjustmentPane";
 import type { CourtMembers, History } from "@logic";
 import * as swapModule from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "../../../testing/utils";
+import { AdjustmentPane } from "./AdjustmentPane";
 
 // swapGameMemberをモック
 vi.mock("@logic", async () => {

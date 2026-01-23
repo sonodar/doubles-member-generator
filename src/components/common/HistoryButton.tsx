@@ -1,8 +1,8 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
-import { Fragment } from "react";
-import { MdOutlineWatchLater } from "react-icons/md";
 import { HistoryDialog } from "@components/common/HistoryDialog.tsx";
 import { useSettings } from "@components/state";
+import { Fragment } from "react";
+import { MdOutlineWatchLater } from "react-icons/md";
 
 export function HistoryButton({ disabled }: { disabled?: boolean }) {
 	const { histories } = useSettings();

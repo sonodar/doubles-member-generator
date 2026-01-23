@@ -1,5 +1,5 @@
 import { Button, Dialog } from "@chakra-ui/react";
-import { useRef, type ReactNode } from "react";
+import { type ReactNode, useRef } from "react";
 import { prettyFont } from "../theme.ts";
 
 type Props = {

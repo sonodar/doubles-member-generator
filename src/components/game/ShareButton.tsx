@@ -1,9 +1,9 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
+import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
+import { toaster } from "@components/theme.ts";
 import { Fragment, useMemo } from "react";
 import { GoShare } from "react-icons/go";
 import { ShareDialog } from "./ShareDialog";
-import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
-import { toaster } from "@components/theme.ts";
 
 type Props = {
 	sharedId?: string;

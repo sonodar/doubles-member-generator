@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "../../testing/utils";
+import { Algorithms, type CourtMembers, type CurrentSettings } from "@logic";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "../../testing/utils";
 import { MemberDialog } from "./MemberDialog";
-import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
 
 describe("MemberDialog", () => {
 	const mockOnClose = vi.fn();

@@ -1,6 +1,6 @@
-import type { CurrentSettings, GameMembers, MemberId } from "./types";
 import { array } from "./array";
 import { COURT_CAPACITY } from "./consts";
+import type { CurrentSettings, GameMembers, MemberId } from "./types";
 import { selectRandomMembers } from "./util";
 
 type SplitMembers = {

@@ -1,8 +1,8 @@
+import { Algorithms, type CurrentSettings } from "@logic";
 import { describe, expect, it } from "vitest";
 import { render, screen, waitFor } from "../testing/utils";
 import Main from "./Main";
-import { settingsAtom, emptySettings } from "./state";
-import { Algorithms, type CurrentSettings } from "@logic";
+import { emptySettings, settingsAtom } from "./state";
 
 describe("Main", () => {
 	describe("条件分岐による画面切り替え", () => {

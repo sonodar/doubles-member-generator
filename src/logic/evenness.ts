@@ -1,7 +1,7 @@
-import type { CurrentSettings, GameMembers, MemberId, PlayCountPerMember } from "./types";
 import { array } from "./array";
 import { COURT_CAPACITY } from "./consts";
-import { selectRandomMembers, getContinuousRestCount, getRestMembers } from "./util";
+import type { CurrentSettings, GameMembers, MemberId, PlayCountPerMember } from "./types";
+import { getContinuousRestCount, getRestMembers, selectRandomMembers } from "./util";
 
 type PlayCount = { id: number; count: number };
 

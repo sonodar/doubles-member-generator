@@ -1,6 +1,6 @@
 import { Center, CloseButton, Dialog } from "@chakra-ui/react";
-import HistoryPane from "./HistoryPane.tsx";
 import { prettyFont } from "@components/theme.ts";
+import HistoryPane from "./HistoryPane.tsx";
 
 type Props = {
 	open: boolean;

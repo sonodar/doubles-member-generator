@@ -1,7 +1,7 @@
 import { defineBackend } from "@aws-amplify/backend";
 import { Stack } from "aws-cdk-lib";
-import { Policy, PolicyStatement, Effect } from "aws-cdk-lib/aws-iam";
-import { StartingPosition, EventSourceMapping, Function as LambdaFunction } from "aws-cdk-lib/aws-lambda";
+import { Effect, Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { EventSourceMapping, Function as LambdaFunction, StartingPosition } from "aws-cdk-lib/aws-lambda";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
 import { eventCleaner } from "./functions/eventCleaner/resource";

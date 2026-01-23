@@ -1,7 +1,7 @@
+import { Algorithms } from "@logic";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "../../testing/utils";
 import { AlgorithmBadge } from "./AlgorithmBadge";
-import { Algorithms } from "@logic";
 
 describe("AlgorithmBadge", () => {
 	describe("アルゴリズム表示", () => {
