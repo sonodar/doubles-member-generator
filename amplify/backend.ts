@@ -5,6 +5,7 @@ import { Effect, Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { EventSourceMapping, type Function as LambdaFunction, StartingPosition } from "aws-cdk-lib/aws-lambda";
 import { auth } from "./auth/resource";
 import { data } from "./data/resource";
+import { autoFinisher } from "./functions/autoFinisher/resource";
 import { eventCleaner } from "./functions/eventCleaner/resource";
 import { pushNotifier } from "./functions/pushNotifier/resource";
 
@@ -13,13 +14,16 @@ import { pushNotifier } from "./functions/pushNotifier/resource";
  *
  * - auth: Cognito Identity Pool を有効化（ゲストアクセス用）
  * - data: GraphQL API（AppSync + DynamoDB）
+ * - autoFinisher: 一定期間経過した Environment を自動終了させる Lambda 関数
  * - eventCleaner: Environment 削除時に子レコードを削除する Lambda 関数
+ * - pushNotifier: Web-Push による PUSH 通知を送信する Lambda 関数
  *
  * @see https://docs.amplify.aws/react/build-a-backend/
  */
 const backend = defineBackend({
 	auth,
 	data,
+	autoFinisher,
 	eventCleaner,
 	pushNotifier,
 });
@@ -38,6 +42,40 @@ cfnResources.amplifyDynamoDbTables.Environment.timeToLiveAttribute = {
 	attributeName: "ttl",
 	enabled: true,
 };
+
+// AutoFinisher Lambda の設定
+(() => {
+	const lambda = backend.autoFinisher.resources.lambda as LambdaFunction;
+	const stack = Stack.of(environmentTable);
+
+	// Environment テーブルへの Scan/Update 権限
+	const environmentTablePolicy = new Policy(stack, "AutoFinisherEnvironmentTablePolicy", {
+		statements: [
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ["dynamodb:Scan", "dynamodb:UpdateItem"],
+				resources: [environmentTable.tableArn],
+			}),
+		],
+	});
+	lambda.role?.attachInlinePolicy(environmentTablePolicy);
+
+	// Event テーブルへの Query/PutItem 権限
+	const eventTablePolicy = new Policy(stack, "AutoFinisherEventTablePolicy", {
+		statements: [
+			new PolicyStatement({
+				effect: Effect.ALLOW,
+				actions: ["dynamodb:Query", "dynamodb:PutItem"],
+				resources: [eventTable.tableArn, `${eventTable.tableArn}/index/*`],
+			}),
+		],
+	});
+	lambda.role?.attachInlinePolicy(eventTablePolicy);
+
+	// 環境変数でテーブル名を Lambda に渡す
+	lambda.addEnvironment("ENVIRONMENT_TABLE_NAME", environmentTable.tableName);
+	lambda.addEnvironment("EVENT_TABLE_NAME", eventTable.tableName);
+})();
 
 // EventCleaner Lambda の設定
 (() => {
