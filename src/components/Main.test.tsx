@@ -1,5 +1,5 @@
-import { Algorithms, type CurrentSettings } from "@logic";
 import { describe, expect, it } from "vitest";
+import { Algorithms, type CurrentSettings } from "../logic";
 import { render, screen, waitFor } from "../testing/utils";
 import Main from "./Main";
 import { emptySettings, settingsAtom } from "./state";

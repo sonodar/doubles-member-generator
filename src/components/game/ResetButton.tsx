@@ -1,7 +1,7 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
-import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
 import { Fragment } from "react";
 import { MdClose } from "react-icons/md";
+import ConfirmDialog from "../common/ConfirmDialog.tsx";
 
 export function ResetButton({ disabled, onReset }: { disabled?: boolean; onReset: () => void }) {
 	const { open, onOpen, onClose } = useDisclosure();

@@ -1,6 +1,6 @@
 import { DragDropProvider } from "@dnd-kit/react";
-import type { CourtMembers } from "@logic";
 import { describe, expect, it, vi } from "vitest";
+import type { CourtMembers } from "../../../logic";
 import { render, screen } from "../../../testing/utils";
 import { CourtMembersBox } from "./CourtMembersBox";
 

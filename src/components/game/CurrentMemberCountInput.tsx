@@ -1,8 +1,8 @@
 import { Button, HStack, Input, Spacer, Text, useDisclosure } from "@chakra-ui/react";
-import { LeaveDialog } from "@components/game/LeaveDialog";
-import { useSettings } from "@components/state";
-import { COURT_CAPACITY, MEMBER_COUNT_LIMIT } from "@logic";
 import { TbUserOff, TbUserPlus } from "react-icons/tb";
+import { COURT_CAPACITY, MEMBER_COUNT_LIMIT } from "../../logic";
+import { useSettings } from "../state";
+import { LeaveDialog } from "./LeaveDialog";
 
 type Props = {
 	onIncrement: () => void;

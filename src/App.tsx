@@ -1,9 +1,9 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import Main from "@components/Main";
-import Share from "@components/Share";
-import system from "@components/theme";
 import { createStore, Provider } from "jotai";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import Main from "./components/Main";
+import Share from "./components/Share";
+import system from "./components/theme";
 
 const store = createStore();
 

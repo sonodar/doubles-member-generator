@@ -1,5 +1,5 @@
-import { Algorithms, type CourtMembers, type CurrentSettings } from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Algorithms, type CourtMembers, type CurrentSettings } from "../../logic";
 import { render, screen } from "../../testing/utils";
 import { StatisticsPane } from "./StatisticsPane";
 

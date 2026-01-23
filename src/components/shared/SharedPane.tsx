@@ -1,16 +1,16 @@
-import { type Event, EventType, replayEvent } from "@api";
 import { Alert, Card, Center, Heading, HStack, IconButton, Link, Spacer } from "@chakra-ui/react";
-import { AlgorithmBadge } from "@components/common/AlgorithmBadge.tsx";
-import { MemberButton } from "@components/common/MemberButton.tsx";
-import { emptySettings, settingsReducer, useReducerAtom } from "@components/state";
-import { toaster } from "@components/theme.ts";
-import type { CurrentSettings } from "@logic";
 import { atom } from "jotai";
 import { useCallback, useState } from "react";
 import { MdHome, MdRefresh } from "react-icons/md";
 import { match } from "ts-pattern";
+import { type Event, EventType, replayEvent } from "../../api";
 import { useRealtimeSync } from "../../hooks";
+import type { CurrentSettings } from "../../logic";
+import { AlgorithmBadge } from "../common/AlgorithmBadge.tsx";
 import HistoryPane from "../common/HistoryPane.tsx";
+import { MemberButton } from "../common/MemberButton.tsx";
+import { emptySettings, settingsReducer, useReducerAtom } from "../state";
+import { toaster } from "../theme.ts";
 
 // ゲーム画面と違い、オンメモリの atom を利用する。
 // こうしないと同一ブラウザで共有画面を開いたときに同じ localStorage に書き込みをしてしまう。

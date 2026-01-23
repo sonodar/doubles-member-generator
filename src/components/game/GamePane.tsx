@@ -1,17 +1,17 @@
-import { createEnvironment, EventType, eventEmitter, finishEnvironment } from "@api";
 import { Box, Card, Center, Separator, Spacer, Stack } from "@chakra-ui/react";
-import { AlgorithmBadge } from "@components/common/AlgorithmBadge";
-import { HistoryButton } from "@components/common/HistoryButton.tsx";
-import { MemberButton } from "@components/common/MemberButton.tsx";
-import CourtMembersPane from "@components/game/CourtMembersPane";
-import { CurrentMemberCountInput } from "@components/game/CurrentMemberCountInput";
-import { GenerateButton } from "@components/game/GenerateButton.tsx";
-import { ResetButton } from "@components/game/ResetButton";
-import { shareIdAtom, useSettingsReducer } from "@components/state";
-import { toaster } from "@components/theme.ts";
-import { type CurrentSettings, getLatestMembers } from "@logic";
 import { useAtom } from "jotai";
 import { useState } from "react";
+import { createEnvironment, EventType, eventEmitter, finishEnvironment } from "../../api";
+import { type CurrentSettings, getLatestMembers } from "../../logic";
+import { AlgorithmBadge } from "../common/AlgorithmBadge";
+import { HistoryButton } from "../common/HistoryButton.tsx";
+import { MemberButton } from "../common/MemberButton.tsx";
+import { shareIdAtom, useSettingsReducer } from "../state";
+import { toaster } from "../theme.ts";
+import CourtMembersPane from "./CourtMembersPane";
+import { CurrentMemberCountInput } from "./CurrentMemberCountInput";
+import { GenerateButton } from "./GenerateButton.tsx";
+import { ResetButton } from "./ResetButton";
 import { ShareButton } from "./ShareButton";
 
 type Props = {

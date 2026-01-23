@@ -1,5 +1,5 @@
 import { Box, Center, Heading, HStack, Separator, SimpleGrid, Tabs, Text } from "@chakra-ui/react";
-import { useSettings } from "@components/state";
+import { useState } from "react";
 import {
 	array,
 	type CurrentSettings,
@@ -7,8 +7,8 @@ import {
 	memberCountVariantLabels,
 	memberCountVariants,
 	OutlierLevelProvider,
-} from "@logic";
-import { useState } from "react";
+} from "../../logic";
+import { useSettings } from "../state";
 
 type Props = {
 	settings?: Pick<CurrentSettings, "histories" | "members" | "gameCounts">;

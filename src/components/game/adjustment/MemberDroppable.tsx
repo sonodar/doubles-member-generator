@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { useDroppable } from "@dnd-kit/react";
-import type { RestOrCourtMember } from "@logic";
 import type React from "react";
+import type { RestOrCourtMember } from "../../../logic";
 
 export function MemberDroppable({ children, ...member }: RestOrCourtMember & { children: React.ReactNode }) {
 	const { ref, isDropTarget } = useDroppable({

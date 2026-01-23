@@ -1,7 +1,4 @@
 import { Grid, GridItem, Heading, Stack, Text } from "@chakra-ui/react";
-import { CourtMembersBox } from "@components/game/adjustment/CourtMembersBox.tsx";
-import { RestMembersPane } from "@components/game/adjustment/RestMembersPane.tsx";
-import { toaster } from "@components/theme.ts";
 import { PointerSensor } from "@dnd-kit/dom";
 import { DragDropProvider } from "@dnd-kit/react";
 import {
@@ -13,7 +10,10 @@ import {
 	isMemberType,
 	type RestOrCourtMember,
 	swapGameMember,
-} from "@logic";
+} from "../../../logic";
+import { toaster } from "../../theme.ts";
+import { CourtMembersBox } from "./CourtMembersBox.tsx";
+import { RestMembersPane } from "./RestMembersPane.tsx";
 
 type Props = Pick<CurrentSettings, "courtCount" | "members" | "histories"> & {
 	onChange: (gameMembers: GameMembers) => void;

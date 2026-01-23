@@ -1,5 +1,5 @@
-import type { CourtMembers, History } from "@logic";
 import { describe, expect, it } from "vitest";
+import type { CourtMembers, History } from "../../logic";
 import { render, screen } from "../../testing/utils";
 import HistoryPane from "./HistoryPane";
 

@@ -1,13 +1,13 @@
-import type { Event } from "@api";
-import { EventType } from "@api";
-import type { CurrentSettings, GameMembers } from "@logic";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Event } from "../api";
+import { EventType } from "../api";
+import type { CurrentSettings, GameMembers } from "../logic";
 import { useRealtimeSync } from "./useRealtimeSync";
 
 // API のモック
-vi.mock("@api", async () => {
-	const actual = await vi.importActual<typeof import("@api")>("@api");
+vi.mock("../api", async () => {
+	const actual = await vi.importActual<typeof import("../api")>("../api");
 	return {
 		...actual,
 		subscribeEvent: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock("@api", async () => {
 	};
 });
 
-import { findAllEvents, subscribeEvent } from "@api";
+import { findAllEvents, subscribeEvent } from "../api";
 
 const mockSubscribeEvent = vi.mocked(subscribeEvent);
 const mockFindAllEvents = vi.mocked(findAllEvents);

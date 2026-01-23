@@ -1,5 +1,5 @@
-import { SegmentGroupInput } from "@components/common/SegmentGroupInput";
-import { array, COURT_COUNT_LIMIT } from "@logic";
+import { array, COURT_COUNT_LIMIT } from "../../logic";
+import { SegmentGroupInput } from "../common/SegmentGroupInput";
 
 type Props = {
 	value: number;

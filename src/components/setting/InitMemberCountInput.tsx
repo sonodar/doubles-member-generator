@@ -1,7 +1,7 @@
 import { Box, HStack, IconButton, Input, Slider, Text, VStack } from "@chakra-ui/react";
-import { MEMBER_COUNT_LIMIT } from "@logic";
 import { BsArrowsExpandVertical } from "react-icons/bs";
 import { MdAdd, MdRemove } from "react-icons/md";
+import { MEMBER_COUNT_LIMIT } from "../../logic";
 
 type Props = {
 	min: number;

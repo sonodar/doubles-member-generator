@@ -1,5 +1,5 @@
-import { SegmentGroupInput } from "@components/common/SegmentGroupInput";
-import { type Algorithm, Algorithms } from "@logic";
+import { type Algorithm, Algorithms } from "../../logic";
+import { SegmentGroupInput } from "../common/SegmentGroupInput";
 
 type Props = {
 	value: Algorithm;

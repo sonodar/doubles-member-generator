@@ -1,5 +1,5 @@
-import type { GameMembers } from "@logic";
 import { describe, expect, it } from "vitest";
+import type { GameMembers } from "../../logic";
 import { render, screen } from "../../testing/utils";
 import CourtMembersPane from "./CourtMembersPane";
 

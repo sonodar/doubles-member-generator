@@ -1,6 +1,6 @@
-import { previousSettingsAtom, settingsAtom } from "@components/state";
-import { Algorithms } from "@logic";
 import { describe, expect, it } from "vitest";
+import { previousSettingsAtom, settingsAtom } from "../components/state";
+import { Algorithms } from "../logic";
 import { StatePresets } from "./statePresets";
 
 describe("StatePresets", () => {

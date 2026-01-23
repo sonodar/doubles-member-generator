@@ -1,7 +1,7 @@
 import { Button, Center, CloseButton, Dialog, Heading, Input, Spacer, Stack } from "@chakra-ui/react";
-import LineShareButton from "@components/common/LineShareButton.tsx";
-import { toaster } from "@components/theme.ts";
 import { MdContentCopy } from "react-icons/md";
+import LineShareButton from "../common/LineShareButton.tsx";
+import { toaster } from "../theme.ts";
 
 type Props = {
 	open: boolean;

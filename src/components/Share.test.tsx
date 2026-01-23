@@ -1,6 +1,6 @@
-import { Algorithms } from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as api from "../api";
+import { Algorithms } from "../logic";
 import { render, screen, waitFor } from "../testing/utils";
 import Share from "./Share";
 

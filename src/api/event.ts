@@ -1,5 +1,5 @@
-import { type CurrentSettings, type GameMembers, join, leave, replayGenerate, replayRetry } from "@logic";
 import { match } from "ts-pattern";
+import { type CurrentSettings, type GameMembers, join, leave, replayGenerate, replayRetry } from "../logic";
 import { client, type Schema } from "./client";
 
 export const EventType = {

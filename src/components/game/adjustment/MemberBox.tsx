@@ -1,6 +1,6 @@
 import { Box, Center } from "@chakra-ui/react";
 import { useDraggable } from "@dnd-kit/react";
-import type { RestOrCourtMember } from "@logic";
+import type { RestOrCourtMember } from "../../../logic";
 
 export function MemberBox({ color, ...member }: RestOrCourtMember & { color: string }) {
 	const { ref, isDragging } = useDraggable({

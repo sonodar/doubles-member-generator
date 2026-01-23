@@ -1,5 +1,5 @@
-import { Algorithms, COURT_CAPACITY } from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Algorithms, COURT_CAPACITY } from "../../logic";
 import { act, fireEvent, render, screen, waitFor } from "../../testing/utils";
 import InitialSettingPane from "./InitialSettingPane";
 

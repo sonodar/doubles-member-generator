@@ -1,6 +1,6 @@
-import { Algorithms, type CurrentSettings } from "@logic";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage, RESET } from "jotai/utils";
+import { Algorithms, type CurrentSettings } from "../../logic";
 import { settingsReducer } from "./reducer";
 import { useReducerAtom } from "./useReducerAtom";
 

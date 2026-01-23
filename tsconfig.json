@@ -15,15 +15,7 @@
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-		"baseUrl": ".",
-		"paths": {
-			"@assets/*": ["src/assets/*"],
-			"@components/*": ["src/components/*"],
-			"@api": ["src/api"],
-			"@logic": ["src/logic"],
-			"@hooks": ["src/hooks"]
-		}
+		"noFallthroughCasesInSwitch": true
 	},
 	"include": ["src/**/*"]
 }
