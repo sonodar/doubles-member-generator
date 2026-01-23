@@ -1,13 +1,14 @@
 export {
 	emptySettings,
-	settingsAtom,
+	getPreviousSettings,
 	previousSettingsAtom,
+	setSettings,
+	settingsAtom,
 	shareIdAtom,
 	useResetAll,
 	useSettings,
-	setSettings,
 	useSettingsReducer,
-	getPreviousSettings,
 } from "./atoms";
 
 export { settingsReducer } from "./reducer";
+export { useReducerAtom } from "./useReducerAtom";

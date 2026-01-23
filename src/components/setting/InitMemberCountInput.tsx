@@ -33,7 +33,7 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 					width={"20"}
 					size={"sm"}
 					fontSize={"md"}
-					onChange={(e) => onChange(parseInt(e.target.value))}
+					onChange={(e) => onChange(parseInt(e.target.value, 10))}
 				/>
 				<IconButton
 					colorPalette={"brand"}

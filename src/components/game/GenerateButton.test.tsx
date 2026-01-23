@@ -1,5 +1,5 @@
-import { Algorithms, type CurrentSettings } from "@logic";
 import * as logic from "@logic";
+import { Algorithms, type CurrentSettings } from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "../../testing/utils";
 import { GenerateButton } from "./GenerateButton";

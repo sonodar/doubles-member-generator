@@ -1,5 +1,6 @@
 import { Button, Dialog, HStack, NativeSelect } from "@chakra-ui/react";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 
 type Props = {
 	members: number[];

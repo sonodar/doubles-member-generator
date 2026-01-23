@@ -1,6 +1,6 @@
 import { array } from "./array";
 import { COURT_CAPACITY } from "./consts";
-import { type CurrentSettings, type GameMembers, type History, type PlayCountPerMember } from "./types";
+import type { CurrentSettings, GameMembers, History, PlayCountPerMember } from "./types";
 
 export type CountPerMember = Record<number, number>;
 
@@ -12,13 +12,7 @@ export function makeHistoryKeys(settings: CurrentSettings): Set<string> {
 	return new Set(settings.histories.map((history) => toHistoryKey(history.members)));
 }
 
-export function selectRandomMembers({
-	courtCount,
-	members,
-}: {
-	courtCount: number;
-	members: number[];
-}): GameMembers {
+export function selectRandomMembers({ courtCount, members }: { courtCount: number; members: number[] }): GameMembers {
 	const playMembers = array.shuffle(members).slice(0, courtCount * COURT_CAPACITY);
 	return array.sortInnerItems(array.chunks(playMembers, COURT_CAPACITY)) as GameMembers;
 }

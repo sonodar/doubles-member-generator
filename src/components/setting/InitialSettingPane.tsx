@@ -4,8 +4,8 @@ import {
 	Card,
 	Center,
 	Flex,
-	HStack,
 	Heading,
+	HStack,
 	IconButton,
 	Image,
 	Link,
@@ -26,11 +26,7 @@ import { InitMemberCountInput } from "./InitMemberCountInput";
 
 type Props = {
 	previousSettings: CurrentSettings | null;
-	onStart: (env: {
-		courtCount: number;
-		memberCount: number;
-		algorithm: Algorithm;
-	}) => void;
+	onStart: (env: { courtCount: number; memberCount: number; algorithm: Algorithm }) => void;
 };
 
 export default function InitialSettingPane({ previousSettings, onStart }: Props) {

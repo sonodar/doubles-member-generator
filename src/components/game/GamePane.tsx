@@ -1,4 +1,4 @@
-import { EventType, createEnvironment, eventEmitter, finishEnvironment } from "@api";
+import { createEnvironment, EventType, eventEmitter, finishEnvironment } from "@api";
 import { Box, Card, Center, Separator, Spacer, Stack } from "@chakra-ui/react";
 import { AlgorithmBadge } from "@components/common/AlgorithmBadge";
 import { HistoryButton } from "@components/common/HistoryButton.tsx";

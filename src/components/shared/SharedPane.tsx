@@ -1,15 +1,13 @@
 import { type Event, EventType, replayEvent } from "@api";
-import { Alert, Card, Center, HStack, Heading, IconButton, Link, Spacer } from "@chakra-ui/react";
+import { Alert, Card, Center, Heading, HStack, IconButton, Link, Spacer } from "@chakra-ui/react";
 import { AlgorithmBadge } from "@components/common/AlgorithmBadge.tsx";
 import { MemberButton } from "@components/common/MemberButton.tsx";
-import { emptySettings, settingsReducer } from "@components/state";
+import { emptySettings, settingsReducer, useReducerAtom } from "@components/state";
 import { toaster } from "@components/theme.ts";
 import type { CurrentSettings } from "@logic";
 import { atom } from "jotai";
-import { useReducerAtom } from "jotai/utils";
 import { useCallback, useState } from "react";
-import { MdRefresh } from "react-icons/md";
-import { MdHome } from "react-icons/md";
+import { MdHome, MdRefresh } from "react-icons/md";
 import { match } from "ts-pattern";
 import { useRealtimeSync } from "../../hooks";
 import HistoryPane from "../common/HistoryPane.tsx";

@@ -3,13 +3,7 @@ import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
 import { Fragment } from "react";
 import { MdClose } from "react-icons/md";
 
-export function ResetButton({
-	disabled,
-	onReset,
-}: {
-	disabled?: boolean;
-	onReset: () => void;
-}) {
+export function ResetButton({ disabled, onReset }: { disabled?: boolean; onReset: () => void }) {
 	const { open, onOpen, onClose } = useDisclosure();
 	return (
 		<Fragment>

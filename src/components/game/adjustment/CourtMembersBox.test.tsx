@@ -1,26 +1,23 @@
-import { DndContext } from "@dnd-kit/core";
+import { DragDropProvider } from "@dnd-kit/react";
 import type { CourtMembers } from "@logic";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "../../../testing/utils";
 import { CourtMembersBox } from "./CourtMembersBox";
 
-// @dnd-kit/core のモック
+// @dnd-kit/react のモック
 const mockDroppableState = {
-	isOver: false,
-	setNodeRef: vi.fn(),
+	isDropTarget: false,
+	ref: vi.fn(),
 };
 
-vi.mock("@dnd-kit/core", async () => {
-	const actual = await vi.importActual("@dnd-kit/core");
+vi.mock("@dnd-kit/react", async () => {
+	const actual = await vi.importActual("@dnd-kit/react");
 	return {
 		...actual,
 		useDroppable: vi.fn(() => mockDroppableState),
 		useDraggable: vi.fn(() => ({
 			isDragging: false,
-			attributes: {},
-			listeners: {},
-			setNodeRef: vi.fn(),
-			transform: null,
+			ref: vi.fn(),
 		})),
 	};
 });
@@ -31,9 +28,9 @@ describe("CourtMembersBox", () => {
 	describe("基本表示", () => {
 		it("コートメンバー4人が表示される", () => {
 			render(
-				<DndContext>
+				<DragDropProvider>
 					<CourtMembersBox courtId={1} courtMembers={courtMembers} />
-				</DndContext>,
+				</DragDropProvider>,
 			);
 
 			expect(screen.getByText("1")).toBeInTheDocument();
@@ -45,9 +42,9 @@ describe("CourtMembersBox", () => {
 		it("異なるコートIDで表示できる", () => {
 			const courtMembers2: CourtMembers = [5, 6, 7, 8];
 			render(
-				<DndContext>
+				<DragDropProvider>
 					<CourtMembersBox courtId={2} courtMembers={courtMembers2} />
-				</DndContext>,
+				</DragDropProvider>,
 			);
 
 			expect(screen.getByText("5")).toBeInTheDocument();

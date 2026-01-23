@@ -1,1 +1,1 @@
-export { useRealtimeSync, type UseRealtimeSyncOptions, type UseRealtimeSyncResult } from "./useRealtimeSync";
+export { type UseRealtimeSyncOptions, type UseRealtimeSyncResult, useRealtimeSync } from "./useRealtimeSync";

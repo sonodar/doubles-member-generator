@@ -1,7 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import system from "@components/theme";
 import { type RenderOptions, type RenderResult, render as rtlRender } from "@testing-library/react";
-import { Provider, type WritableAtom, createStore } from "jotai";
+import { createStore, Provider, type WritableAtom } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import type { ReactElement } from "react";
 
