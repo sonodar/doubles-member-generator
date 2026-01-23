@@ -2,33 +2,23 @@ import { Button, Center, CloseButton, Dialog, Heading, Spacer, Stack, Text, useD
 import { useState } from "react";
 import { IoDiceOutline } from "react-icons/io5";
 import { MdCheck, MdHistory } from "react-icons/md";
-import { UsageAlertDialog } from "./UsageAlertDialog";
 import { type CurrentSettings } from "@logic";
-import { generate, retry, isRecent } from "@logic";
+import { generate, retry } from "@logic";
 import { StatisticsPane } from "@components/game/StatisticsPane.tsx";
 
 type Props = {
 	settings: CurrentSettings;
 	onGenerate: (settings: CurrentSettings) => void;
-	onIgnoreUsageAlert: () => void;
 	disabled?: boolean;
 };
 
-export function GenerateButton({ settings, onGenerate, disabled, onIgnoreUsageAlert }: Props) {
+export function GenerateButton({ settings, onGenerate, disabled }: Props) {
 	const { open, onOpen, onClose } = useDisclosure();
-	const { open: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
 	const [newSettings, setNewSettings] = useState<CurrentSettings | undefined>();
 
-	const openGeneratePane = () => {
+	const handleClick = () => {
 		setNewSettings(generate(settings));
 		onOpen();
-	};
-
-	const handleClick = () => {
-		if (settings.ignoreUsageAlert || !isRecent(settings)) {
-			return openGeneratePane();
-		}
-		onAlertOpen();
 	};
 
 	const handleOk = () => {
@@ -51,7 +41,6 @@ export function GenerateButton({ settings, onGenerate, disabled, onIgnoreUsageAl
 				<IoDiceOutline />
 				メンバー決め
 			</Button>
-			<UsageAlertDialog open={isAlertOpen} onClose={onAlertClose} onDismiss={onIgnoreUsageAlert} />
 			<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
 				<Dialog.Backdrop />
 				<Dialog.Positioner>
