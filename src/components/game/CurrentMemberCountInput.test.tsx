@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import { CurrentMemberCountInput } from "./CurrentMemberCountInput";
 import { settingsAtom } from "../state";
 import { Algorithms, type CurrentSettings } from "@logic";
@@ -61,19 +61,16 @@ describe("CurrentMemberCountInput", () => {
 		});
 
 		it("isDisabled=trueの場合、参加ボタンが無効になる", () => {
-			render(
-				<CurrentMemberCountInput onIncrement={mockOnIncrement} onDecrement={mockOnDecrement} isDisabled={true} />,
-				{
-					initialAtomValues: [[settingsAtom, baseSettings]],
-				},
-			);
+			render(<CurrentMemberCountInput onIncrement={mockOnIncrement} onDecrement={mockOnDecrement} disabled={true} />, {
+				initialAtomValues: [[settingsAtom, baseSettings]],
+			});
 
 			expect(screen.getByRole("button", { name: /参加/ })).toBeDisabled();
 		});
 	});
 
 	describe("離脱ボタン", () => {
-		it("離脱ボタンをクリックするとダイアログが表示される", () => {
+		it("離脱ボタンをクリックするとダイアログが表示される", async () => {
 			render(<CurrentMemberCountInput onIncrement={mockOnIncrement} onDecrement={mockOnDecrement} />, {
 				initialAtomValues: [[settingsAtom, baseSettings]],
 			});
@@ -81,7 +78,9 @@ describe("CurrentMemberCountInput", () => {
 			fireEvent.click(screen.getByRole("button", { name: /離脱/ }));
 
 			// LeaveDialog が表示される（番号選択のセレクトボックス）
-			expect(screen.getByText("番号を選択してください")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("番号を選択してください")).toBeInTheDocument();
+			});
 		});
 
 		it("メンバー数が最小値の場合、離脱ボタンが無効になる", () => {

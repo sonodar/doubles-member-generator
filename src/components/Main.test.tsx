@@ -1,18 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { render, screen } from "../testing/utils";
+import { render, screen, waitFor } from "../testing/utils";
 import Main from "./Main";
 import { settingsAtom, emptySettings } from "./state";
 import { Algorithms, type CurrentSettings } from "@logic";
 
 describe("Main", () => {
 	describe("条件分岐による画面切り替え", () => {
-		it("設定が未完了（courtCount === 0）の場合は InitialSettingPane が表示される", () => {
+		it("設定が未完了（courtCount === 0）の場合は InitialSettingPane が表示される", async () => {
 			render(<Main />, {
 				initialAtomValues: [[settingsAtom, emptySettings]],
 			});
 
 			// InitialSettingPane のヘッダーが表示されていることを確認
-			expect(screen.getByRole("heading", { name: "初期設定" })).toBeInTheDocument();
+			await waitFor(() => expect(screen.getByRole("heading", { name: "初期設定" })).toBeInTheDocument());
 		});
 
 		it("設定完了後（courtCount > 0）は GamePane が表示される", () => {

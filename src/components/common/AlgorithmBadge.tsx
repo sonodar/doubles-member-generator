@@ -1,4 +1,4 @@
-import { Badge, Center } from "@chakra-ui/react";
+import { Badge } from "@chakra-ui/react";
 import { type Algorithm, Algorithms } from "@logic";
 
 const badgeLabels: Record<Algorithm, string> = {
@@ -9,8 +9,8 @@ const badgeLabels: Record<Algorithm, string> = {
 export function AlgorithmBadge({ algorithm }: { algorithm: Algorithm }) {
 	const badgeLabel = badgeLabels[algorithm];
 	return (
-		<Badge borderRadius={"md"} w={"80%"} variant="subtle" colorScheme={"brand"}>
-			<Center>{badgeLabel}</Center>
+		<Badge w={"80%"} variant="subtle" justifyContent="center" color="brand.800" fontWeight={"semibold"}>
+			{badgeLabel}
 		</Badge>
 	);
 }

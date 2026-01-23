@@ -1,5 +1,5 @@
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
-import { Grid, GridItem, Heading, Stack, Text, useToast } from "@chakra-ui/react";
+import { Grid, GridItem, Heading, Stack, Text } from "@chakra-ui/react";
 import {
 	array,
 	type CurrentSettings,
@@ -12,6 +12,7 @@ import {
 } from "@logic";
 import { RestMembersPane } from "@components/game/adjustment/RestMembersPane.tsx";
 import { CourtMembersBox } from "@components/game/adjustment/CourtMembersBox.tsx";
+import { toaster } from "@components/theme.ts";
 
 type Props = Pick<CurrentSettings, "courtCount" | "members" | "histories"> & {
 	onChange: (gameMembers: GameMembers) => void;
@@ -25,18 +26,11 @@ export function AdjustmentPane({ courtCount, members, histories, onChange }: Pro
 	const restMembers = getRestMembers({ members }, gameMembers);
 	const courtIds = array.generate(courtCount, 0);
 
-	const toast = useToast({
-		status: "success",
-		duration: 2000,
-		isClosable: false,
-		colorScheme: "brand",
-		variant: "subtle",
-		position: "top",
-	});
-
 	const showToast = (sourceMemberId: number, destMemberId: number) => {
-		toast({
+		toaster.create({
 			title: `${sourceMemberId} 番と ${destMemberId} 番を入れ替えました`,
+			type: "success",
+			duration: 2000,
 		});
 	};
 
@@ -68,7 +62,7 @@ export function AdjustmentPane({ courtCount, members, histories, onChange }: Pro
 
 	return (
 		<DndContext onDragEnd={onDragEnd} autoScroll={false}>
-			<Stack spacing={4} w={"100%"}>
+			<Stack gap={4} w={"100%"}>
 				<Text fontSize={"sm"}>↓ ドラッグ＆ドロップで調整できます ↓</Text>
 				<Grid
 					templateColumns={`repeat(${leftSpan + rightSpan}, 1fr)`}

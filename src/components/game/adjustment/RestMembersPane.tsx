@@ -12,7 +12,7 @@ export function RestMembersPane({ restMembers }: Props) {
 			<Heading as={"label"} size={"sm"} pl={2}>
 				休憩
 			</Heading>
-			<SimpleGrid columns={2} spacing={0}>
+			<SimpleGrid columns={2} gap={0}>
 				{restMembers.map((memberId) => (
 					<MemberDroppable key={memberId} type={"restMember"} memberId={memberId}>
 						<MemberBox type={"restMember"} color={"danger.100"} memberId={memberId} />

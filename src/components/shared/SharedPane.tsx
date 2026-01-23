@@ -1,19 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import {
-	Alert,
-	AlertIcon,
-	AlertTitle,
-	Card,
-	CardBody,
-	CardHeader,
-	Center,
-	HStack,
-	Heading,
-	IconButton,
-	Link,
-	Spacer,
-	useToast,
-} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Alert, Card, Center, HStack, Heading, IconButton, Link, Spacer } from "@chakra-ui/react";
+import { toaster } from "@components/theme.ts";
 import { MdRefresh } from "react-icons/md";
 import { match } from "ts-pattern";
 import { atom } from "jotai";
@@ -102,9 +89,6 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 		});
 	};
 
-	const toast = useToast();
-	const toastRef = useRef<string | number>();
-
 	useEffect(() => {
 		if (!event || event.type === EventType.Initialize) return;
 		proceededEvents[event.id] = event;
@@ -120,24 +104,22 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 				.exhaustive();
 		}
 
-		toastRef.current = toast({
+		toaster.create({
 			title: getMessage(event.type)(event.payload),
-			status: getMessageStatus(event.type),
+			type: getMessageStatus(event.type),
 			duration: 2000,
-			isClosable: true,
-			variant: "subtle",
 		});
-	}, [event, dispatch, toast]);
+	}, [event, dispatch]);
 
 	return (
-		<Card my={1} py={4}>
+		<Card.Root my={1} py={4}>
 			{finished && (
-				<Alert status="error" mb={2}>
-					<AlertIcon />
-					<AlertTitle>すでに終了しています</AlertTitle>
-				</Alert>
+				<Alert.Root status="error" mb={2}>
+					<Alert.Indicator />
+					<Alert.Title>すでに終了しています</Alert.Title>
+				</Alert.Root>
 			)}
-			<CardHeader my={0} py={0}>
+			<Card.Header my={0} py={0}>
 				<HStack>
 					<Heading size={"md"}>
 						{settings.members.length} 人が参加{!finished && "中"}
@@ -147,31 +129,34 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 					{!finished && (
 						<IconButton
 							size={"sm"}
-							isRound={true}
+							rounded={"full"}
 							variant={"solid"}
-							colorScheme={"brand"}
+							colorPalette={"brand"}
 							fontSize={"md"}
-							icon={<MdRefresh />}
 							onClick={() => window.location.reload()}
 							aria-label={"reload"}
-						/>
+						>
+							<MdRefresh />
+						</IconButton>
 					)}
 					{finished && (
 						<Link href={"/"}>
-							<IconButton size={"sm"} variant={"solid"} fontSize={"md"} aria-label={"Home"} icon={<MdHome />} />
+							<IconButton size={"sm"} variant={"solid"} fontSize={"md"} aria-label={"Home"}>
+								<MdHome />
+							</IconButton>
 						</Link>
 					)}
 				</HStack>
-			</CardHeader>
-			<CardBody>
+			</Card.Header>
+			<Card.Body>
 				<Center mb={4}>
 					<AlgorithmBadge algorithm={settings.algorithm} />
 				</Center>
 				<Center>
 					<HistoryPane histories={settings.histories} />
 				</Center>
-			</CardBody>
-		</Card>
+			</Card.Body>
+		</Card.Root>
 	);
 }
 

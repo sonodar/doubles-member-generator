@@ -313,15 +313,49 @@ export { render };
 | CopyIcon | MdContentCopy (md) | ShareDialog.tsx |
 | SmallCloseIcon | MdClose (md) | ResetButton.tsx |
 
-#### Chakra v3 API 変更対応
+#### Chakra v3 コンポーネント名変更
+
+| v2 コンポーネント | v3 コンポーネント | 影響ファイル |
+|-------------------|-------------------|--------------|
+| Modal | Dialog.Root | HelpButton, GenerateButton, ShareDialog, HistoryDialog, AdjustmentDialog, LeaveDialog, UsageAlertDialog |
+| ModalOverlay | Dialog.Backdrop | 同上 |
+| ModalContent | Dialog.Content | 同上 |
+| ModalHeader | Dialog.Header | 同上 |
+| ModalBody | Dialog.Body | 同上 |
+| ModalFooter | Dialog.Footer | 同上 |
+| ModalCloseButton | Dialog.CloseTrigger | 同上 |
+| AlertDialog | Dialog.Root | ConfirmDialog |
+| AlertDialogOverlay | Dialog.Backdrop | 同上 |
+| AlertDialogContent | Dialog.Content | 同上 |
+| AlertDialogHeader | Dialog.Header | 同上 |
+| AlertDialogBody | Dialog.Body | 同上 |
+| AlertDialogFooter | Dialog.Footer | 同上 |
+| Divider | Separator | HelpButton, InitialSettingPane, HistoryPane |
+| Slider + SliderTrack + SliderFilledTrack + SliderThumb | Slider.Root + Slider.Control + Slider.Track + Slider.Range + Slider.Thumb | InitMemberCountInput |
+| Card + CardBody | Card.Root + Card.Body | InitialSettingPane, GamePane, SharedPane |
+| Alert + AlertIcon + AlertTitle | Alert.Root + Alert.Indicator + Alert.Title | UsageAlertDialog, SharedPane |
+
+#### Chakra v3 Props 変更
+
+| v2 Props | v3 Props | 影響範囲 |
+|----------|----------|----------|
+| spacing | gap | Stack, VStack, HStack 全て |
+| icon | children | IconButton 全て |
+| isDisabled | disabled | Button, IconButton 全て |
+| isRound | rounded="full" | IconButton |
+| leftIcon / rightIcon | children 内に配置 | Button 全て |
+| isOpen (useDisclosure) | open | 全ダイアログ |
+| isExternal (Link) | external | InitialSettingPane, UsageAlertDialog |
+| colorScheme | colorPalette | 全ボタン |
+| isReadOnly | readOnly | Input (ShareDialog) |
+
+#### Chakra v3 フック変更
 
 | v2 API | v3 API | 影響範囲 |
 |--------|--------|----------|
-| ChakraProvider + theme | Provider (from snippets) | Main.tsx 相当 |
-| useToast | toaster (from snippets) | GamePane, AdjustmentPane |
-| useDisclosure | Dialog 状態管理 | 複数ダイアログ |
-| isExternal (Link) | external | InitialSettingPane |
-| colorScheme prop | colorPalette prop | 全ボタン |
+| ChakraProvider + theme | ChakraProvider + value (createSystem) | App.tsx, testing/utils.tsx |
+| useToast | toaster (from snippets) | GamePane, ShareDialog, SharedPane |
+| useDisclosure().isOpen | useDisclosure().open | 全ダイアログ |
 | useRadio/useRadioGroup | SegmentedControl | CourtCountInput, AlgorithmInput |
 
 #### SegmentedControl 移行対象
@@ -416,15 +450,183 @@ flowchart LR
 - ChakraProvider を v3 形式に更新
 - 必要に応じて createSystem 設定
 
-### Phase 5: コンポーネント移行
-- v3 API に合わせてプロップス更新
-- 名前空間インポートへの変更（必要に応じて）
-
-### Phase 6: アイコン移行
+### Phase 5: アイコン移行
 - @chakra-ui/icons → react-icons に置換
 - アイコンマッピング表に従って更新
 
-### Phase 7: 回帰テスト・検証
+### Phase 6: コンポーネント名変更
+- Modal → Dialog への置換
+- AlertDialog → Dialog への置換
+- Divider → Separator への置換
+- Slider → Slider.* namespace への置換
+- Card → Card.* namespace への置換
+- Alert → Alert.* namespace への置換
+
+### Phase 7: Props 変更
+- spacing → gap
+- icon → children (IconButton)
+- isDisabled → disabled
+- leftIcon/rightIcon → children 内に配置
+- isOpen → open
+- colorScheme → colorPalette
+- その他の Props 変更
+
+### Phase 8: フック移行
+- useToast → toaster への移行
+- useRadio/useRadioGroup → SegmentedControl への移行
+
+### Phase 9: 回帰テスト・検証
 - 全テスト実行
 - 手動での UI 確認
 - ビルド・lint・型チェック
+
+## Task 16: UI スタイル修正（Chakra v3 移行後のバグ修正）
+
+### 問題の概要
+
+Chakra UI v2 → v3 移行後、設定画面で以下の UI 問題が発生：
+
+1. **ボタンのトンマナが白黒になった** - -/+ボタン、開始ボタン、ヘルプボタン等の色が黒一色に
+2. **余白やレイアウトが崩れた** - Card/Container 周囲やコンポーネント間のスペーシング問題
+3. **スライダーが消えた** - メンバー数スライダーのトラックが正しく表示されない（幅が縮小）
+
+**参考画像**:
+- `.kiro/specs/chakra-ui-upgrade/before-setting.png` - 移行前の正常な UI
+- `.kiro/specs/chakra-ui-upgrade/after-setting.png` - 移行後の問題がある UI
+
+### 根本原因の分析
+
+#### 1. theme.ts の semanticTokens 未定義（主要原因）
+
+Chakra UI v3 では、カスタムカラーパレットを `colorPalette` として使用するには **semanticTokens** の定義が必須。
+
+現在の theme.ts:
+- ✅ `colors.brand/primary/danger` に 50-900 のトークンは定義済み
+- ❌ `semanticTokens` が未定義 → colorPalette が機能しない
+
+必要な semanticTokens（各カラーパレットに対して）:
+| Token | 用途 |
+|-------|------|
+| `solid` | プライマリカラー（ボタン背景など） |
+| `contrast` | solid 背景上のテキスト色 |
+| `fg` | フォアグラウンドカラー |
+| `muted` | ミュートカラー |
+| `subtle` | サブトルカラー |
+| `emphasized` | 強調カラー |
+| `focusRing` | フォーカスリング |
+
+#### 2. colorScheme → colorPalette 移行漏れ
+
+- Chakra v3 では `colorScheme` は `colorPalette` に変更が必要
+- 多くのコンポーネントで未移行（15ファイル）
+
+#### 3. Slider の幅未設定
+
+- Chakra v3 では Slider に明示的な幅指定が必要
+- `InitMemberCountInput.tsx` の Slider.Root に幅が未設定
+
+#### 4. Card/Container の余白設定
+
+- Chakra v3 で Card のデフォルトスタイルが変更された可能性
+- 調査が必要
+
+### 修正方針
+
+**グローバル設定優先** - 個別コンポーネントでの colorPalette 設定は最小限に
+
+1. **theme.ts で semanticTokens を定義** - brand, primary, danger の semantic colors
+2. **theme.ts で globalCss を設定** - html の colorPalette を "brand" に設定
+3. **colorScheme → colorPalette 一括置換** - 安全のため一旦全て置換し、後で不要なものを削除
+4. **Slider の幅修正** - width="100%" を追加
+
+### 修正後の theme.ts 構造
+
+```typescript
+import { createSystem, defaultConfig } from "@chakra-ui/react";
+
+const system = createSystem(defaultConfig, {
+  theme: {
+    tokens: {
+      fonts: { /* 既存 */ },
+      colors: {
+        brand: { 50: {...}, ..., 900: {...} },
+        primary: { 50: {...}, ..., 900: {...} },
+        danger: { 50: {...}, ..., 900: {...} },
+      },
+    },
+    semanticTokens: {
+      colors: {
+        brand: {
+          solid: { value: "{colors.brand.500}" },
+          contrast: { value: "white" },
+          fg: { value: "{colors.brand.700}" },
+          muted: { value: "{colors.brand.100}" },
+          subtle: { value: "{colors.brand.200}" },
+          emphasized: { value: "{colors.brand.300}" },
+          focusRing: { value: "{colors.brand.500}" },
+        },
+        primary: { /* 同様 */ },
+        danger: { /* 同様 */ },
+      },
+    },
+  },
+  globalCss: {
+    html: {
+      colorPalette: "brand",
+    },
+  },
+});
+```
+
+### 修正対象ファイル
+
+| ファイル | 修正内容 |
+|---------|---------|
+| `src/components/theme.ts` | semanticTokens + globalCss 追加 |
+| `src/components/setting/InitMemberCountInput.tsx` | Slider に width="100%" 追加 |
+| 全 colorScheme 使用ファイル（15件） | colorScheme → colorPalette 置換 |
+
+### 検証方法
+
+1. `npm run dev` で開発サーバー起動
+2. before-setting.png と同等の UI になることを確認:
+   - メンバー数: -/+ ボタンがブランドカラー（薄紫）
+   - スライダー: トラックが横幅いっぱいに表示
+   - 開始ボタン: テキストがブランドカラー（青系）
+   - ヘルプボタン（?）: ブランドカラー
+   - Card/Container の余白が適切
+3. `npm run typecheck && npm run lint && npm run test` がパス
+
+### 参考資料
+
+- [Change the default color palette | Chakra UI](https://chakra-ui.com/guides/theming-change-default-color-palette)
+- [Creating custom colors | Chakra UI](https://chakra-ui.com/guides/theming-custom-colors)
+
+---
+
+## Task 17: SegmentGroup スタイリング（新規 UI の実装）
+
+### 概要
+
+Chakra v3 移行時に RadioGroup/useRadio を SegmentGroup に置き換えたが、スタイリングが未実装。
+色がグレースケールなのと、幅が画面いっぱいに広がってしまっている。元のボタン形式のトンマナに合わせる。
+
+### 対象コンポーネント
+
+| コンポーネント | 用途 |
+|---------------|------|
+| `CourtCountInput.tsx` | コート数選択（1-4） |
+| `AlgorithmInput.tsx` | アルゴリズム選択（ばらつき重視/均等性重視） |
+
+### 修正内容
+
+SegmentGroup.Root に colorPalette を設定し、選択状態がブランドカラーで表示されるようにする。
+
+```typescript
+<SegmentGroup.Root colorPalette="brand" ... >
+```
+
+### 検証方法
+
+1. コート数選択: 選択状態がブランドカラー（青系）で表示
+2. アルゴリズム選択: 選択状態がブランドカラーで表示

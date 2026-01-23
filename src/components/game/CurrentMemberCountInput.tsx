@@ -7,13 +7,13 @@ import { useSettings } from "@components/state";
 type Props = {
 	onIncrement: () => void;
 	onDecrement: (id: number) => void;
-	isDisabled?: boolean;
+	disabled?: boolean;
 };
 
-export function CurrentMemberCountInput({ onIncrement, onDecrement, isDisabled }: Props) {
+export function CurrentMemberCountInput({ onIncrement, onDecrement, disabled }: Props) {
 	const { members, courtCount } = useSettings();
 	const min = courtCount * COURT_CAPACITY;
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { open, onOpen, onClose } = useDisclosure();
 
 	return (
 		<HStack maxW={"320px"} minW={"320px"}>
@@ -22,36 +22,31 @@ export function CurrentMemberCountInput({ onIncrement, onDecrement, isDisabled }
 				type={"number"}
 				value={members.length}
 				step={1}
+				size={"lg"}
 				min={min}
 				max={MEMBER_COUNT_LIMIT}
-				style={{ textAlign: "center" }}
+				textAlign="center"
 				width={"14"}
-				border={""}
+				variant="flushed"
+				borderBottom="none"
 				readOnly
 			/>
 			<span>人</span>
 			<Spacer />
 			<Button
-				leftIcon={<TbUserPlus />}
-				size={"sm"}
-				colorScheme={"brand"}
+				size={"xs"}
 				variant={"solid"}
 				onClick={onIncrement}
-				isDisabled={isDisabled || members.length >= MEMBER_COUNT_LIMIT}
+				disabled={disabled || members.length >= MEMBER_COUNT_LIMIT}
 			>
+				<TbUserPlus />
 				参加
 			</Button>
-			<Button
-				leftIcon={<TbUserOff />}
-				size={"sm"}
-				variant={"outline"}
-				colorScheme={"brand"}
-				onClick={onOpen}
-				isDisabled={isDisabled || members.length <= min}
-			>
+			<Button size={"xs"} variant={"outline"} onClick={onOpen} disabled={disabled || members.length <= min}>
+				<TbUserOff />
 				離脱
 			</Button>
-			<LeaveDialog members={members} isOpen={isOpen} onClose={onClose} onLeave={onDecrement} />
+			<LeaveDialog members={members} open={open} onClose={onClose} onLeave={onDecrement} />
 		</HStack>
 	);
 }

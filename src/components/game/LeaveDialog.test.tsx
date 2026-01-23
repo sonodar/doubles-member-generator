@@ -14,19 +14,19 @@ describe("LeaveDialog", () => {
 
 	describe("基本表示", () => {
 		it("isOpen=true の場合、ダイアログが表示される", () => {
-			render(<LeaveDialog members={members} isOpen={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
+			render(<LeaveDialog members={members} open={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
 
 			expect(screen.getByRole("combobox")).toBeInTheDocument();
 		});
 
 		it("離脱ボタンが表示される", () => {
-			render(<LeaveDialog members={members} isOpen={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
+			render(<LeaveDialog members={members} open={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
 
 			expect(screen.getByRole("button", { name: "離脱" })).toBeInTheDocument();
 		});
 
 		it("メンバー一覧がセレクトボックスに表示される", () => {
-			render(<LeaveDialog members={members} isOpen={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
+			render(<LeaveDialog members={members} open={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
 
 			const select = screen.getByRole("combobox");
 			expect(select).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe("LeaveDialog", () => {
 
 	describe("メンバー選択と離脱", () => {
 		it("メンバーを選択して離脱ボタンをクリックすると onLeave が呼ばれる", () => {
-			render(<LeaveDialog members={members} isOpen={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
+			render(<LeaveDialog members={members} open={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
 
 			// メンバー3を選択
 			const select = screen.getByRole("combobox");
@@ -55,7 +55,7 @@ describe("LeaveDialog", () => {
 		});
 
 		it("メンバーを選択せずに離脱ボタンをクリックしても onLeave が呼ばれない", () => {
-			render(<LeaveDialog members={members} isOpen={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
+			render(<LeaveDialog members={members} open={true} onClose={mockOnClose} onLeave={mockOnLeave} />);
 
 			// 離脱ボタンをクリック（選択なし）
 			const leaveButton = screen.getByRole("button", { name: "離脱" });
@@ -68,7 +68,7 @@ describe("LeaveDialog", () => {
 
 	describe("非表示", () => {
 		it("isOpen=false の場合、ダイアログが非表示", () => {
-			render(<LeaveDialog members={members} isOpen={false} onClose={mockOnClose} onLeave={mockOnLeave} />);
+			render(<LeaveDialog members={members} open={false} onClose={mockOnClose} onLeave={mockOnLeave} />);
 
 			expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
 		});

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import { MemberDialog } from "./MemberDialog";
 import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
 
@@ -40,35 +40,45 @@ describe("MemberDialog", () => {
 	});
 
 	describe("基本表示", () => {
-		it("isOpen=trueでダイアログが表示される", () => {
-			render(<MemberDialog settings={settingsWithHistory} isOpen={true} onClose={mockOnClose} />);
+		it("isOpen=trueでダイアログが表示される", async () => {
+			render(<MemberDialog settings={settingsWithHistory} open={true} onClose={mockOnClose} />);
 
-			expect(screen.getByText("プレイ回数・休憩回数")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("プレイ回数・休憩回数")).toBeInTheDocument();
+			});
 		});
 
 		it("isOpen=falseでダイアログが表示されない", () => {
-			render(<MemberDialog settings={settingsWithHistory} isOpen={false} onClose={mockOnClose} />);
+			render(<MemberDialog settings={settingsWithHistory} open={false} onClose={mockOnClose} />);
 
 			expect(screen.queryByText("プレイ回数・休憩回数")).not.toBeInTheDocument();
 		});
 	});
 
 	describe("MemberCountPaneの表示", () => {
-		it("メンバー情報が表示される", () => {
-			render(<MemberDialog settings={settingsWithHistory} isOpen={true} onClose={mockOnClose} />);
+		it("メンバー情報が表示される", async () => {
+			render(<MemberDialog settings={settingsWithHistory} open={true} onClose={mockOnClose} />);
 
 			// MemberCountPane のタブが表示される
-			expect(screen.getByRole("tab", { name: "総プレイ" })).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByRole("tab", { name: "総プレイ" })).toBeInTheDocument();
+			});
 		});
 	});
 
 	describe("閉じる操作", () => {
-		it("閉じるボタンをクリックするとonCloseが呼ばれる", () => {
-			render(<MemberDialog settings={settingsWithHistory} isOpen={true} onClose={mockOnClose} />);
+		it("閉じるボタンをクリックするとonCloseが呼ばれる", async () => {
+			render(<MemberDialog settings={settingsWithHistory} open={true} onClose={mockOnClose} />);
+
+			await waitFor(() => {
+				expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+			});
 
 			fireEvent.click(screen.getByRole("button", { name: "Close" }));
 
-			expect(mockOnClose).toHaveBeenCalledTimes(1);
+			await waitFor(() => {
+				expect(mockOnClose).toHaveBeenCalledTimes(1);
+			});
 		});
 	});
 });

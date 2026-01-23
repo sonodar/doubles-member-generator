@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "../../../testing/utils";
+import { render, screen, fireEvent, waitFor, act } from "../../../testing/utils";
 import { AdjustmentDialog } from "./AdjustmentDialog";
 import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
 
@@ -42,50 +42,56 @@ describe("AdjustmentDialog", () => {
 	});
 
 	describe("基本表示", () => {
-		it("isOpen=trueでダイアログが表示される", () => {
-			render(<AdjustmentDialog settings={settings} isOpen={true} onClose={mockOnClose} onChange={mockOnChange} />);
+		it("isOpen=trueでダイアログが表示される", async () => {
+			render(<AdjustmentDialog settings={settings} open={true} onClose={mockOnClose} onChange={mockOnChange} />);
 
-			expect(screen.getByText("プレイ回数")).toBeInTheDocument();
+			await waitFor(() => expect(screen.getByText("プレイ回数")).toBeInTheDocument());
 		});
 
 		it("isOpen=falseでダイアログが表示されない", () => {
-			render(<AdjustmentDialog settings={settings} isOpen={false} onClose={mockOnClose} onChange={mockOnChange} />);
+			render(<AdjustmentDialog settings={settings} open={false} onClose={mockOnClose} onChange={mockOnChange} />);
 
 			expect(screen.queryByText("プレイ回数")).not.toBeInTheDocument();
 		});
 
-		it("AdjustmentPaneが表示される", () => {
-			render(<AdjustmentDialog settings={settings} isOpen={true} onClose={mockOnClose} onChange={mockOnChange} />);
+		it("AdjustmentPaneが表示される", async () => {
+			render(<AdjustmentDialog settings={settings} open={true} onClose={mockOnClose} onChange={mockOnChange} />);
 
 			// 休憩メンバーが表示される（AdjustmentPaneの証拠）
-			expect(screen.getByText("休憩")).toBeInTheDocument();
+			await waitFor(() => expect(screen.getByText("休憩")).toBeInTheDocument());
 		});
 
-		it("MemberCountPaneが表示される", () => {
-			render(<AdjustmentDialog settings={settings} isOpen={true} onClose={mockOnClose} onChange={mockOnChange} />);
+		it("MemberCountPaneが表示される", async () => {
+			render(<AdjustmentDialog settings={settings} open={true} onClose={mockOnClose} onChange={mockOnChange} />);
 
 			// タブが表示される
-			expect(screen.getByRole("tab", { name: "総プレイ" })).toBeInTheDocument();
+			await waitFor(() => expect(screen.getByRole("tab", { name: "総プレイ" })).toBeInTheDocument());
 		});
 	});
 
 	describe("ボタン操作", () => {
-		it("調整反映ボタンをクリックするとonChangeとonCloseが呼ばれる", () => {
-			render(<AdjustmentDialog settings={settings} isOpen={true} onClose={mockOnClose} onChange={mockOnChange} />);
+		it("調整反映ボタンをクリックするとonChangeとonCloseが呼ばれる", async () => {
+			render(<AdjustmentDialog settings={settings} open={true} onClose={mockOnClose} onChange={mockOnChange} />);
 
-			fireEvent.click(screen.getByRole("button", { name: /調整反映/ }));
+			const button = screen.getByRole("button", { name: /調整反映/ });
+			act(() => fireEvent.click(button));
 
-			expect(mockOnChange).toHaveBeenCalledTimes(1);
-			expect(mockOnClose).toHaveBeenCalledTimes(1);
+			await waitFor(() => {
+				expect(mockOnChange).toHaveBeenCalledTimes(1);
+				expect(mockOnClose).toHaveBeenCalledTimes(1);
+			});
 		});
 
-		it("キャンセルボタンをクリックするとonCloseのみ呼ばれる", () => {
-			render(<AdjustmentDialog settings={settings} isOpen={true} onClose={mockOnClose} onChange={mockOnChange} />);
+		it("キャンセルボタンをクリックするとonCloseのみ呼ばれる", async () => {
+			render(<AdjustmentDialog settings={settings} open={true} onClose={mockOnClose} onChange={mockOnChange} />);
 
-			fireEvent.click(screen.getByRole("button", { name: /キャンセル/ }));
+			const button = screen.getByRole("button", { name: /キャンセル/ });
+			act(() => fireEvent.click(button));
 
-			expect(mockOnChange).not.toHaveBeenCalled();
-			expect(mockOnClose).toHaveBeenCalledTimes(1);
+			await waitFor(() => {
+				expect(mockOnChange).not.toHaveBeenCalled();
+				expect(mockOnClose).toHaveBeenCalledTimes(1);
+			});
 		});
 	});
 });

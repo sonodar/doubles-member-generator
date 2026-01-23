@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, fireEvent } from "../../testing/utils";
+import { render, screen, fireEvent, waitFor } from "../../testing/utils";
 import { MemberButton } from "./MemberButton";
 import { settingsAtom } from "../state";
 import { Algorithms, type CurrentSettings, type CourtMembers } from "@logic";
@@ -51,7 +51,7 @@ describe("MemberButton", () => {
 		});
 
 		it("isDisabled=trueの場合、ボタンが無効になる", () => {
-			render(<MemberButton isDisabled={true} />, {
+			render(<MemberButton disabled={true} />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
@@ -60,14 +60,16 @@ describe("MemberButton", () => {
 	});
 
 	describe("ダイアログ表示", () => {
-		it("クリック時にメンバーダイアログが表示される", () => {
+		it("クリック時にメンバーダイアログが表示される", async () => {
 			render(<MemberButton />, {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
 			fireEvent.click(screen.getByRole("button", { name: "メンバー" }));
 
-			expect(screen.getByText("プレイ回数・休憩回数")).toBeInTheDocument();
+			await waitFor(() => {
+				expect(screen.getByText("プレイ回数・休憩回数")).toBeInTheDocument();
+			});
 		});
 	});
 });

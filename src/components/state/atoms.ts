@@ -13,7 +13,11 @@ export const emptySettings: CurrentSettings = {
 
 // const onBoardingAtom = atomWithStorage("onBoarding", { step: 0 });
 export const settingsAtom = atomWithStorage("currentSettings", emptySettings);
-export const previousSettingsAtom = atomWithStorage<CurrentSettings | null>("previousSettings", null);
+// getOnInit: true で同期的に localStorage から取得する
+// 非同期だと初期値で一度レンダリングされた後に localStorage の値で再レンダリングされ、画面がちらつく
+export const previousSettingsAtom = atomWithStorage<CurrentSettings | null>("previousSettings", null, undefined, {
+	getOnInit: true,
+});
 export const shareIdAtom = atomWithStorage("shareId", "");
 
 export function useResetAll() {

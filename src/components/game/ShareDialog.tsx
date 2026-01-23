@@ -1,71 +1,57 @@
-import { CopyIcon } from "@chakra-ui/icons";
-import {
-	Center,
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	useToast,
-	Stack,
-	Spacer,
-	Heading,
-} from "@chakra-ui/react";
-import { useRef } from "react";
+import { MdContentCopy } from "react-icons/md";
+import { Center, Button, CloseButton, Dialog, Input, Stack, Spacer, Heading } from "@chakra-ui/react";
+import { toaster } from "@components/theme.ts";
 import LineShareButton from "@components/common/LineShareButton.tsx";
 
 type Props = {
-	isOpen: boolean;
+	open: boolean;
 	onClose: () => void;
 	value?: string;
 };
 
-export function ShareDialog({ isOpen, onClose, value }: Props) {
-	const toast = useToast();
-	const toastRef = useRef<string | number>();
-
+export function ShareDialog({ open, onClose, value }: Props) {
 	const handleCopy = () => {
 		if (value) {
 			navigator.clipboard.writeText(value);
-			toastRef.current = toast({
+			toaster.create({
 				title: "コピーしました",
-				status: "info",
+				type: "info",
 				duration: 2000,
-				isClosable: true,
-				colorScheme: "brand",
 			});
 			onClose();
 		}
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} scrollBehavior={"inside"}>
-			<ModalOverlay />
-			<ModalContent maxW={"350px"}>
-				<ModalHeader maxH={"xs"}>
-					<Heading as={"label"} size={"md"}>
-						共有
-					</Heading>
-				</ModalHeader>
-				<ModalCloseButton />
-				<ModalBody pb={4}>
-					<Center>
-						<Stack w={"100%"}>
-							<Input px={1} value={value} isReadOnly={true} />
-							<Center>
-								<LineShareButton url={value} />
-								<Spacer />
-								<Button size={"sm"} w={"8rem"} leftIcon={<CopyIcon />} onClick={handleCopy}>
-									URLコピー
-								</Button>
-							</Center>
-						</Stack>
-					</Center>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"}>
+			<Dialog.Backdrop />
+			<Dialog.Positioner>
+				<Dialog.Content maxW={"350px"}>
+					<Dialog.Header maxH={"xs"}>
+						<Heading as={"label"} size={"md"}>
+							リアルタイム共有
+						</Heading>
+					</Dialog.Header>
+					<Dialog.CloseTrigger asChild>
+						<CloseButton size="sm" />
+					</Dialog.CloseTrigger>
+					<Dialog.Body pb={4}>
+						<Center>
+							<Stack w={"100%"}>
+								<Input px={1} value={value} readOnly={true} />
+								<Center>
+									<LineShareButton url={value} />
+									<Spacer />
+									<Button size={"sm"} w={"8rem"} onClick={handleCopy}>
+										<MdContentCopy />
+										URLコピー
+									</Button>
+								</Center>
+							</Stack>
+						</Center>
+					</Dialog.Body>
+				</Dialog.Content>
+			</Dialog.Positioner>
+		</Dialog.Root>
 	);
 }
