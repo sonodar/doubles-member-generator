@@ -35,7 +35,7 @@ export function UsageAlertDialog({ open, onClose, onDismiss }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"} scrollBehavior={"inside"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content>
+				<Dialog.Content maxW="480px">
 					<Dialog.Header maxH={"xs"} p={0}>
 						<Alert.Root status="error">
 							<Alert.Indicator />

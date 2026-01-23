@@ -44,7 +44,7 @@ export default function HelpButton({ title, items }: Props) {
 			<Dialog.Root onOpenChange={(e) => !e.open && onClose()} size={"full"} open={open} scrollBehavior={"inside"}>
 				<Dialog.Backdrop />
 				<Dialog.Positioner>
-					<Dialog.Content>
+					<Dialog.Content maxW="480px">
 						<Dialog.Header>
 							<Heading as="h3" size="md">
 								{title || "ヘルプ"}

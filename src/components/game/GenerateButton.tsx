@@ -55,7 +55,7 @@ export function GenerateButton({ settings, onGenerate, disabled, onIgnoreUsageAl
 			<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
 				<Dialog.Backdrop />
 				<Dialog.Positioner>
-					<Dialog.Content>
+					<Dialog.Content maxW="480px">
 						<Dialog.Header>
 							<Stack gap={3} w={"100%"}>
 								<Heading as={"h3"} size={"md"}>
