@@ -344,3 +344,52 @@
   - 差分: +134.61 kB (+16.5%), gzip: +16.93 kB (+6.3%)
   - 注: Chakra UI v3 は Ark UI 等の新依存を追加したためサイズ増加
   - _Requirements: 7.1_
+
+## Task 16: UI スタイル修正（Chakra v3 移行後のバグ修正）
+
+- [x] 16.1 theme.ts に semanticTokens と globalCss を追加
+  - semanticTokens に brand, primary, danger の semantic colors を定義（solid, contrast, fg, muted, subtle, emphasized, focusRing）
+  - globalCss で html の colorPalette を "brand" に設定
+  - _Requirements: 6.1, 7.4_
+
+- [x] 16.2 colorScheme → colorPalette 一括置換
+  - 全ファイルで colorScheme= を colorPalette= に置換
+  - 対象: Button, IconButton, Badge 等のコンポーネント（15ファイル、19箇所）
+  - ConfirmDialog の okColorScheme → okColorPalette も修正
+  - _Requirements: 6.1, 7.4_
+
+- [x] 16.3 Slider の幅修正
+  - InitMemberCountInput.tsx の Slider.Root に width="320px" を追加（親コンテナと同じ幅に合わせる）
+  - _Requirements: 6.1, 7.4_
+
+- [x] 16.4 Card/Container の余白調査・修正
+  - Chakra v3 で変更された Card のデフォルトスタイルを調査
+  - Card 自体の余白は問題なし（main と同じ設定）
+  - Heading のサイズを v3 用に調整（lg→2xl, md→lg）
+  - SegmentGroup の幅問題は Task 17 で対応
+  - atomWithStorage に getOnInit: true を追加して初期値のちらつきを修正
+  - previousSettings を親コンポーネントから props で渡すように変更
+  - _Requirements: 6.1, 7.4_
+
+- [x] 16.5 品質チェック
+  - npm run typecheck && npm run lint && npm run test を実行
+  - 開発サーバーで手動確認（ボタンのトンマナ、レイアウト、スライダー表示）
+  - _Requirements: 7.2, 7.3, 7.4_
+
+## Task 17: SegmentGroup スタイリング（新規 UI の実装）
+
+現状: 色がグレースケール、幅が画面いっぱいに広がっている
+目標: 元のボタン形式のトンマナに合わせる
+
+- [x] 17.1 SegmentGroup のスタイリング
+  - CourtCountInput.tsx: colorPalette="brand" を追加、幅を fit-content に制限
+  - AlgorithmInput.tsx: colorPalette="brand" を追加、幅を fit-content に制限
+  - 背景: lightgray.50（薄いグレー）、未選択テキスト: gray.700（濃いグレー）
+  - 選択状態: colorPalette.solid 背景、colorPalette.contrast テキスト（白）
+  - GitHub ボタンの色を gray に修正
+  - _Requirements: 6.1, 7.4_
+
+- [x] 17.2 品質チェック
+  - npm run typecheck && npm run lint && npm run test を実行
+  - typecheck ✅、lint ✅、test ✅（193件パス）
+  - _Requirements: 7.2, 7.3, 7.4_

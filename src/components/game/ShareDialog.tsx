@@ -29,7 +29,7 @@ export function ShareDialog({ open, onClose, value }: Props) {
 				<Dialog.Content maxW={"350px"}>
 					<Dialog.Header maxH={"xs"}>
 						<Heading as={"label"} size={"md"}>
-							共有
+							リアルタイム共有
 						</Heading>
 					</Dialog.Header>
 					<Dialog.CloseTrigger asChild>

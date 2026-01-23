@@ -78,7 +78,7 @@ describe("ShareButton", () => {
 
 			await waitFor(() => {
 				// ShareDialogが表示される（ヘッダーは「共有」）
-				expect(screen.getByText("共有")).toBeInTheDocument();
+				expect(screen.getByText("リアルタイム共有")).toBeInTheDocument();
 			});
 		});
 	});

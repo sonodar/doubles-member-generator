@@ -38,15 +38,7 @@ export default function HelpButton({ title, items }: Props) {
 
 	return (
 		<Fragment>
-			<IconButton
-				rounded="full"
-				variant="ghost"
-				colorScheme="brand"
-				aria-label="Help"
-				size={"xs"}
-				fontSize={"md"}
-				onClick={onOpen}
-			>
+			<IconButton rounded="full" variant="ghost" aria-label="Help" size={"xs"} fontSize={"md"} onClick={onOpen}>
 				<MdHelpOutline />
 			</IconButton>
 			<Dialog.Root onOpenChange={(e) => !e.open && onClose()} size={"full"} open={open} scrollBehavior={"inside"}>

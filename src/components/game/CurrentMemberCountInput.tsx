@@ -22,18 +22,19 @@ export function CurrentMemberCountInput({ onIncrement, onDecrement, disabled }: 
 				type={"number"}
 				value={members.length}
 				step={1}
+				size={"lg"}
 				min={min}
 				max={MEMBER_COUNT_LIMIT}
-				style={{ textAlign: "center" }}
+				textAlign="center"
 				width={"14"}
-				border={""}
+				variant="flushed"
+				borderBottom="none"
 				readOnly
 			/>
 			<span>人</span>
 			<Spacer />
 			<Button
-				size={"sm"}
-				colorScheme={"brand"}
+				size={"xs"}
 				variant={"solid"}
 				onClick={onIncrement}
 				disabled={disabled || members.length >= MEMBER_COUNT_LIMIT}
@@ -41,13 +42,7 @@ export function CurrentMemberCountInput({ onIncrement, onDecrement, disabled }: 
 				<TbUserPlus />
 				参加
 			</Button>
-			<Button
-				size={"sm"}
-				variant={"outline"}
-				colorScheme={"brand"}
-				onClick={onOpen}
-				disabled={disabled || members.length <= min}
-			>
+			<Button size={"xs"} variant={"outline"} onClick={onOpen} disabled={disabled || members.length <= min}>
 				<TbUserOff />
 				離脱
 			</Button>

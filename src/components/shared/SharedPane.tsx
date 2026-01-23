@@ -131,7 +131,7 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 							size={"sm"}
 							rounded={"full"}
 							variant={"solid"}
-							colorScheme={"brand"}
+							colorPalette={"brand"}
 							fontSize={"md"}
 							onClick={() => window.location.reload()}
 							aria-label={"reload"}

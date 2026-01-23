@@ -1,6 +1,6 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
 import { Fragment, useMemo } from "react";
-import { HiLink } from "react-icons/hi2";
+import { GoShare } from "react-icons/go";
 import { ShareDialog } from "./ShareDialog";
 import ConfirmDialog from "@components/common/ConfirmDialog.tsx";
 import { toaster } from "@components/theme.ts";
@@ -43,15 +43,8 @@ export function ShareButton({ sharedId, onIssue, disabled }: Props) {
 
 	return (
 		<Fragment>
-			<IconButton
-				variant={"ghost"}
-				colorScheme={"brand"}
-				fontSize={"2xl"}
-				aria-label="シェア"
-				onClick={handleClick}
-				disabled={disabled}
-			>
-				<HiLink />
+			<IconButton variant={"ghost"} aria-label="シェア" onClick={handleClick} disabled={disabled}>
+				<GoShare />
 			</IconButton>
 			<ConfirmDialog open={isIssueOpen} onCancel={onIssueClose} onOk={handleOk} title={"共有リンクの発行"}>
 				共有リンクを発行すると、現在の状態を他の人とリアルタイムで共有できます。共有リンクを発行しますか？

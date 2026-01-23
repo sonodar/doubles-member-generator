@@ -23,7 +23,7 @@ describe("ShareDialog", () => {
 		it("isOpen=true の場合、ダイアログが表示される", () => {
 			render(<ShareDialog open={true} onClose={mockOnClose} value={testUrl} />);
 
-			expect(screen.getByText("共有")).toBeInTheDocument();
+			expect(screen.getByText("リアルタイム共有")).toBeInTheDocument();
 		});
 
 		it("URL が入力欄に表示される", () => {
@@ -64,7 +64,7 @@ describe("ShareDialog", () => {
 		it("isOpen=false の場合、ダイアログが非表示", () => {
 			render(<ShareDialog open={false} onClose={mockOnClose} value={testUrl} />);
 
-			expect(screen.queryByText("共有")).not.toBeInTheDocument();
+			expect(screen.queryByText("リアルタイム共有")).not.toBeInTheDocument();
 		});
 	});
 });

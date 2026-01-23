@@ -14,7 +14,7 @@ export function ResetButton({
 	return (
 		<Fragment>
 			<IconButton
-				colorScheme={"danger"}
+				colorPalette={"danger"}
 				size={"sm"}
 				mt={1}
 				fontSize={"lg"}
@@ -31,7 +31,7 @@ export function ResetButton({
 					onClose();
 					onReset();
 				}}
-				okColorScheme={"danger"}
+				okColorPalette={"danger"}
 				title={"本当に終了しますか？"}
 			>
 				プレイ履歴をリセットして初期設定に戻ります。今回の設定は次回に引き継がれます。

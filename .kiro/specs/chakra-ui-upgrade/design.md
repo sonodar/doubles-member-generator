@@ -479,3 +479,154 @@ flowchart LR
 - 全テスト実行
 - 手動での UI 確認
 - ビルド・lint・型チェック
+
+## Task 16: UI スタイル修正（Chakra v3 移行後のバグ修正）
+
+### 問題の概要
+
+Chakra UI v2 → v3 移行後、設定画面で以下の UI 問題が発生：
+
+1. **ボタンのトンマナが白黒になった** - -/+ボタン、開始ボタン、ヘルプボタン等の色が黒一色に
+2. **余白やレイアウトが崩れた** - Card/Container 周囲やコンポーネント間のスペーシング問題
+3. **スライダーが消えた** - メンバー数スライダーのトラックが正しく表示されない（幅が縮小）
+
+**参考画像**:
+- `.kiro/specs/chakra-ui-upgrade/before-setting.png` - 移行前の正常な UI
+- `.kiro/specs/chakra-ui-upgrade/after-setting.png` - 移行後の問題がある UI
+
+### 根本原因の分析
+
+#### 1. theme.ts の semanticTokens 未定義（主要原因）
+
+Chakra UI v3 では、カスタムカラーパレットを `colorPalette` として使用するには **semanticTokens** の定義が必須。
+
+現在の theme.ts:
+- ✅ `colors.brand/primary/danger` に 50-900 のトークンは定義済み
+- ❌ `semanticTokens` が未定義 → colorPalette が機能しない
+
+必要な semanticTokens（各カラーパレットに対して）:
+| Token | 用途 |
+|-------|------|
+| `solid` | プライマリカラー（ボタン背景など） |
+| `contrast` | solid 背景上のテキスト色 |
+| `fg` | フォアグラウンドカラー |
+| `muted` | ミュートカラー |
+| `subtle` | サブトルカラー |
+| `emphasized` | 強調カラー |
+| `focusRing` | フォーカスリング |
+
+#### 2. colorScheme → colorPalette 移行漏れ
+
+- Chakra v3 では `colorScheme` は `colorPalette` に変更が必要
+- 多くのコンポーネントで未移行（15ファイル）
+
+#### 3. Slider の幅未設定
+
+- Chakra v3 では Slider に明示的な幅指定が必要
+- `InitMemberCountInput.tsx` の Slider.Root に幅が未設定
+
+#### 4. Card/Container の余白設定
+
+- Chakra v3 で Card のデフォルトスタイルが変更された可能性
+- 調査が必要
+
+### 修正方針
+
+**グローバル設定優先** - 個別コンポーネントでの colorPalette 設定は最小限に
+
+1. **theme.ts で semanticTokens を定義** - brand, primary, danger の semantic colors
+2. **theme.ts で globalCss を設定** - html の colorPalette を "brand" に設定
+3. **colorScheme → colorPalette 一括置換** - 安全のため一旦全て置換し、後で不要なものを削除
+4. **Slider の幅修正** - width="100%" を追加
+
+### 修正後の theme.ts 構造
+
+```typescript
+import { createSystem, defaultConfig } from "@chakra-ui/react";
+
+const system = createSystem(defaultConfig, {
+  theme: {
+    tokens: {
+      fonts: { /* 既存 */ },
+      colors: {
+        brand: { 50: {...}, ..., 900: {...} },
+        primary: { 50: {...}, ..., 900: {...} },
+        danger: { 50: {...}, ..., 900: {...} },
+      },
+    },
+    semanticTokens: {
+      colors: {
+        brand: {
+          solid: { value: "{colors.brand.500}" },
+          contrast: { value: "white" },
+          fg: { value: "{colors.brand.700}" },
+          muted: { value: "{colors.brand.100}" },
+          subtle: { value: "{colors.brand.200}" },
+          emphasized: { value: "{colors.brand.300}" },
+          focusRing: { value: "{colors.brand.500}" },
+        },
+        primary: { /* 同様 */ },
+        danger: { /* 同様 */ },
+      },
+    },
+  },
+  globalCss: {
+    html: {
+      colorPalette: "brand",
+    },
+  },
+});
+```
+
+### 修正対象ファイル
+
+| ファイル | 修正内容 |
+|---------|---------|
+| `src/components/theme.ts` | semanticTokens + globalCss 追加 |
+| `src/components/setting/InitMemberCountInput.tsx` | Slider に width="100%" 追加 |
+| 全 colorScheme 使用ファイル（15件） | colorScheme → colorPalette 置換 |
+
+### 検証方法
+
+1. `npm run dev` で開発サーバー起動
+2. before-setting.png と同等の UI になることを確認:
+   - メンバー数: -/+ ボタンがブランドカラー（薄紫）
+   - スライダー: トラックが横幅いっぱいに表示
+   - 開始ボタン: テキストがブランドカラー（青系）
+   - ヘルプボタン（?）: ブランドカラー
+   - Card/Container の余白が適切
+3. `npm run typecheck && npm run lint && npm run test` がパス
+
+### 参考資料
+
+- [Change the default color palette | Chakra UI](https://chakra-ui.com/guides/theming-change-default-color-palette)
+- [Creating custom colors | Chakra UI](https://chakra-ui.com/guides/theming-custom-colors)
+
+---
+
+## Task 17: SegmentGroup スタイリング（新規 UI の実装）
+
+### 概要
+
+Chakra v3 移行時に RadioGroup/useRadio を SegmentGroup に置き換えたが、スタイリングが未実装。
+色がグレースケールなのと、幅が画面いっぱいに広がってしまっている。元のボタン形式のトンマナに合わせる。
+
+### 対象コンポーネント
+
+| コンポーネント | 用途 |
+|---------------|------|
+| `CourtCountInput.tsx` | コート数選択（1-4） |
+| `AlgorithmInput.tsx` | アルゴリズム選択（ばらつき重視/均等性重視） |
+
+### 修正内容
+
+SegmentGroup.Root に colorPalette を設定し、選択状態がブランドカラーで表示されるようにする。
+
+```typescript
+<SegmentGroup.Root colorPalette="brand" ... >
+```
+
+### 検証方法
+
+1. コート数選択: 選択状態がブランドカラー（青系）で表示
+2. アルゴリズム選択: 選択状態がブランドカラーで表示

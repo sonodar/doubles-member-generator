@@ -36,7 +36,7 @@ export function LeaveDialog({ members, open, onClose, onLeave }: Props) {
 									))}
 								</NativeSelect.Field>
 							</NativeSelect.Root>
-							<Button colorScheme={"brand"} variant={"outline"} size={"sm"} onClick={handleLeave}>
+							<Button colorPalette={"brand"} variant={"outline"} size={"sm"} onClick={handleLeave}>
 								離脱
 							</Button>
 						</HStack>

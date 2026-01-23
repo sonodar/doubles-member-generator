@@ -63,7 +63,7 @@ export function UsageAlertDialog({ open, onClose, onDismiss }: Props) {
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Stack w={"100%"} gap={10}>
-							<Button colorScheme="primary" size={"lg"} onClick={handleOk}>
+							<Button colorPalette="primary" size={"lg"} onClick={handleOk}>
 								組み合わせ決定をやめる
 							</Button>
 							<Button size={"xs"} fontSize={"xs"} variant={"ghost"} color={"gray.300"} onClick={handleDismiss}>

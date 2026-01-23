@@ -14,7 +14,7 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 		<VStack gap={4}>
 			<HStack maxW={"320px"} minW={"320px"}>
 				<IconButton
-					colorScheme={"brand"}
+					colorPalette={"brand"}
 					aria-label="decrement"
 					borderRadius="sm"
 					disabled={value <= min}
@@ -29,14 +29,14 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 					step={1}
 					min={min}
 					max={MEMBER_COUNT_LIMIT}
-					style={{ textAlign: "center" }}
+					textAlign="center"
 					width={"20"}
 					size={"sm"}
 					fontSize={"md"}
 					onChange={(e) => onChange(parseInt(e.target.value))}
 				/>
 				<IconButton
-					colorScheme={"brand"}
+					colorPalette={"brand"}
 					aria-label="increment"
 					borderRadius="sm"
 					disabled={value >= MEMBER_COUNT_LIMIT}
@@ -53,6 +53,7 @@ export function InitMemberCountInput({ min, value, onChange }: Props) {
 				max={MEMBER_COUNT_LIMIT}
 				value={[value]}
 				onValueChange={(details) => onChange(Math.max(min, details.value[0]))}
+				width={"320px"}
 			>
 				<Slider.Control>
 					<Slider.Track>

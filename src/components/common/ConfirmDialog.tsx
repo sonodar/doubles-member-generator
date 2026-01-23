@@ -9,7 +9,7 @@ type Props = {
 	title: string;
 	children: ReactNode;
 	okButtonText?: string;
-	okColorScheme?: string;
+	okColorPalette?: string;
 	cancelButtonText?: string;
 } & Record<string, unknown>;
 
@@ -21,7 +21,7 @@ export default function ConfirmDialog({
 	children,
 	cancelButtonText = "キャンセル",
 	okButtonText = "OK",
-	okColorScheme = "brand",
+	okColorPalette = "brand",
 	...attrs
 }: Props) {
 	const cancel = useRef<HTMLButtonElement | null>(null);
@@ -43,7 +43,7 @@ export default function ConfirmDialog({
 						<Button ref={cancel} onClick={onCancel} variant={"outline"}>
 							{cancelButtonText}
 						</Button>
-						<Button colorScheme={okColorScheme} onClick={onOk} ml={3}>
+						<Button colorPalette={okColorPalette} onClick={onOk} ml={3}>
 							{okButtonText}
 						</Button>
 					</Dialog.Footer>

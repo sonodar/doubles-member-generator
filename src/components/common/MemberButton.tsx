@@ -11,7 +11,7 @@ export function MemberButton({ disabled }: { disabled?: boolean }) {
 		<Fragment>
 			<IconButton
 				variant={"ghost"}
-				colorScheme={"brand"}
+				colorPalette={"brand"}
 				fontSize={"2xl"}
 				aria-label="メンバー"
 				disabled={disabled || histories.length === 0}

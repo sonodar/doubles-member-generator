@@ -47,7 +47,7 @@ export function GenerateButton({ settings, onGenerate, disabled, onIgnoreUsageAl
 
 	return (
 		<Center>
-			<Button w={"80%"} size={"lg"} colorScheme={"brand"} fontSize={"xl"} onClick={handleClick} disabled={disabled}>
+			<Button w={"80%"} size={"xl"} colorPalette={"brand"} fontSize={"xl"} onClick={handleClick} disabled={disabled}>
 				<IoDiceOutline />
 				メンバー決め
 			</Button>
@@ -73,12 +73,18 @@ export function GenerateButton({ settings, onGenerate, disabled, onIgnoreUsageAl
 							</Center>
 						</Dialog.Body>
 						<Dialog.Footer>
-							<Button w={"45%"} colorScheme={"primary"} onClick={handleOk}>
+							<Button w={"45%"} colorPalette={"primary"} onClick={handleOk}>
 								<MdCheck />
 								確定
 							</Button>
 							<Spacer />
-							<Button w={"45%"} colorScheme={"brand"} variant={"outline"} onClick={handleRetry} disabled={!newSettings}>
+							<Button
+								w={"45%"}
+								colorPalette={"brand"}
+								variant={"outline"}
+								onClick={handleRetry}
+								disabled={!newSettings}
+							>
 								<MdHistory />
 								やり直し
 							</Button>

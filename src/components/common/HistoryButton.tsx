@@ -9,14 +9,7 @@ export function HistoryButton({ disabled }: { disabled?: boolean }) {
 	const { open, onOpen, onClose } = useDisclosure();
 	return (
 		<Fragment>
-			<IconButton
-				variant={"ghost"}
-				colorScheme={"brand"}
-				fontSize={"2xl"}
-				aria-label="履歴"
-				disabled={disabled || histories.length === 0}
-				onClick={onOpen}
-			>
+			<IconButton variant={"ghost"} aria-label="履歴" disabled={disabled || histories.length === 0} onClick={onOpen}>
 				<MdOutlineWatchLater />
 			</IconButton>
 			<HistoryDialog open={open} onClose={onClose} />

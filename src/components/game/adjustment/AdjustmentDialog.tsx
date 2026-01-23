@@ -61,7 +61,7 @@ export function AdjustmentDialog({ settings, open, onClose, onChange }: Props) {
 						</Stack>
 					</Dialog.Body>
 					<Dialog.Footer>
-						<Button w={"45%"} colorScheme={"brand"} onClick={handleOk} size={"sm"} rounded={"full"}>
+						<Button w={"45%"} colorPalette={"brand"} onClick={handleOk} size={"sm"} rounded={"full"}>
 							<IoMdDownload />
 							調整反映
 						</Button>

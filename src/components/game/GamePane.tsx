@@ -76,7 +76,7 @@ export default function GamePane({ onReset }: Props) {
 
 	return (
 		<Card.Root m={0} p={0} height={"100dvh"}>
-			<Card.Body p={0} pt={3}>
+			<Card.Body px={4} pt={2}>
 				<Center>
 					<Stack gap={2}>
 						<CurrentMemberCountInput onIncrement={handleJoin} onDecrement={handleLeave} disabled={progress} />

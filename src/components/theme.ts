@@ -6,6 +6,32 @@ export const prettyFont = {
 
 const system = createSystem(defaultConfig, {
 	theme: {
+		recipes: {
+			// Button のデフォルトスタイル（Chakra v2 のデフォルト動作を再現）
+			button: {
+				base: {
+					fontWeight: "semibold",
+					borderRadius: "md",
+				},
+			},
+			// Heading サイズを Chakra v2 相当に調整（各サイズを1段階大きい textStyle にマッピング）
+			heading: {
+				variants: {
+					size: {
+						xs: { textStyle: "sm" },
+						sm: { textStyle: "md" },
+						md: { textStyle: "lg" },
+						lg: { textStyle: "xl" },
+						xl: { textStyle: "2xl" },
+						"2xl": { textStyle: "3xl" },
+						"3xl": { textStyle: "4xl" },
+						"4xl": { textStyle: "5xl" },
+						"5xl": { textStyle: "6xl" },
+						"6xl": { textStyle: "7xl" },
+					},
+				},
+			},
+		},
 		tokens: {
 			fonts: {
 				heading: { value: `"Zen Maru Gothic",-apple-system,sans-serif` },
@@ -48,6 +74,50 @@ const system = createSystem(defaultConfig, {
 					900: { value: "#9C4B62" },
 				},
 			},
+		},
+		semanticTokens: {
+			colors: {
+				brand: {
+					solid: { value: "{colors.brand.500}" },
+					contrast: { value: "white" },
+					fg: { value: "{colors.brand.700}" },
+					muted: { value: "{colors.brand.100}" },
+					subtle: { value: "{colors.brand.100}" },
+					emphasized: { value: "{colors.brand.300}" },
+					focusRing: { value: "{colors.brand.500}" },
+				},
+				primary: {
+					solid: { value: "{colors.primary.500}" },
+					contrast: { value: "white" },
+					fg: { value: "{colors.primary.700}" },
+					muted: { value: "{colors.primary.100}" },
+					subtle: { value: "{colors.primary.200}" },
+					emphasized: { value: "{colors.primary.300}" },
+					focusRing: { value: "{colors.primary.500}" },
+				},
+				danger: {
+					solid: { value: "{colors.danger.500}" },
+					contrast: { value: "white" },
+					fg: { value: "{colors.danger.700}" },
+					muted: { value: "{colors.danger.100}" },
+					subtle: { value: "{colors.danger.200}" },
+					emphasized: { value: "{colors.danger.300}" },
+					focusRing: { value: "{colors.danger.500}" },
+				},
+			},
+		},
+	},
+	globalCss: {
+		html: {
+			colorPalette: "brand",
+		},
+		// number input のスピンボタンを非表示（Chakra v2 のデフォルト動作を再現）
+		"input[type=number]": {
+			appearance: "textfield",
+		},
+		"input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button": {
+			appearance: "none",
+			margin: 0,
 		},
 	},
 });

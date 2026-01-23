@@ -1,5 +1,5 @@
 import { Container } from "@chakra-ui/react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { settingsAtom, previousSettingsAtom, useResetAll } from "./state/index.ts";
 import { array, type Algorithm } from "@logic";
 import GamePane from "@components/game/GamePane";
@@ -7,6 +7,7 @@ import InitialSettingPane from "@components/setting/InitialSettingPane";
 
 export default function Main() {
 	const [settings, setSettings] = useAtom(settingsAtom);
+	const previousSettings = useAtomValue(previousSettingsAtom);
 	const setPreviousSettings = useSetAtom(previousSettingsAtom);
 
 	const onStart = ({
@@ -33,8 +34,8 @@ export default function Main() {
 	const onReset = useResetAll();
 
 	return (
-		<Container maxW={"sm"} minW={"sm"}>
-			{settings.courtCount === 0 && <InitialSettingPane onStart={onStart} />}
+		<Container maxW={"sm"} minW={"sm"} centerContent>
+			{settings.courtCount === 0 && <InitialSettingPane previousSettings={previousSettings} onStart={onStart} />}
 			{settings.courtCount !== 0 && <GamePane onReset={onReset} />}
 		</Container>
 	);
