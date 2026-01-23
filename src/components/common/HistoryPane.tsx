@@ -9,7 +9,8 @@ function formatDate(date: string) {
 }
 
 export default function HistoryPane(props: { histories?: History[] }) {
-	const rawHistories = props.histories || useSettings().histories;
+	const settingsHistories = useSettings().histories;
+	const rawHistories = props.histories || settingsHistories;
 
 	const [current, previous, ...olds] = rawHistories.map((history, index) => ({ index, history })).reverse();
 

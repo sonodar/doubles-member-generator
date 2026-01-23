@@ -1,4 +1,4 @@
-import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { a, type ClientSchema, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
 	EventType: a.enum(["INITIALIZE", "JOIN", "LEAVE", "GENERATE", "RETRY", "FINISH"]),

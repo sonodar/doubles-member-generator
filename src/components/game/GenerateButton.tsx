@@ -1,7 +1,6 @@
 import { Button, Center, CloseButton, Dialog, Heading, Spacer, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { StatisticsPane } from "@components/game/StatisticsPane.tsx";
-import { type CurrentSettings } from "@logic";
-import { generate, retry } from "@logic";
+import { type CurrentSettings, generate, retry } from "@logic";
 import { useState } from "react";
 import { IoDiceOutline } from "react-icons/io5";
 import { MdCheck, MdHistory } from "react-icons/md";

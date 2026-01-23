@@ -1,8 +1,8 @@
 import { Algorithms, type CourtMembers } from "@logic";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as api from "../../api";
-import { useRealtimeSync } from "../../hooks";
 import type { UseRealtimeSyncOptions } from "../../hooks";
+import { useRealtimeSync } from "../../hooks";
 import { act, render, screen, waitFor } from "../../testing/utils";
 import SharedPane from "./SharedPane";
 

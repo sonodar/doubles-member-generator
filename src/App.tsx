@@ -2,7 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Main from "@components/Main";
 import Share from "@components/Share";
 import system from "@components/theme";
-import { Provider, createStore } from "jotai";
+import { createStore, Provider } from "jotai";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 
 const store = createStore();

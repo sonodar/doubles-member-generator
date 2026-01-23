@@ -2,15 +2,16 @@ import { Grid, GridItem, Heading, Stack, Text } from "@chakra-ui/react";
 import { CourtMembersBox } from "@components/game/adjustment/CourtMembersBox.tsx";
 import { RestMembersPane } from "@components/game/adjustment/RestMembersPane.tsx";
 import { toaster } from "@components/theme.ts";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import { PointerSensor } from "@dnd-kit/dom";
+import { DragDropProvider } from "@dnd-kit/react";
 import {
+	array,
 	type CurrentSettings,
 	type GameMembers,
-	type RestOrCourtMember,
-	array,
 	getLatestMembers,
 	getRestMembers,
 	isMemberType,
+	type RestOrCourtMember,
 	swapGameMember,
 } from "@logic";
 
@@ -34,34 +35,42 @@ export function AdjustmentPane({ courtCount, members, histories, onChange }: Pro
 		});
 	};
 
-	const onDragEnd = (e: DragEndEvent) => {
-		if (!e.active.data.current || !e.over?.data.current) {
+	const handleDragEnd: React.ComponentProps<typeof DragDropProvider>["onDragEnd"] = (event) => {
+		if (event.canceled) return;
+
+		const source = event.operation.source;
+		const target = event.operation.target;
+
+		if (!source?.data || !target?.data) {
 			return;
 		}
 
-		const sourceType = e.active.data.current.type;
-		const destType = e.over.data.current.type;
+		const sourceType = source.data.type;
+		const destType = target.data.type;
 
 		if (!isMemberType(sourceType) || !isMemberType(destType)) {
 			throw new Error("Invalid member type");
 		}
 
-		const source = e.active.data.current as RestOrCourtMember;
-		const dest = e.over.data.current as RestOrCourtMember;
+		const sourceMember = source.data as RestOrCourtMember;
+		const destMember = target.data as RestOrCourtMember;
 
-		const newGameMembers = swapGameMember(gameMembers, source, dest);
+		const newGameMembers = swapGameMember(gameMembers, sourceMember, destMember);
 		if (!newGameMembers) return;
 
 		onChange(newGameMembers);
-		showToast(source.memberId, dest.memberId);
+		showToast(sourceMember.memberId, destMember.memberId);
 	};
 
 	const leftSpan = 3;
 	const rightSpan = 5;
 	const columnGap = 5;
 
+	// ドラッグ開始までのディレイを最小化（距離制約なし）
+	const sensors = [PointerSensor.configure({ activationConstraints: [] })];
+
 	return (
-		<DndContext onDragEnd={onDragEnd} autoScroll={false}>
+		<DragDropProvider onDragEnd={handleDragEnd} sensors={sensors}>
 			<Stack gap={4} w={"100%"}>
 				<Text fontSize={"sm"}>↓ ドラッグ＆ドロップで調整できます ↓</Text>
 				<Grid
@@ -84,6 +93,6 @@ export function AdjustmentPane({ courtCount, members, histories, onChange }: Pro
 					))}
 				</Grid>
 			</Stack>
-		</DndContext>
+		</DragDropProvider>
 	);
 }

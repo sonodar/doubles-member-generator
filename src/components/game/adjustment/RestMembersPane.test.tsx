@@ -1,25 +1,22 @@
-import { DndContext } from "@dnd-kit/core";
+import { DragDropProvider } from "@dnd-kit/react";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "../../../testing/utils";
 import { RestMembersPane } from "./RestMembersPane";
 
-// @dnd-kit/core のモック
+// @dnd-kit/react のモック
 const mockDroppableState = {
-	isOver: false,
-	setNodeRef: vi.fn(),
+	isDropTarget: false,
+	ref: vi.fn(),
 };
 
-vi.mock("@dnd-kit/core", async () => {
-	const actual = await vi.importActual("@dnd-kit/core");
+vi.mock("@dnd-kit/react", async () => {
+	const actual = await vi.importActual("@dnd-kit/react");
 	return {
 		...actual,
 		useDroppable: vi.fn(() => mockDroppableState),
 		useDraggable: vi.fn(() => ({
 			isDragging: false,
-			attributes: {},
-			listeners: {},
-			setNodeRef: vi.fn(),
-			transform: null,
+			ref: vi.fn(),
 		})),
 	};
 });
@@ -28,9 +25,9 @@ describe("RestMembersPane", () => {
 	describe("基本表示", () => {
 		it("休憩見出しが表示される", () => {
 			render(
-				<DndContext>
+				<DragDropProvider>
 					<RestMembersPane restMembers={[9, 10]} />
-				</DndContext>,
+				</DragDropProvider>,
 			);
 
 			expect(screen.getByText("休憩")).toBeInTheDocument();
@@ -38,9 +35,9 @@ describe("RestMembersPane", () => {
 
 		it("休憩メンバーが表示される", () => {
 			render(
-				<DndContext>
+				<DragDropProvider>
 					<RestMembersPane restMembers={[9, 10]} />
-				</DndContext>,
+				</DragDropProvider>,
 			);
 
 			expect(screen.getByText("9")).toBeInTheDocument();
@@ -51,9 +48,9 @@ describe("RestMembersPane", () => {
 	describe("空の休憩メンバー", () => {
 		it("休憩メンバーが0人の場合、見出しのみ表示される", () => {
 			render(
-				<DndContext>
+				<DragDropProvider>
 					<RestMembersPane restMembers={[]} />
-				</DndContext>,
+				</DragDropProvider>,
 			);
 
 			expect(screen.getByText("休憩")).toBeInTheDocument();

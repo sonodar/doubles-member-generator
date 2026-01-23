@@ -1,12 +1,12 @@
-import { Box, Center, HStack, Heading, Separator, SimpleGrid, Tabs, Text } from "@chakra-ui/react";
+import { Box, Center, Heading, HStack, Separator, SimpleGrid, Tabs, Text } from "@chakra-ui/react";
 import { useSettings } from "@components/state";
 import {
+	array,
 	type CurrentSettings,
 	type MemberCountVariant,
-	OutlierLevelProvider,
-	array,
 	memberCountVariantLabels,
 	memberCountVariants,
+	OutlierLevelProvider,
 } from "@logic";
 import { useState } from "react";
 
@@ -27,7 +27,8 @@ export default function MemberCountPane({ settings, showLeftMember, defaultTabIn
 	const [tabIndex, setTabIndex] = useState(defaultTabIndex || 0);
 	const memberCountVariant = memberCountVariants[tabIndex];
 
-	const { histories, members, gameCounts } = settings || useSettings();
+	const currentSettings = useSettings();
+	const { histories, members, gameCounts } = settings || currentSettings;
 	const playMemberIds = Object.keys(gameCounts).map(Number);
 	const memberIds = array.sort(array.unique(members.concat(showLeftMember ? playMemberIds : [])));
 
@@ -37,14 +38,7 @@ export default function MemberCountPane({ settings, showLeftMember, defaultTabIn
 		gameCounts,
 	});
 
-	function CountPain({
-		id,
-		variant,
-	}: {
-		id: number;
-		playCount?: number;
-		variant: MemberCountVariant;
-	}) {
+	function CountPain({ id, variant }: { id: number; playCount?: number; variant: MemberCountVariant }) {
 		const value = getValue(variant, id);
 		const level = getLevel(variant, id);
 		const color = !members.includes(id) ? "gray" : outlierLevelColors[level];
