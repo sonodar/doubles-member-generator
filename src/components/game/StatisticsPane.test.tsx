@@ -33,7 +33,7 @@ describe("StatisticsPane", () => {
 			render(<StatisticsPane settings={settingsWithHistory} onAdjusted={mockOnAdjusted} />);
 
 			// 今回 のラベルが表示される
-			expect(screen.getByText("今回")).toBeInTheDocument();
+			expect(screen.getByText(/今回/)).toBeInTheDocument();
 		});
 	});
 

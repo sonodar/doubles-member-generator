@@ -3,29 +3,28 @@ name: CI
 on:
   push:
     branches-ignore: [develop, main]
-  pull_request:
-    branches: [develop, main]
   schedule:
     # 毎週金曜日 3:00 JST (= 木曜日 18:00 UTC)
     - cron: '0 18 * * 4'
+
+permissions:
+  contents: read
 
 jobs:
   changes:
     runs-on: ubuntu-latest
     if: github.event_name != 'schedule'
-    permissions:
-      pull-requests: read
     outputs:
       lint: ${{ steps.filter.outputs.lint }}
       typecheck: ${{ steps.filter.outputs.typecheck }}
       test: ${{ steps.filter.outputs.test }}
     steps:
+      - uses: actions/checkout@v4
+
       - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         id: filter
         with:
-          # push 時: develop と比較
-          # pull_request 時: デフォルトで PR ベースブランチと比較
-          base: ${{ github.event_name == 'push' && 'develop' || '' }}
+          base: develop
           filters: |
             lint:
               - '.github/**'
