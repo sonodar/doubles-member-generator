@@ -34,7 +34,7 @@ export default function ConfirmDialog({
 		>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW="480px">
+				<Dialog.Content maxW="min(90dvw, 480px)">
 					<Dialog.Header fontSize="lg" fontWeight="bold" {...prettyFont}>
 						{title}
 					</Dialog.Header>

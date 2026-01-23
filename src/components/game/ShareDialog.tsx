@@ -26,7 +26,7 @@ export function ShareDialog({ open, onClose, value }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content maxW="480px">
+				<Dialog.Content maxW="min(90dvw, 480px)">
 					<Dialog.Header maxH={"xs"}>
 						<Heading as={"label"} size={"md"}>
 							リアルタイム共有
