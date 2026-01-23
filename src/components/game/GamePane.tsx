@@ -31,10 +31,13 @@ export default function GamePane({ onReset }: Props) {
 
 	const issueShareLink = async () => {
 		openProgress();
-		const { id } = await createEnvironment();
-		setEnvironmentId(id);
-		await eventEmitter(id).initialize(settings);
-		closeProgress();
+		try {
+			const { id } = await createEnvironment();
+			setEnvironmentId(id);
+			await eventEmitter(id).initialize(settings);
+		} finally {
+			closeProgress();
+		}
 	};
 
 	const handleJoin = () => {

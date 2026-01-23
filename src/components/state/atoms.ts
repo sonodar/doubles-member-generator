@@ -31,7 +31,4 @@ export function useResetAll() {
 }
 
 export const useSettings = () => useAtomValue(settingsAtom);
-export const setSettings = (settings: CurrentSettings) => useSetAtom(settingsAtom)(settings);
 export const useSettingsReducer = () => useReducerAtom(settingsAtom, settingsReducer);
-
-export const getPreviousSettings = () => useAtomValue(previousSettingsAtom);
