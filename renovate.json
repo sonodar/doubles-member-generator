@@ -1,0 +1,47 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended", ":disableDependencyDashboard"],
+	"prHourlyLimit": 5,
+	"prConcurrentLimit": 10,
+	"enabledManagers": ["npm"],
+	"packageRules": [
+		{
+			"description": "Automerge patch and minor updates",
+			"matchUpdateTypes": ["patch", "minor"],
+			"automerge": true,
+			"automergeType": "pr",
+			"automergeStrategy": "squash"
+		},
+		{
+			"description": "Major updates require review",
+			"matchUpdateTypes": ["major"],
+			"automerge": false,
+			"reviewers": ["sonodar"]
+		},
+		{
+			"description": "AWS Amplify packages",
+			"matchPackageNames": ["/^@aws-amplify//", "/^aws-amplify$/"],
+			"groupName": "aws-amplify"
+		},
+		{
+			"description": "Testing packages",
+			"matchPackageNames": ["/^@testing-library//", "/^vitest$/", "/^@vitest//"],
+			"groupName": "testing"
+		},
+		{
+			"description": "Type definitions",
+			"matchPackageNames": ["/^@types//"],
+			"groupName": "types"
+		},
+		{
+			"description": "Group devDependencies minor updates",
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["minor"],
+			"groupName": "devDependencies-minor"
+		}
+	],
+	"vulnerabilityAlerts": {
+		"enabled": true,
+		"schedule": ["at any time"]
+	}
+}
