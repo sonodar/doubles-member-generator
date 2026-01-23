@@ -15,7 +15,7 @@ export function MemberDialog({ settings, defaultTabIndex, open, onClose, showLef
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content w="100%">
+				<Dialog.Content w="100%" maxW="480px">
 					<Dialog.Header>
 						<Heading as={"label"} size={"sm"}>
 							プレイ回数・休憩回数

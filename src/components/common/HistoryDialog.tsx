@@ -12,7 +12,7 @@ export function HistoryDialog({ open, onClose }: Props) {
 		<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} scrollBehavior={"inside"} size={"full"}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content w="100%">
+				<Dialog.Content w="100%" maxW="480px">
 					<Dialog.Header maxH={"xs"} style={{ ...prettyFont }}>
 						履歴
 					</Dialog.Header>
