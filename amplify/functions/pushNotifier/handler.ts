@@ -3,8 +3,7 @@ import { DeleteCommand, DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/li
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import type { DynamoDBRecord, DynamoDBStreamHandler } from "aws-lambda";
 import webpush from "web-push";
-import { type EventPayload, type EventType, EventType as EventTypes } from "../../../src/api/event";
-import type { PushPayload } from "../../../src/sw";
+import { type EventPayload, type EventType, EventType as EventTypes, type PushPayload } from "../../../src/api/types";
 import type { Schema } from "../../data/resource";
 import { setupVapidDetails } from "./setup";
 
