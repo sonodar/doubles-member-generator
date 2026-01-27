@@ -1,15 +1,8 @@
 /// <reference lib="webworker" />
 
-declare const self: ServiceWorkerGlobalScope;
+import type { PushPayload } from "./api/types";
 
-// amplify/functions/pushNotifier から参照するため export
-export type PushPayload = {
-	title: string;
-	body: string;
-	icon: string;
-	tag: string;
-	data: { url: string };
-};
+declare const self: ServiceWorkerGlobalScope;
 
 function isServiceWorkerScope(value: unknown): value is ServiceWorkerGlobalScope {
 	return typeof value === "object" && value !== null && "clients" in value && "registration" in value;
