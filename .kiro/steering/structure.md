@@ -81,8 +81,15 @@ components/
 - `backend.ts`: メインのバックエンド定義（`defineBackend()`）
 - `auth/resource.ts`: Cognito認証設定
 - `data/resource.ts`: GraphQLスキーマ定義（`a.schema()`）
-- `functions/`: Lambda関数リソース
+- `functions/`: Lambda関数リソース（DynamoDB Streamトリガー等）
 - 設定ファイル: `amplify_outputs.json`（自動生成、フロントエンドで使用）
+
+### Service Worker (`src/sw.ts`)
+**Location**: `src/sw.ts`
+**Purpose**: Web Push通知の受信とシステム通知表示
+**Pattern**:
+- 本番ビルド時は`dist/sw.js`に出力（vite.config.tsのrollupOptions）
+- 開発環境ではViteミドルウェアがesbuildでオンザフライビルド
 
 ## Naming Conventions
 
