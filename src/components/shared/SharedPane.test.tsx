@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as api from "../../api";
 import type { UseRealtimeSyncOptions } from "../../hooks";
-import { useRealtimeSync } from "../../hooks";
+import { usePushSubscription, useRealtimeSync } from "../../hooks";
 import { Algorithms, type CourtMembers } from "../../logic";
 import { act, render, screen, waitFor } from "../../testing/utils";
 import SharedPane from "./SharedPane";
@@ -12,8 +12,11 @@ vi.mock("../../hooks", async () => {
 	return {
 		...actual,
 		useRealtimeSync: vi.fn(),
+		usePushSubscription: vi.fn(),
 	};
 });
+
+const mockUsePushSubscription = vi.mocked(usePushSubscription);
 
 // APIモック（replayEvent は実際の実装を使う）
 vi.mock("../../api", async () => {
@@ -47,6 +50,12 @@ function setupMockWithEvents(events: api.Event[]) {
 describe("SharedPane", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		// デフォルトで usePushSubscription をモック（購読済み状態）
+		mockUsePushSubscription.mockReturnValue({
+			status: "subscribed",
+			isSubscribing: false,
+			subscribe: vi.fn(),
+		});
 	});
 
 	describe("useRealtimeSync フックの統合（Task 2.1）", () => {
@@ -415,6 +424,124 @@ describe("SharedPane", () => {
 
 			await waitFor(() => {
 				expect(screen.getByText(/今回/)).toBeInTheDocument();
+			});
+		});
+	});
+
+	describe("NotificationBanner 統合（Task 5.2）", () => {
+		it("status が permission-needed のとき、通知バナーが表示される", async () => {
+			mockUsePushSubscription.mockReturnValue({
+				status: "permission-needed",
+				isSubscribing: false,
+				subscribe: vi.fn(),
+			});
+
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4, 5, 6, 7, 8],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
+
+			render(<SharedPane sharedId="test-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByTestId("notification-banner")).toBeInTheDocument();
+			});
+		});
+
+		it("status が subscribed のとき、通知バナーが表示されない", async () => {
+			mockUsePushSubscription.mockReturnValue({
+				status: "subscribed",
+				isSubscribing: false,
+				subscribe: vi.fn(),
+			});
+
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4, 5, 6, 7, 8],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
+
+			render(<SharedPane sharedId="test-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByText("8 人が参加中")).toBeInTheDocument();
+			});
+
+			expect(screen.queryByTestId("notification-banner")).not.toBeInTheDocument();
+		});
+
+		it("終了状態のとき、通知バナーが表示されない", async () => {
+			mockUsePushSubscription.mockReturnValue({
+				status: "permission-needed",
+				isSubscribing: false,
+				subscribe: vi.fn(),
+			});
+
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4, 5, 6, 7, 8],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+				{
+					id: "event-2",
+					type: api.EventType.Finish,
+					occurredAt: new Date(),
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
+
+			render(<SharedPane sharedId="test-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByText("すでに終了しています")).toBeInTheDocument();
+			});
+
+			expect(screen.queryByTestId("notification-banner")).not.toBeInTheDocument();
+		});
+
+		it("usePushSubscription が正しい environmentId で呼ばれる", async () => {
+			setupMockWithEvents([]);
+
+			render(<SharedPane sharedId="test-shared-id" />);
+
+			await waitFor(() => {
+				expect(mockUsePushSubscription).toHaveBeenCalledWith(
+					expect.objectContaining({
+						environmentId: "test-shared-id",
+					}),
+				);
 			});
 		});
 	});

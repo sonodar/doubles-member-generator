@@ -22,6 +22,17 @@ const schema = a.schema({
 		})
 		.secondaryIndexes((index) => [index("environmentID").sortKeys(["occurredAt"]).name("byEnvironment")])
 		.authorization((allow) => [allow.guest()]),
+
+	// Lambda でしか取得しないので Environment との Relation は定義しない (しても意味がない)
+	PushSubscription: a
+		.model({
+			environmentID: a.id().required(),
+			endpoint: a.string().required(),
+			p256dh: a.string().required(),
+			auth: a.string().required(),
+		})
+		.secondaryIndexes((index) => [index("environmentID").name("byEnvironment")])
+		.authorization((allow) => [allow.guest().to(["create"])]),
 });
 
 export type Schema = ClientSchema<typeof schema>;

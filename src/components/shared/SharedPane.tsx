@@ -4,13 +4,14 @@ import { useCallback, useState } from "react";
 import { MdHome, MdRefresh } from "react-icons/md";
 import { match } from "ts-pattern";
 import { type Event, EventType, getEnvironment, replayEvent } from "../../api";
-import { useRealtimeSync } from "../../hooks";
+import { usePushSubscription, useRealtimeSync } from "../../hooks";
 import type { CurrentSettings } from "../../logic";
 import { AlgorithmBadge } from "../common/AlgorithmBadge.tsx";
 import HistoryPane from "../common/HistoryPane.tsx";
 import { MemberButton } from "../common/MemberButton.tsx";
 import { emptySettings, settingsReducer, useReducerAtom } from "../state";
 import { toaster } from "../theme.ts";
+import { NotificationBanner } from "./NotificationBanner.tsx";
 
 // ゲーム画面と違い、オンメモリの atom を利用する。
 // こうしないと同一ブラウザで共有画面を開いたときに同じ localStorage に書き込みをしてしまう。
@@ -49,6 +50,12 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 	const [settings, dispatch] = useReducerAtom(settingsAtom, settingsReducer);
 	const [finished, setFinished] = useState(false);
 	const [notFound, setNotFound] = useState(false);
+	const [bannerDismissed, setBannerDismissed] = useState(false);
+
+	// プッシュ通知購読フック
+	const { status, isSubscribing, subscribe } = usePushSubscription({
+		environmentId: sharedId,
+	});
 
 	// onEvent: 個別イベント受信時のコールバック
 	const handleEvent = useCallback(
@@ -116,6 +123,14 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 
 	return (
 		<Card.Root w="100%" my={1} py={4} borderWidth={0} boxShadow="none">
+			{!finished && !bannerDismissed && (
+				<NotificationBanner
+					status={status}
+					isSubscribing={isSubscribing}
+					onSubscribe={subscribe}
+					onDismiss={() => setBannerDismissed(true)}
+				/>
+			)}
 			{finished && (
 				<Alert.Root status="error" mb={2}>
 					<Alert.Indicator />

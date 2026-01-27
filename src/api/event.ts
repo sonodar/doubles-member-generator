@@ -43,13 +43,14 @@ type FinishEventPayload = {
 	payload?: never;
 };
 
-export type EventPayload =
+export type EventPayload = (
 	| InitializeEventPayload
 	| JoinEventPayload
 	| LeaveEventPayload
 	| GenerateEventPayload
 	| RetryEventPayload
-	| FinishEventPayload;
+	| FinishEventPayload
+) & { silent?: boolean };
 
 export type Event = EventPayload & {
 	id: string;

@@ -1,5 +1,6 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage, RESET } from "jotai/utils";
+import { atomFamily } from "jotai-family";
 import { Algorithms, type CurrentSettings } from "../../logic";
 import { settingsReducer } from "./reducer";
 import { useReducerAtom } from "./useReducerAtom";
@@ -32,3 +33,15 @@ export function useResetAll() {
 
 export const useSettings = () => useAtomValue(settingsAtom);
 export const useSettingsReducer = () => useReducerAtom(settingsAtom, settingsReducer);
+
+// Push Subscription 状態管理
+// environmentId ごとに購読状態を永続化
+const pushSubscriptionAtomFamily = atomFamily((environmentId: string) =>
+	atomWithStorage<boolean>(`pushSubscription:${environmentId}`, false, undefined, {
+		getOnInit: true,
+	}),
+);
+
+export function usePushSubscriptionState(environmentId: string) {
+	return useAtom(pushSubscriptionAtomFamily(environmentId));
+}
