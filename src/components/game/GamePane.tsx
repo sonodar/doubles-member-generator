@@ -1,7 +1,8 @@
 import { Box, Card, Center, HStack, Separator, Stack } from "@chakra-ui/react";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { createEnvironment, EventType, eventEmitter, finishEnvironment } from "../../api";
+import { useAutoFinishSubscription } from "../../hooks";
 import { type CurrentSettings, getLatestMembers } from "../../logic";
 import { AlgorithmBadge } from "../common/AlgorithmBadge";
 import { HistoryButton } from "../common/HistoryButton.tsx";
@@ -28,6 +29,21 @@ export default function GamePane({ onReset }: Props) {
 
 	const openProgress = () => setProgress(true);
 	const closeProgress = () => setProgress(false);
+
+	// 自動終了イベントを購読
+	const handleAutoFinish = useCallback(() => {
+		toaster.create({
+			title: "ゲームが自動終了されました",
+			type: "info",
+			duration: 3000,
+		});
+		onReset();
+	}, [onReset]);
+
+	const { unsubscribe } = useAutoFinishSubscription({
+		environmentId,
+		onAutoFinish: handleAutoFinish,
+	});
 
 	const issueShareLink = async () => {
 		openProgress();
@@ -68,6 +84,8 @@ export default function GamePane({ onReset }: Props) {
 	};
 
 	const clear = () => {
+		// 先に購読解除（自分が発行する FINISH イベントを受信しないため）
+		unsubscribe();
 		onReset();
 		if (environmentId) {
 			eventEmitter(environmentId).finish();
