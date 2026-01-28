@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { type Event, findAllEvents, subscribeEvent } from "../api";
+import { useBrowserLifecycleSync } from "./useBrowserLifecycleSync";
 
 export interface UseRealtimeSyncOptions {
 	/** 共有ID */
@@ -139,39 +140,11 @@ export function useRealtimeSync(options: UseRealtimeSyncOptions): UseRealtimeSyn
 	}, [sync, cleanup]);
 
 	// ブラウザライフサイクルイベントリスナーの登録
-	useEffect(() => {
-		const handleVisibilityChange = () => {
-			if (document.visibilityState === "visible") {
-				sync();
-			}
-		};
-
-		const handlePageShow = (event: PageTransitionEvent) => {
-			if (event.persisted) {
-				sync();
-			}
-		};
-
-		const handlePageHide = () => {
-			unsubscribe();
-		};
-
-		const handleOnline = () => {
-			sync();
-		};
-
-		document.addEventListener("visibilitychange", handleVisibilityChange);
-		window.addEventListener("pageshow", handlePageShow);
-		window.addEventListener("pagehide", handlePageHide);
-		window.addEventListener("online", handleOnline);
-
-		return () => {
-			document.removeEventListener("visibilitychange", handleVisibilityChange);
-			window.removeEventListener("pageshow", handlePageShow);
-			window.removeEventListener("pagehide", handlePageHide);
-			window.removeEventListener("online", handleOnline);
-		};
-	}, [sync, unsubscribe]);
+	useBrowserLifecycleSync({
+		subject: "useRealtimeSync",
+		onResume: sync,
+		onPause: unsubscribe,
+	});
 
 	return { sync };
 }
