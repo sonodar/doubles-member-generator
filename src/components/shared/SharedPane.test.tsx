@@ -268,13 +268,40 @@ describe("SharedPane", () => {
 
 	describe("基本表示", () => {
 		it("参加者数が表示される", async () => {
-			setupMockWithEvents([]);
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
 
 			render(<SharedPane sharedId="test-id" />);
 
 			await waitFor(() => {
 				expect(screen.getByText(/人が参加/)).toBeInTheDocument();
 			});
+		});
+
+		it("初期化前はローディング表示される", async () => {
+			// onSync を呼ばないようにして、初期化前の状態を維持
+			mockUseRealtimeSync.mockImplementation(() => {
+				return { sync: vi.fn() };
+			});
+
+			render(<SharedPane sharedId="test-id" />);
+
+			// ローディング中は Spinner が表示され、参加者数は表示されない
+			expect(screen.queryByText(/人が参加/)).not.toBeInTheDocument();
 		});
 	});
 
