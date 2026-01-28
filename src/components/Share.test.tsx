@@ -22,8 +22,22 @@ describe("Share", () => {
 
 	describe("基本表示", () => {
 		it("sharedIdが渡されるとSharedPaneが表示される", async () => {
-			// 空のイベントを返す
-			vi.mocked(api.findAllEvents).mockResolvedValue([]);
+			// 初期化イベントを返す
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+			];
+			vi.mocked(api.findAllEvents).mockResolvedValue(mockEvents);
 
 			render(<Share sharedId="test-share-id" />);
 

@@ -1,4 +1,4 @@
-import { Alert, Card, Center, Heading, HStack, IconButton, Link, Spacer } from "@chakra-ui/react";
+import { Alert, Card, Center, Heading, HStack, IconButton, Link, Spacer, Spinner } from "@chakra-ui/react";
 import { atom } from "jotai";
 import { useCallback, useState } from "react";
 import { MdHome, MdRefresh } from "react-icons/md";
@@ -50,6 +50,7 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 	const [settings, dispatch] = useReducerAtom(settingsAtom, settingsReducer);
 	const [finished, setFinished] = useState(false);
 	const [notFound, setNotFound] = useState(false);
+	const [initialized, setInitialized] = useState(false);
 	const [bannerDismissed, setBannerDismissed] = useState(false);
 
 	// プッシュ通知購読フック
@@ -91,11 +92,13 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 				if (!env) {
 					setNotFound(true);
 				}
+				setInitialized(true);
 				return;
 			}
 			const { settings, finished } = replayEvents(events);
 			dispatch({ type: EventType.Initialize, payload: settings });
 			setFinished(finished);
+			setInitialized(true);
 		},
 		[dispatch, sharedId],
 	);
@@ -117,6 +120,16 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 						<Alert.Description>終了から一定期間経過すると自動で削除されます。</Alert.Description>
 					</Alert.Content>
 				</Alert.Root>
+			</Card.Root>
+		);
+	}
+
+	if (!initialized) {
+		return (
+			<Card.Root w="100%" my={1} py={4} borderWidth={0} boxShadow="none">
+				<Center py={8}>
+					<Spinner size="lg" color="brand.500" />
+				</Center>
 			</Card.Root>
 		);
 	}
