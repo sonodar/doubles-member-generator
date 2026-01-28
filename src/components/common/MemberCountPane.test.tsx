@@ -38,10 +38,10 @@ describe("MemberCountPane", () => {
 		it("メンバーIDとプレイ回数が表示される", async () => {
 			render(<MemberCountPane settings={settingsWithHistory} />);
 
-			// メンバーIDが表示される
+			// メンバーIDが表示される（番号とコロンは別要素）
 			await waitFor(() => {
-				expect(screen.getByText("1 :")).toBeInTheDocument();
-				expect(screen.getByText("10 :")).toBeInTheDocument();
+				expect(screen.getAllByText("1").length).toBeGreaterThan(0);
+				expect(screen.getByText("10")).toBeInTheDocument();
 			});
 		});
 
@@ -50,7 +50,7 @@ describe("MemberCountPane", () => {
 				initialAtomValues: [[settingsAtom, settingsWithHistory]],
 			});
 
-			await waitFor(() => expect(screen.getByText("1 :")).toBeInTheDocument());
+			await waitFor(() => expect(screen.getAllByText("1").length).toBeGreaterThan(0));
 		});
 	});
 
@@ -97,8 +97,62 @@ describe("MemberCountPane", () => {
 
 			render(<MemberCountPane settings={settingsWithLeftMember} showLeftMember={true} />);
 
-			// 離脱メンバーも表示される
-			await waitFor(() => expect(screen.getByText("11 :")).toBeInTheDocument());
+			// 離脱メンバーも表示される（番号とコロンは別要素）
+			await waitFor(() => expect(screen.getByText("11")).toBeInTheDocument());
+		});
+	});
+
+	describe("警告表示", () => {
+		it("連続休憩警告があるメンバーに警告アイコンが表示される", async () => {
+			// メンバー9, 10が2回連続休憩している設定
+			const settingsWithWarning: CurrentSettings = {
+				...settingsWithHistory,
+				histories: [
+					{ members: courtMembers, time: "2026-01-21T10:00:00+09:00" },
+					{ members: courtMembers, time: "2026-01-21T10:30:00+09:00" },
+				],
+				algorithm: Algorithms.EVENNESS, // 閾値2
+			};
+
+			render(<MemberCountPane settings={settingsWithWarning} />);
+
+			// 連続休憩タブに切り替え
+			const restCountTab = screen.getByRole("tab", { name: "連続休憩" });
+			fireEvent.click(restCountTab);
+
+			await waitFor(() => {
+				// 警告アイコンが表示される
+				const warningIndicators = screen.getAllByTestId("warning-indicator");
+				expect(warningIndicators.length).toBeGreaterThan(0);
+			});
+		});
+
+		it("試合回数差警告があるメンバーに警告アイコンが表示される", async () => {
+			// メンバー9が試合回数0で差が閾値以上
+			const settingsWithWarning: CurrentSettings = {
+				...settingsWithHistory,
+				gameCounts: {
+					1: { playCount: 2, baseCount: 0 },
+					2: { playCount: 2, baseCount: 0 },
+					3: { playCount: 2, baseCount: 0 },
+					4: { playCount: 2, baseCount: 0 },
+					5: { playCount: 2, baseCount: 0 },
+					6: { playCount: 2, baseCount: 0 },
+					7: { playCount: 2, baseCount: 0 },
+					8: { playCount: 2, baseCount: 0 },
+					9: { playCount: 0, baseCount: 0 },
+					10: { playCount: 2, baseCount: 0 },
+				},
+				algorithm: Algorithms.EVENNESS, // 閾値2
+			};
+
+			render(<MemberCountPane settings={settingsWithWarning} />);
+
+			await waitFor(() => {
+				// 警告アイコンが表示される（総プレイタブ）
+				const warningIndicators = screen.getAllByTestId("warning-indicator");
+				expect(warningIndicators.length).toBeGreaterThan(0);
+			});
 		});
 	});
 });
