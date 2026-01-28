@@ -131,7 +131,7 @@ cfnResources.amplifyDynamoDbTables.Environment.timeToLiveAttribute = {
 	eventSourceMapping.node.addDependency(streamsPolicy);
 
 	// Environment テーブルの Stream 有効化を待ってからマッピングを作成
-	eventSourceMapping.node.addDependency(cfnResources.amplifyDynamoDbTables.Environment);
+	eventSourceMapping.node.addDependency(environmentTable);
 })();
 
 // pushNotifier Lambda の設定
@@ -205,5 +205,5 @@ cfnResources.amplifyDynamoDbTables.Environment.timeToLiveAttribute = {
 	eventSourceMapping.node.addDependency(streamsPolicy);
 
 	// Event テーブルの Stream 有効化を待ってからマッピングを作成
-	eventSourceMapping.node.addDependency(cfnResources.amplifyDynamoDbTables.Event);
+	eventSourceMapping.node.addDependency(eventTable);
 })();
