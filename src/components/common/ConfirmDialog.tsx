@@ -12,6 +12,7 @@ type Props = {
 	okColorPalette?: string;
 	cancelButtonText?: string;
 	loading?: boolean;
+	placement?: "center" | "top";
 } & Record<string, unknown>;
 
 export default function ConfirmDialog({
@@ -24,6 +25,7 @@ export default function ConfirmDialog({
 	okButtonText = "OK",
 	okColorPalette = "brand",
 	loading = false,
+	placement = "center",
 	...attrs
 }: Props) {
 	const cancel = useRef<HTMLButtonElement | null>(null);
@@ -33,6 +35,7 @@ export default function ConfirmDialog({
 			onOpenChange={(e) => !e.open && onCancel()}
 			initialFocusEl={() => cancel.current}
 			role="alertdialog"
+			placement={placement}
 		>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>

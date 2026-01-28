@@ -1,4 +1,5 @@
 export * from "./array";
+export * from "./consecutiveOperation";
 export * from "./consts";
 export * from "./count";
 export { generate, replayGenerate } from "./generate";
@@ -9,3 +10,4 @@ export { replayRetry, retry } from "./retry";
 export * from "./swap";
 export * from "./types";
 export * from "./util";
+export * from "./warning";

@@ -129,4 +129,132 @@ describe("GenerateButton", () => {
 			generateSpy.mockRestore();
 		});
 	});
+
+	describe("連続操作警告", () => {
+		const recentTime = new Date(Date.now() - 30 * 1000).toISOString(); // 30秒前
+		const oldTime = new Date(Date.now() - 2 * 60 * 1000).toISOString(); // 2分前
+
+		const settingsWithRecentHistory: CurrentSettings = {
+			...baseSettings,
+			histories: [
+				{
+					members: [
+						[1, 2, 3, 4],
+						[5, 6, 7, 8],
+					],
+					time: recentTime,
+				},
+			],
+		};
+
+		const settingsWithOldHistory: CurrentSettings = {
+			...baseSettings,
+			histories: [
+				{
+					members: [
+						[1, 2, 3, 4],
+						[5, 6, 7, 8],
+					],
+					time: oldTime,
+				},
+			],
+		};
+
+		it("1分以内の連続操作時に警告ダイアログが表示される", async () => {
+			render(<GenerateButton settings={settingsWithRecentHistory} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			await waitFor(() => {
+				expect(screen.getByText("ちょっと待ってください")).toBeInTheDocument();
+			});
+		});
+
+		it("警告ダイアログには出番の偏りについての説明が表示される", async () => {
+			render(<GenerateButton settings={settingsWithRecentHistory} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			await waitFor(() => {
+				expect(screen.getByText(/出番が偏ったり/)).toBeInTheDocument();
+			});
+		});
+
+		it("警告ダイアログにはやり直しボタンの案内が表示される", async () => {
+			render(<GenerateButton settings={settingsWithRecentHistory} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			await waitFor(() => {
+				expect(screen.getByText(/「やり直し」ボタン/)).toBeInTheDocument();
+			});
+		});
+
+		it("警告ダイアログで「やめる」を選択すると処理が中止される", async () => {
+			render(<GenerateButton settings={settingsWithRecentHistory} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			await waitFor(() => {
+				expect(screen.getByText("ちょっと待ってください")).toBeInTheDocument();
+			});
+
+			const cancelButton = screen.getByRole("button", { name: "やめる" });
+			fireEvent.click(cancelButton);
+
+			await waitFor(() => {
+				expect(screen.queryByText("ちょっと待ってください")).not.toBeInTheDocument();
+			});
+
+			// 生成ダイアログは表示されていない
+			expect(screen.queryByText("メンバー選出")).not.toBeInTheDocument();
+		});
+
+		it("警告ダイアログで「このまま続ける」を選択すると生成ダイアログが表示される", async () => {
+			render(<GenerateButton settings={settingsWithRecentHistory} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			await waitFor(() => {
+				expect(screen.getByText("ちょっと待ってください")).toBeInTheDocument();
+			});
+
+			const continueButton = screen.getByRole("button", { name: "このまま続ける" });
+			fireEvent.click(continueButton);
+
+			await waitFor(() => {
+				expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			});
+		});
+
+		it("1分以上経過している場合は警告なしで生成ダイアログが表示される", async () => {
+			render(<GenerateButton settings={settingsWithOldHistory} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			// 警告ダイアログではなく生成ダイアログが直接表示される
+			await waitFor(() => {
+				expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			});
+			expect(screen.queryByText("ちょっと待ってください")).not.toBeInTheDocument();
+		});
+
+		it("履歴がない場合は警告なしで生成ダイアログが表示される", async () => {
+			render(<GenerateButton settings={baseSettings} onGenerate={mockOnGenerate} />);
+
+			const button = screen.getByRole("button", { name: "メンバー決め" });
+			fireEvent.click(button);
+
+			await waitFor(() => {
+				expect(screen.getByText("メンバー選出")).toBeInTheDocument();
+			});
+			expect(screen.queryByText("ちょっと待ってください")).not.toBeInTheDocument();
+		});
+	});
 });
