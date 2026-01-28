@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as api from "../../api";
 import type { UseRealtimeSyncOptions } from "../../hooks";
-import { useRealtimeSync } from "../../hooks";
+import { usePushSubscription, useRealtimeSync } from "../../hooks";
 import { Algorithms, type CourtMembers } from "../../logic";
 import { act, render, screen, waitFor } from "../../testing/utils";
 import SharedPane from "./SharedPane";
@@ -12,8 +12,11 @@ vi.mock("../../hooks", async () => {
 	return {
 		...actual,
 		useRealtimeSync: vi.fn(),
+		usePushSubscription: vi.fn(),
 	};
 });
+
+const mockUsePushSubscription = vi.mocked(usePushSubscription);
 
 // APIモック（replayEvent は実際の実装を使う）
 vi.mock("../../api", async () => {
@@ -22,6 +25,7 @@ vi.mock("../../api", async () => {
 		...actual,
 		findAllEvents: vi.fn(),
 		subscribeEvent: vi.fn(() => ({ unsubscribe: vi.fn() })),
+		getEnvironment: vi.fn(),
 	};
 });
 
@@ -46,37 +50,49 @@ function setupMockWithEvents(events: api.Event[]) {
 describe("SharedPane", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		// デフォルトで usePushSubscription をモック（購読済み状態）
+		mockUsePushSubscription.mockReturnValue({
+			status: "subscribed",
+			isSubscribing: false,
+			subscribe: vi.fn(),
+		});
 	});
 
 	describe("useRealtimeSync フックの統合（Task 2.1）", () => {
-		it("useRealtimeSync フックが sharedId とコールバックで呼び出される", () => {
+		it("useRealtimeSync フックが sharedId とコールバックで呼び出される", async () => {
 			setupMockWithEvents([]);
 
 			render(<SharedPane sharedId="test-shared-id" />);
 
-			expect(mockUseRealtimeSync).toHaveBeenCalledWith({
-				sharedId: "test-shared-id",
-				onEvent: expect.any(Function),
-				onSync: expect.any(Function),
+			await waitFor(() => {
+				expect(mockUseRealtimeSync).toHaveBeenCalledWith({
+					sharedId: "test-shared-id",
+					onEvent: expect.any(Function),
+					onSync: expect.any(Function),
+				});
 			});
 		});
 
-		it("subscribed state は使用されず、フック内部で管理される", () => {
+		it("subscribed state は使用されず、フック内部で管理される", async () => {
 			setupMockWithEvents([]);
 
 			render(<SharedPane sharedId="test-id" />);
 
 			// subscribeEvent が直接呼ばれないことを確認（フック経由のみ）
-			expect(api.subscribeEvent).not.toHaveBeenCalled();
+			await waitFor(() => {
+				expect(api.subscribeEvent).not.toHaveBeenCalled();
+			});
 		});
 
-		it("findAllEvents が直接呼ばれないことを確認（フック経由のみ）", () => {
+		it("findAllEvents が直接呼ばれないことを確認（フック経由のみ）", async () => {
 			setupMockWithEvents([]);
 
 			render(<SharedPane sharedId="test-id" />);
 
 			// findAllEvents が直接呼ばれないことを確認
-			expect(api.findAllEvents).not.toHaveBeenCalled();
+			await waitFor(() => {
+				expect(api.findAllEvents).not.toHaveBeenCalled();
+			});
 		});
 	});
 
@@ -408,6 +424,171 @@ describe("SharedPane", () => {
 
 			await waitFor(() => {
 				expect(screen.getByText(/今回/)).toBeInTheDocument();
+			});
+		});
+	});
+
+	describe("NotificationBanner 統合（Task 5.2）", () => {
+		it("status が permission-needed のとき、通知バナーが表示される", async () => {
+			mockUsePushSubscription.mockReturnValue({
+				status: "permission-needed",
+				isSubscribing: false,
+				subscribe: vi.fn(),
+			});
+
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4, 5, 6, 7, 8],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
+
+			render(<SharedPane sharedId="test-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByTestId("notification-banner")).toBeInTheDocument();
+			});
+		});
+
+		it("status が subscribed のとき、通知バナーが表示されない", async () => {
+			mockUsePushSubscription.mockReturnValue({
+				status: "subscribed",
+				isSubscribing: false,
+				subscribe: vi.fn(),
+			});
+
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4, 5, 6, 7, 8],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
+
+			render(<SharedPane sharedId="test-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByText("8 人が参加中")).toBeInTheDocument();
+			});
+
+			expect(screen.queryByTestId("notification-banner")).not.toBeInTheDocument();
+		});
+
+		it("終了状態のとき、通知バナーが表示されない", async () => {
+			mockUsePushSubscription.mockReturnValue({
+				status: "permission-needed",
+				isSubscribing: false,
+				subscribe: vi.fn(),
+			});
+
+			const mockEvents: api.Event[] = [
+				{
+					id: "event-1",
+					type: api.EventType.Initialize,
+					occurredAt: new Date(),
+					payload: {
+						courtCount: 2,
+						members: [1, 2, 3, 4, 5, 6, 7, 8],
+						histories: [],
+						gameCounts: {},
+						algorithm: Algorithms.DISCRETENESS,
+					},
+				},
+				{
+					id: "event-2",
+					type: api.EventType.Finish,
+					occurredAt: new Date(),
+				},
+			];
+
+			setupMockWithEvents(mockEvents);
+
+			render(<SharedPane sharedId="test-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByText("すでに終了しています")).toBeInTheDocument();
+			});
+
+			expect(screen.queryByTestId("notification-banner")).not.toBeInTheDocument();
+		});
+
+		it("usePushSubscription が正しい environmentId で呼ばれる", async () => {
+			setupMockWithEvents([]);
+
+			render(<SharedPane sharedId="test-shared-id" />);
+
+			await waitFor(() => {
+				expect(mockUsePushSubscription).toHaveBeenCalledWith(
+					expect.objectContaining({
+						environmentId: "test-shared-id",
+					}),
+				);
+			});
+		});
+	});
+
+	describe("存在しない ID", () => {
+		it("存在しない ID の場合、エラー状態の Alert が表示される", async () => {
+			// getEnvironment が null を返すようモック
+			vi.mocked(api.getEnvironment).mockResolvedValue(null);
+
+			let called = false;
+			mockUseRealtimeSync.mockImplementation((options) => {
+				if (!called) {
+					called = true;
+					Promise.resolve().then(() => {
+						options.onSync([]);
+					});
+				}
+				return { sync: vi.fn() };
+			});
+
+			render(<SharedPane sharedId="non-existent-id" />);
+
+			await waitFor(() => {
+				expect(screen.getByTestId("not-found-alert")).toBeInTheDocument();
+			});
+		});
+
+		it("環境は存在するがイベントが空の場合、Alert は表示されない", async () => {
+			// getEnvironment が環境を返すようモック
+			vi.mocked(api.getEnvironment).mockResolvedValue({ id: "existing-env" });
+
+			let called = false;
+			mockUseRealtimeSync.mockImplementation((options) => {
+				if (!called) {
+					called = true;
+					Promise.resolve().then(() => {
+						options.onSync([]);
+					});
+				}
+				return { sync: vi.fn() };
+			});
+
+			render(<SharedPane sharedId="existing-env" />);
+
+			// 少し待ってから Alert がないことを確認
+			await waitFor(() => {
+				expect(screen.queryByTestId("not-found-alert")).not.toBeInTheDocument();
 			});
 		});
 	});

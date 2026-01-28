@@ -1,60 +1,9 @@
 import { match } from "ts-pattern";
 import { type CurrentSettings, type GameMembers, join, leave, replayGenerate, replayRetry } from "../logic";
 import { client, type Schema } from "./client";
+import { type Event, type EventPayload, EventType, type InitializeEventPayload } from "./types";
 
-export const EventType = {
-	Initialize: "INITIALIZE",
-	Join: "JOIN",
-	Leave: "LEAVE",
-	Generate: "GENERATE",
-	Retry: "RETRY",
-	Finish: "FINISH",
-} as const;
-
-export type EventType = (typeof EventType)[keyof typeof EventType];
-
-type InitializeEventPayload = {
-	type: typeof EventType.Initialize;
-	payload: CurrentSettings;
-};
-
-type JoinEventPayload = {
-	type: typeof EventType.Join;
-	payload?: never;
-};
-
-type LeaveEventPayload = {
-	type: typeof EventType.Leave;
-	payload: { memberId: number };
-};
-
-type GenerateEventPayload = {
-	type: typeof EventType.Generate;
-	payload: { members: GameMembers };
-};
-
-type RetryEventPayload = {
-	type: typeof EventType.Retry;
-	payload: { members: GameMembers };
-};
-
-type FinishEventPayload = {
-	type: typeof EventType.Finish;
-	payload?: never;
-};
-
-export type EventPayload =
-	| InitializeEventPayload
-	| JoinEventPayload
-	| LeaveEventPayload
-	| GenerateEventPayload
-	| RetryEventPayload
-	| FinishEventPayload;
-
-export type Event = EventPayload & {
-	id: string;
-	occurredAt: Date;
-};
+export { EventType, type EventPayload, type Event, type InitializeEventPayload };
 
 type EventModel = Schema["Event"]["type"];
 

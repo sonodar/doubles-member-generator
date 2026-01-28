@@ -60,6 +60,7 @@ SPAベースのフルスタックWebアプリケーション。Viteをビルド�
 
 - **Vite + React**: 高速な開発サーバーとHMR、シンプルなSPA構成
 - **Amplify Gen2**: TypeScriptベースのインフラ定義、型安全なスキーマ、CDKによるカスタマイズ
+- **Web Push**: VAPID認証によるプッシュ通知、DynamoDB StreamトリガーでLambdaから配信
 - **Jotai over Redux**: 小規模アプリに適した軽量な状態管理、localStorage連携が容易
 - **Chakra UI v3**: Recipe/Slot パターンによるスタイル定義、Ark UI ベースのアクセシブルコンポーネント
 - **Biome**: ESLint + Prettierより高速、設定が簡潔

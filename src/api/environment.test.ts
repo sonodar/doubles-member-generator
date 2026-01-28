@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // vi.hoisted でモック関数を先に作成
-const { mockCreate, mockUpdate } = vi.hoisted(() => ({
+const { mockCreate, mockUpdate, mockGet } = vi.hoisted(() => ({
 	mockCreate: vi.fn(),
 	mockUpdate: vi.fn(),
+	mockGet: vi.fn(),
 }));
 
 // client モジュールのモック
@@ -13,13 +14,14 @@ vi.mock("./client", () => ({
 			Environment: {
 				create: mockCreate,
 				update: mockUpdate,
+				get: mockGet,
 			},
 		},
 	},
 }));
 
 // テスト対象のインポートはモック設定後に行う
-import { createEnvironment, finishEnvironment } from "./environment";
+import { createEnvironment, finishEnvironment, getEnvironment } from "./environment";
 
 describe("environment", () => {
 	beforeEach(() => {
@@ -73,6 +75,27 @@ describe("environment", () => {
 				id: envId,
 				finishedAt: now.toISOString(),
 			});
+		});
+	});
+
+	describe("getEnvironment", () => {
+		it("should return environment when it exists", async () => {
+			const envId = "existing-env-id";
+			mockGet.mockResolvedValue({ data: { id: envId } });
+
+			const result = await getEnvironment(envId);
+
+			expect(result).toEqual({ id: envId });
+			expect(mockGet).toHaveBeenCalledWith({ id: envId });
+		});
+
+		it("should return null when environment does not exist", async () => {
+			mockGet.mockResolvedValue({ data: null });
+
+			const result = await getEnvironment("non-existent-id");
+
+			expect(result).toBeNull();
+			expect(mockGet).toHaveBeenCalledWith({ id: "non-existent-id" });
 		});
 	});
 });

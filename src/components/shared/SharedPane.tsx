@@ -3,14 +3,15 @@ import { atom } from "jotai";
 import { useCallback, useState } from "react";
 import { MdHome, MdRefresh } from "react-icons/md";
 import { match } from "ts-pattern";
-import { type Event, EventType, replayEvent } from "../../api";
-import { useRealtimeSync } from "../../hooks";
+import { type Event, EventType, getEnvironment, replayEvent } from "../../api";
+import { usePushSubscription, useRealtimeSync } from "../../hooks";
 import type { CurrentSettings } from "../../logic";
 import { AlgorithmBadge } from "../common/AlgorithmBadge.tsx";
 import HistoryPane from "../common/HistoryPane.tsx";
 import { MemberButton } from "../common/MemberButton.tsx";
 import { emptySettings, settingsReducer, useReducerAtom } from "../state";
 import { toaster } from "../theme.ts";
+import { NotificationBanner } from "./NotificationBanner.tsx";
 
 // ゲーム画面と違い、オンメモリの atom を利用する。
 // こうしないと同一ブラウザで共有画面を開いたときに同じ localStorage に書き込みをしてしまう。
@@ -48,6 +49,13 @@ function getMessageStatus(type: EventType): "success" | "warning" | "info" | "er
 export default function SharedPane({ sharedId }: { sharedId: string }) {
 	const [settings, dispatch] = useReducerAtom(settingsAtom, settingsReducer);
 	const [finished, setFinished] = useState(false);
+	const [notFound, setNotFound] = useState(false);
+	const [bannerDismissed, setBannerDismissed] = useState(false);
+
+	// プッシュ通知購読フック
+	const { status, isSubscribing, subscribe } = usePushSubscription({
+		environmentId: sharedId,
+	});
 
 	// onEvent: 個別イベント受信時のコールバック
 	const handleEvent = useCallback(
@@ -76,15 +84,20 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 
 	// onSync: 全イベント取得後のコールバック（初期化・復帰時）
 	const handleSync = useCallback(
-		(events: Event[]) => {
+		async (events: Event[]) => {
+			// イベントが空の場合、Environment の存在確認を行う
 			if (events.length === 0) {
+				const env = await getEnvironment(sharedId);
+				if (!env) {
+					setNotFound(true);
+				}
 				return;
 			}
 			const { settings, finished } = replayEvents(events);
 			dispatch({ type: EventType.Initialize, payload: settings });
 			setFinished(finished);
 		},
-		[dispatch],
+		[dispatch, sharedId],
 	);
 
 	// useRealtimeSync フックを使用してライフサイクル管理を委譲
@@ -94,8 +107,30 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 		onSync: handleSync,
 	});
 
+	if (notFound) {
+		return (
+			<Card.Root w="100%" my={1} py={4} borderWidth={0} boxShadow="none">
+				<Alert.Root status="error" data-testid="not-found-alert">
+					<Alert.Indicator />
+					<Alert.Content>
+						<Alert.Title>共有されたイベントが見つかりません</Alert.Title>
+						<Alert.Description>終了から一定期間経過すると自動で削除されます。</Alert.Description>
+					</Alert.Content>
+				</Alert.Root>
+			</Card.Root>
+		);
+	}
+
 	return (
 		<Card.Root w="100%" my={1} py={4} borderWidth={0} boxShadow="none">
+			{!finished && !bannerDismissed && (
+				<NotificationBanner
+					status={status}
+					isSubscribing={isSubscribing}
+					onSubscribe={subscribe}
+					onDismiss={() => setBannerDismissed(true)}
+				/>
+			)}
 			{finished && (
 				<Alert.Root status="error" mb={2}>
 					<Alert.Indicator />
