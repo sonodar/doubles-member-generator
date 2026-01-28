@@ -92,7 +92,6 @@ export function generate(settings: CurrentSettings): CurrentSettings {
 
 		switch (settings.algorithm) {
 			case Algorithms.EVENNESS:
-				console.log(`連続休憩回数の上限: ${restLimit}`);
 				// 均等モードの場合、連続休憩回数が許容回数を超える場合はやり直し
 				if (!isEvenness(settings, restLimit, generated)) {
 					console.log(`連続休憩回数が上限である${restLimit}回を超えたメンバーがいるためやり直し`);
