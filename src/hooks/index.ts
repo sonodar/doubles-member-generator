@@ -1,4 +1,10 @@
 export {
+	type UseAutoFinishSubscriptionOptions,
+	type UseAutoFinishSubscriptionResult,
+	useAutoFinishSubscription,
+} from "./useAutoFinishSubscription";
+export { type UseBrowserLifecycleSyncOptions, useBrowserLifecycleSync } from "./useBrowserLifecycleSync";
+export {
 	type PushSubscriptionStatus,
 	type UsePushSubscriptionOptions,
 	type UsePushSubscriptionResult,
