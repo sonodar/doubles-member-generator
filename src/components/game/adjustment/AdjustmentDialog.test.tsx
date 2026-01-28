@@ -94,4 +94,74 @@ describe("AdjustmentDialog", () => {
 			});
 		});
 	});
+
+	describe("警告表示", () => {
+		const settingsWithWarning: CurrentSettings = {
+			...settings,
+			histories: [
+				{ members: courtMembers, time: "2026-01-21T10:00:00+09:00" },
+				{ members: courtMembers, time: "2026-01-21T10:30:00+09:00" },
+			],
+			algorithm: Algorithms.EVENNESS, // 閾値2
+		};
+
+		it("警告がある状態で調整反映をクリックすると警告ダイアログが表示される", async () => {
+			render(
+				<AdjustmentDialog settings={settingsWithWarning} open={true} onClose={mockOnClose} onChange={mockOnChange} />,
+			);
+
+			const button = screen.getByRole("button", { name: /調整反映/ });
+			act(() => fireEvent.click(button));
+
+			await waitFor(() => {
+				expect(screen.getByText("偏りがあります")).toBeInTheDocument();
+			});
+		});
+
+		it("警告ダイアログで「調整する」を選択すると調整画面に戻る", async () => {
+			render(
+				<AdjustmentDialog settings={settingsWithWarning} open={true} onClose={mockOnClose} onChange={mockOnChange} />,
+			);
+
+			// 調整反映をクリック
+			const button = screen.getByRole("button", { name: /調整反映/ });
+			act(() => fireEvent.click(button));
+
+			// 警告ダイアログが表示されるのを待つ
+			await screen.findByText("偏りがあります");
+
+			// 「調整する」をクリック（hidden要素も含めて探す）
+			const adjustButton = await screen.findByRole("button", { name: "調整する", hidden: true });
+			act(() => fireEvent.click(adjustButton));
+
+			await waitFor(() => {
+				// ダイアログが閉じて調整画面に戻る
+				expect(screen.queryByText("偏りがあります")).not.toBeInTheDocument();
+				expect(mockOnChange).not.toHaveBeenCalled();
+				expect(mockOnClose).not.toHaveBeenCalled();
+			});
+		});
+
+		it("警告ダイアログで「このまま確定」を選択すると確定処理が実行される", async () => {
+			render(
+				<AdjustmentDialog settings={settingsWithWarning} open={true} onClose={mockOnClose} onChange={mockOnChange} />,
+			);
+
+			// 調整反映をクリック
+			const button = screen.getByRole("button", { name: /調整反映/ });
+			act(() => fireEvent.click(button));
+
+			// 警告ダイアログが表示されるのを待つ
+			await screen.findByText("偏りがあります");
+
+			// 「このまま確定」をクリック（hidden要素も含めて探す）
+			const confirmButton = await screen.findByRole("button", { name: "このまま確定", hidden: true });
+			act(() => fireEvent.click(confirmButton));
+
+			await waitFor(() => {
+				expect(mockOnChange).toHaveBeenCalledTimes(1);
+				expect(mockOnClose).toHaveBeenCalledTimes(1);
+			});
+		});
+	});
 });

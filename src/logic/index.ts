@@ -10,3 +10,4 @@ export { replayRetry, retry } from "./retry";
 export * from "./swap";
 export * from "./types";
 export * from "./util";
+export * from "./warning";
