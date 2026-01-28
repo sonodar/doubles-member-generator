@@ -2,7 +2,8 @@ import { Button, Center, CloseButton, Dialog, Heading, Spacer, Stack, Text, useD
 import { useState } from "react";
 import { IoDiceOutline } from "react-icons/io5";
 import { MdCheck, MdHistory } from "react-icons/md";
-import { type CurrentSettings, generate, retry } from "../../logic";
+import { type CurrentSettings, generate, isConsecutiveOperation, retry } from "../../logic";
+import ConfirmDialog from "../common/ConfirmDialog";
 import { StatisticsPane } from "./StatisticsPane.tsx";
 
 type Props = {
@@ -13,9 +14,24 @@ type Props = {
 
 export function GenerateButton({ settings, onGenerate, disabled }: Props) {
 	const { open, onOpen, onClose } = useDisclosure();
+	const [showWarning, setShowWarning] = useState(false);
 	const [newSettings, setNewSettings] = useState<CurrentSettings | undefined>();
 
 	const handleClick = () => {
+		if (isConsecutiveOperation(settings.histories)) {
+			setShowWarning(true);
+		} else {
+			setNewSettings(generate(settings));
+			onOpen();
+		}
+	};
+
+	const handleWarningCancel = () => {
+		setShowWarning(false);
+	};
+
+	const handleWarningContinue = () => {
+		setShowWarning(false);
 		setNewSettings(generate(settings));
 		onOpen();
 	};
@@ -40,6 +56,27 @@ export function GenerateButton({ settings, onGenerate, disabled }: Props) {
 				<IoDiceOutline />
 				メンバー決め
 			</Button>
+
+			<ConfirmDialog
+				open={showWarning}
+				onCancel={handleWarningCancel}
+				onOk={handleWarningContinue}
+				title="ちょっと待ってください"
+				cancelButtonText="やめる"
+				okButtonText="このまま続ける"
+				okColorPalette="danger"
+			>
+				<Stack gap={3}>
+					<Text>
+						さっき決めたばかりですが、もう一度メンバーを決め直しますか？
+						このまま続けると、同じ人ばかり試合に出たり、出番が偏ったりする原因になります。
+					</Text>
+					<Text>
+						すでに確定した前回の結果は変更できませんが、確定する前に組み合わせを変えるなら「やり直し」ボタンを使ってください。
+					</Text>
+				</Stack>
+			</ConfirmDialog>
+
 			<Dialog.Root open={open} onOpenChange={(e) => !e.open && onClose()} size={"full"}>
 				<Dialog.Backdrop />
 				<Dialog.Positioner>

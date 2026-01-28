@@ -1,4 +1,5 @@
 export * from "./array";
+export * from "./consecutiveOperation";
 export * from "./consts";
 export * from "./count";
 export { generate, replayGenerate } from "./generate";
