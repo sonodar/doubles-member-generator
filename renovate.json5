@@ -1,0 +1,72 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+	// ベース設定: 推奨設定を継承、Dependency Dashboardは無効化
+	"extends": ["config:recommended", ":disableDependencyDashboard"],
+
+	// PR制限: 過剰なPR作成を防止
+	"prHourlyLimit": 5, // 時間あたり最大5件
+	"prConcurrentLimit": 10, // 同時オープン最大10件
+
+	// 対象マネージャー: npmのみ
+	"enabledManagers": ["npm"],
+
+	// 対象ブランチ: developとmain両方の依存関係を最新に保つ
+	"baseBranchPatterns": ["develop", "main"],
+
+	// サプライチェーン攻撃対策: 新規リリースから7日間の猶予期間を設ける
+	// internalChecksFilter: strict により、猶予期間中はPR/ブランチを作成しない
+	"minimumReleaseAge": "7 days",
+	"internalChecksFilter": "strict",
+
+	// lockFileMaintenance無効化: 間接依存の更新はメリットが少ないため無効化
+	"lockFileMaintenance": {
+		"enabled": false
+	},
+
+	"packageRules": [
+		// dependencies (patch/minor): CI通過後にPR作成・自動マージ
+		{
+			"description": "Group all dependencies patch/minor updates",
+			"matchDepTypes": ["dependencies"],
+			"matchUpdateTypes": ["patch", "minor"],
+			"groupName": "dependencies",
+			"prCreation": "status-success",
+			"automerge": true,
+			"automergeType": "pr",
+			"automergeStrategy": "squash",
+			"labels": ["renovate", "automerge"]
+		},
+		// devDependencies (patch/minor): CI通過後にPR作成・自動マージ
+		{
+			"description": "Group all devDependencies patch/minor updates",
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["patch", "minor"],
+			"groupName": "devDependencies",
+			"prCreation": "status-success",
+			"automerge": true,
+			"automergeType": "pr",
+			"automergeStrategy": "squash",
+			"labels": ["renovate", "automerge"]
+		},
+		// メジャー更新: 破壊的変更のためレビュー必須
+		// prCreation: "status-success" は使用しない（CIが失敗しても更新の存在を把握したいため）
+		{
+			"description": "Major updates require review",
+			"matchUpdateTypes": ["major"],
+			"automerge": false,
+			"reviewers": ["sonodar"],
+			"labels": ["renovate"]
+		}
+	],
+
+	// 脆弱性対応: 猶予期間をバイパスして即時自動マージ
+	"vulnerabilityAlerts": {
+		"enabled": true,
+		"schedule": ["at any time"],
+		"automerge": true,
+		"automergeType": "pr",
+		"automergeStrategy": "squash",
+		"labels": ["renovate", "security"]
+	}
+}
