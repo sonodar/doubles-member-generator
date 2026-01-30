@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "renovate.json"
+      - "renovate.json5"
 
 jobs:
   renovate:
@@ -28,5 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       - name: Validate Renovate config
-        run: npx --yes --package renovate -- renovate-config-validator --strict
+        # renovatebot/github-action@v44.2.4 が使用するバージョンと一致させる
+        run: npx --yes --package renovate@42.78.2 -- renovate-config-validator --strict
