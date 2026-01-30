@@ -1,4 +1,4 @@
-import { CloseButton, Dialog, Heading } from "@chakra-ui/react";
+import { Button, CloseButton, Dialog, Heading } from "@chakra-ui/react";
 import type { CurrentSettings } from "../../logic";
 import MemberCountPane from "./MemberCountPane.tsx";
 
@@ -27,6 +27,9 @@ export function MemberDialog({ settings, defaultTabIndex, open, onClose, showLef
 					<Dialog.Body pt={0} px={2} mt={-2}>
 						<MemberCountPane settings={settings} showLeftMember={showLeftMember} defaultTabIndex={defaultTabIndex} />
 					</Dialog.Body>
+					<Dialog.Footer>
+						<Button onClick={onClose}>閉じる</Button>
+					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Positioner>
 		</Dialog.Root>

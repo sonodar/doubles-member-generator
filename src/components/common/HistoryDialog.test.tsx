@@ -65,5 +65,21 @@ describe("HistoryDialog", () => {
 				expect(mockOnClose).toHaveBeenCalledTimes(1);
 			});
 		});
+
+		it("下部の閉じるボタンをクリックするとonCloseが呼ばれる", async () => {
+			render(<HistoryDialog open={true} onClose={mockOnClose} />, {
+				initialAtomValues: [[settingsAtom, settingsWithHistory]],
+			});
+
+			await waitFor(() => {
+				expect(screen.getByRole("button", { name: "閉じる" })).toBeInTheDocument();
+			});
+
+			fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
+
+			await waitFor(() => {
+				expect(mockOnClose).toHaveBeenCalledTimes(1);
+			});
+		});
 	});
 });
