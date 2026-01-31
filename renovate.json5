@@ -24,33 +24,33 @@
 		"enabled": false
 	},
 
+	// prCreation: "status-success" は無効化
+	// 理由: Renovate実行中にCIが完了せず常にpendingと評価されPRが作成されないため
+
 	"packageRules": [
-		// dependencies (patch/minor): CI通過後にPR作成・自動マージ
+		// dependencies (patch/minor): 自動マージ
 		{
 			"description": "Group all dependencies patch/minor updates",
 			"matchDepTypes": ["dependencies"],
 			"matchUpdateTypes": ["patch", "minor"],
 			"groupName": "dependencies",
-			"prCreation": "status-success",
 			"automerge": true,
 			"automergeType": "pr",
 			"automergeStrategy": "squash",
 			"labels": ["renovate", "automerge"]
 		},
-		// devDependencies (patch/minor): CI通過後にPR作成・自動マージ
+		// devDependencies (patch/minor): 自動マージ
 		{
 			"description": "Group all devDependencies patch/minor updates",
 			"matchDepTypes": ["devDependencies"],
 			"matchUpdateTypes": ["patch", "minor"],
 			"groupName": "devDependencies",
-			"prCreation": "status-success",
 			"automerge": true,
 			"automergeType": "pr",
 			"automergeStrategy": "squash",
 			"labels": ["renovate", "automerge"]
 		},
 		// メジャー更新: 破壊的変更のためレビュー必須
-		// prCreation: "status-success" は使用しない（CIが失敗しても更新の存在を把握したいため）
 		{
 			"description": "Major updates require review",
 			"matchUpdateTypes": ["major"],
