@@ -11,9 +11,6 @@
 	// 対象マネージャー: npmのみ
 	"enabledManagers": ["npm"],
 
-	// 対象ブランチ: developのみ（mainはdevelopからマージで更新）
-	"baseBranchPatterns": ["develop"],
-
 	// サプライチェーン攻撃対策: 新規リリースから7日間の猶予期間を設ける
 	// internalChecksFilter: strict により、猶予期間中はPR/ブランチを作成しない
 	"minimumReleaseAge": "7 days",
