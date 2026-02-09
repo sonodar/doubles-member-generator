@@ -1,0 +1,89 @@
+{
+	"description": "途中参加者が参加後に公平にプレイしている場合。メンバー14は8試合後に参加し、その後2試合で2回出場。effectivePlayCount=7で他のメンバー（6）より1多いが、これは公平な範囲。",
+	"courtCount": 2,
+	"members": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+	"histories": [
+		{
+			"members": [[1, 4, 10, 11], [3, 5, 6, 9]],
+			"time": "2026/1/29 11:33:53"
+		},
+		{
+			"members": [[3, 7, 12, 13], [2, 6, 8, 10]],
+			"time": "2026/1/29 11:33:56"
+		},
+		{
+			"members": [[2, 8, 9, 13], [1, 4, 5, 7]],
+			"time": "2026/1/29 11:33:58"
+		},
+		{
+			"members": [[1, 3, 4, 8], [5, 6, 11, 12]],
+			"time": "2026/1/29 11:34:00"
+		},
+		{
+			"members": [[2, 7, 11, 13], [6, 9, 10, 12]],
+			"time": "2026/1/29 11:34:09"
+		},
+		{
+			"members": [[3, 5, 10, 12], [2, 8, 9, 13]],
+			"time": "2026/1/29 11:34:18"
+		},
+		{
+			"members": [[2, 5, 7, 8], [1, 3, 4, 11]],
+			"time": "2026/1/29 11:34:21"
+		},
+		{
+			"members": [[6, 7, 11, 13], [4, 9, 10, 12]],
+			"time": "2026/1/29 11:34:23"
+		},
+		{
+			"members": [[4, 5, 12, 14], [1, 2, 11, 13]],
+			"time": "2026/1/29 11:34:41"
+		},
+		{
+			"members": [[1, 8, 10, 14], [3, 6, 7, 9]],
+			"time": "2026/1/29 11:35:43"
+		}
+	],
+	"gameCounts": {
+		"1": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"2": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"3": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"4": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"5": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"6": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"7": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"8": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"9": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"10": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"11": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"12": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"13": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"14": { "playCount": 2, "baseCount": 5, "joinedAt": 8 }
+	},
+	"algorithm": "evenness",
+	"expected": {
+		"14": {
+			"playCount": 2,
+			"effectivePlayCount": 7,
+			"totalRestCount": 0,
+			"consecutiveRestCount": 0,
+			"highlightLevel": {
+				"playCount": "none",
+				"totalRestCount": "none"
+			},
+			"note": "参加後2試合で2回出場しているので休憩なし。effectivePlayCount=7は中央値6との差1だが、途中参加者として公平な範囲"
+		},
+		"1": {
+			"playCount": 6,
+			"effectivePlayCount": 6,
+			"totalRestCount": 4,
+			"highlightLevel": {
+				"playCount": "none"
+			}
+		}
+	},
+	"bugDetection": {
+		"issue": "現行ロジックでは effectivePlayCount 差=1 で 'low' ハイライトになる可能性",
+		"expectedBehavior": "差1は公平な範囲として 'none' であるべき"
+	}
+}

@@ -1,0 +1,79 @@
+{
+	"description": "途中参加直後でまだ1回もプレイしていない。メンバー14が10試合目後に参加（joinedAt=10）、まだ次の試合なし。",
+	"courtCount": 2,
+	"members": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+	"histories": [
+		{
+			"members": [[1, 4, 10, 11], [3, 5, 6, 9]],
+			"time": "2026/1/29 11:33:53"
+		},
+		{
+			"members": [[3, 7, 12, 13], [2, 6, 8, 10]],
+			"time": "2026/1/29 11:33:56"
+		},
+		{
+			"members": [[2, 8, 9, 13], [1, 4, 5, 7]],
+			"time": "2026/1/29 11:33:58"
+		},
+		{
+			"members": [[1, 3, 4, 8], [5, 6, 11, 12]],
+			"time": "2026/1/29 11:34:00"
+		},
+		{
+			"members": [[2, 7, 11, 13], [6, 9, 10, 12]],
+			"time": "2026/1/29 11:34:09"
+		},
+		{
+			"members": [[3, 5, 10, 12], [2, 8, 9, 13]],
+			"time": "2026/1/29 11:34:18"
+		},
+		{
+			"members": [[2, 5, 7, 8], [1, 3, 4, 11]],
+			"time": "2026/1/29 11:34:21"
+		},
+		{
+			"members": [[6, 7, 11, 13], [4, 9, 10, 12]],
+			"time": "2026/1/29 11:34:23"
+		},
+		{
+			"members": [[4, 5, 12, 1], [2, 11, 13, 3]],
+			"time": "2026/1/29 11:34:41"
+		},
+		{
+			"members": [[1, 8, 10, 6], [3, 7, 9, 2]],
+			"time": "2026/1/29 11:35:43"
+		}
+	],
+	"gameCounts": {
+		"1": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"2": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"3": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"4": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"5": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"6": { "playCount": 5, "baseCount": 0, "joinedAt": 0 },
+		"7": { "playCount": 5, "baseCount": 0, "joinedAt": 0 },
+		"8": { "playCount": 5, "baseCount": 0, "joinedAt": 0 },
+		"9": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"10": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"11": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"12": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"13": { "playCount": 6, "baseCount": 0, "joinedAt": 0 },
+		"14": { "playCount": 0, "baseCount": 6, "joinedAt": 10 }
+	},
+	"algorithm": "evenness",
+	"expected": {
+		"14": {
+			"playCount": 0,
+			"effectivePlayCount": 6,
+			"totalRestCount": 0,
+			"consecutiveRestCount": 0,
+			"highlightLevel": {
+				"playCount": "none",
+				"restCount": "none",
+				"totalRestCount": "none"
+			},
+			"note": "参加後の試合がまだないので、総休憩数=0、連続休憩数=0。ハイライトなし（評価対象外）"
+		}
+	},
+	"note": "エッジケース: joinedAt = histories.length の場合、参加後の試合がまだない状態"
+}
