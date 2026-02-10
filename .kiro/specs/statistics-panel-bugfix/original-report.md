@@ -2,21 +2,24 @@
 
 ## Context
 
-統計パネル（MemberCountPane）に途中参加者の統計表示に関する 3 つのバグがある（`.local/plans/dapper-exploring-meerkat.md`）。以前ロジックの単体テストでバグ修正を行った際、**ロジックの I/O は正しいのに画面表示が正しくない**ことが頻発した。この教訓を踏まえ、ロジックテストではなく **MemberCountPane コンポーネントの E2E テスト**（React Testing Library による UI レンダリングテスト）を先に書き、画面に表示される値とハイライトを直接アサートする。
+統計パネル（MemberCountPane）に途中参加者の統計表示に関する 4 つのバグがある（`.local/plans/dapper-exploring-meerkat.md`）。以前ロジックの単体テストでバグ修正を行った際、**ロジックの I/O は正しいのに画面表示が正しくない**ことが頻発した。この教訓を踏まえ、ロジックテストではなく **MemberCountPane コンポーネントの E2E テスト**（React Testing Library による UI レンダリングテスト）を先に書き、画面に表示される値とハイライトを直接アサートする。
 
 テストデータは `src/testing/statistics/` の pattern1-12 を使用する（整合性検証済み）。
 
 ---
 
-## 3 つのバグ
+## 4 つのバグ
 
 | # | バグ | 現在のコード | あるべき動作 |
 |---|------|------------|------------|
-| 1 | **総プレイのハイライト**: `playCount` のみで判定 | `count.ts:20` `toCountPerMember` が `playCount` のみ | `effectivePlayCount`（= playCount + baseCount）で中央値・差分を計算 |
+| 1 | **総プレイのハイライト**: `playCount` のみで判定 | `count.ts:19-21` `toCountPerMember` が `playCount` のみ | `effectivePlayCount`（= playCount + baseCount）で中央値・差分を計算 |
 | 2 | **総休憩の回数表示**: 参加前の履歴も休憩カウント | `count.ts:36-38` `getTotalRestCount` が全履歴走査 | `joinedAt` 以降の履歴のみ対象 |
 | 3 | **総休憩のハイライト**: 上記の誤った値で判定 | バグ 2 に起因 | バグ 2 が修正されれば自動的に修正 |
+| 4 | **`joinedAt` がゲーム生成/取消時に消失** | `generate.ts:159` `increment()` と `util.ts:59` `decrement()` が `{ playCount, baseCount }` で再構築 | `joinedAt` を保持して再構築 |
 
-**前提**: `PlayCount` 型（`types.ts:9`）に `joinedAt` フィールドがないため、まず型拡張が必要。
+**バグ 4 の発見経緯**: `join()` で `joinedAt` を正しく設定しても、次のゲーム生成（`increment`）やゲーム取消（`decrement`）で `PlayCount` オブジェクトが `{ playCount, baseCount }` のみで再構築され、`joinedAt` が消失する。結果として `?? 0` で初期メンバー扱いになり、全履歴が休憩としてカウントされる。
+
+**前提**: `PlayCount` 型（`types.ts:9`）への `joinedAt` 追加は実施済み。`join.ts` での設定も実施済み。
 
 ---
 
@@ -44,14 +47,62 @@
 
 `src/components/common/MemberCountPane.statistics.test.tsx` を新規作成。
 
-テストデータの各パターンからテストケースを生成。`MemberCountPane` を `settings` prop で直接レンダリングし、**画面に表示される値**をアサートする。
+#### テストデータから CurrentSettings を構築する方法（重要）
+
+テストデータの `gameCounts`（`joinedAt` 含む）を**直接注入してはならない**。直接注入すると `increment()`/`decrement()` で `joinedAt` が消失するバグ（バグ 4）をすり抜ける。
+
+テストデータは**シナリオスクリプト**として使い、`addHistory()` と `join()` を通して `CurrentSettings` を構築する:
 
 ```typescript
-// テスト構造イメージ
-import { standardPatterns } from "../../testing/statistics";
+import { addHistory, join, type CurrentSettings } from "../../logic";
+import type { StatisticsTestData } from "../../testing/statistics";
 
+function buildSettings(pattern: StatisticsTestData): CurrentSettings {
+  // 初期メンバー（joinedAt=0 のメンバー）でスタート
+  const initialMembers = pattern.members.filter(
+    id => (pattern.gameCounts[id]?.joinedAt ?? 0) === 0
+  );
+  let settings: CurrentSettings = {
+    courtCount: pattern.courtCount,
+    members: initialMembers,
+    histories: [],
+    gameCounts: Object.fromEntries(
+      initialMembers.map(id => [id, { playCount: 0, baseCount: 0 }])
+    ),
+    algorithm: pattern.algorithm,
+  };
+
+  // 途中参加メンバーを joinedAt 順にソート
+  const joiners = Object.entries(pattern.gameCounts)
+    .filter(([_, gc]) => (gc.joinedAt ?? 0) > 0)
+    .map(([id, gc]) => ({ id: Number(id), joinedAt: gc.joinedAt! }))
+    .sort((a, b) => a.joinedAt - b.joinedAt);
+  let joinerIndex = 0;
+
+  // histories を1試合ずつリプレイ
+  for (let i = 0; i < pattern.histories.length; i++) {
+    // この試合の前に参加するメンバーがいれば join()
+    while (joinerIndex < joiners.length && joiners[joinerIndex].joinedAt === i) {
+      settings = join(settings);
+      joinerIndex++;
+    }
+    // 試合を追加（addHistory 内で increment が走る）
+    settings = addHistory(settings, pattern.histories[i].members);
+  }
+
+  return settings;
+}
+```
+
+このヘルパーにより:
+- `gameCounts.playCount` は `increment()` で計算される（テストデータの値ではない）
+- `joinedAt` は `join()` で設定され、`increment()` を通過する
+- **バグ 4 が修正されていなければ `joinedAt` が消失し、テストが FAIL する**
+
+#### テスト構造
+
+```typescript
 describe("統計パネル: 途中参加者の表示", () => {
-  // パターンごとにテストケースを動的生成
   for (const pattern of standardPatterns) {
     describe(pattern.description, () => {
       for (const [memberId, expected] of Object.entries(pattern.expected)) {
@@ -92,8 +143,6 @@ describe("統計パネル: 途中参加者の表示", () => {
 - **ハイライト**: `[data-member-id="${id}"]` の `data-highlight` 属性で検証
 - **警告**: `[data-member-id="${id}"]` 内の `[data-testid="warning-indicator"]` の有無で検証
 
-CurrentSettings の構築: テストデータの `members`, `histories`, `gameCounts`, `algorithm`, `courtCount` をそのまま使用。
-
 **完了条件**: `npm run check` を実行し、今回の変更に起因しないエラーが発生していないこと。テストは FAIL が正常（RED 確認）。
 
 ### Phase 2: GREEN — 最小限のコード修正でテストを通す
@@ -121,9 +170,17 @@ CurrentSettings の構築: テストデータの `members`, `histories`, `gameCo
 - `joinedAt` 以降の履歴のみを対象にする
 
 #### Step 6: `OutlierLevelProvider` を修正
-- `src/logic/count.ts:55-81`
+- `src/logic/count.ts:72-99`
 - `effectivePlayCount`（= playCount + baseCount）で中央値を計算し、playCount ハイライト判定に使用
 - `totalRestCounts` の計算に `gameCounts` を渡す
+
+#### Step 7: `increment()` で `joinedAt` を保持
+- `src/logic/generate.ts:159`
+- `result[id] = { playCount, baseCount }` → `result[id] = { playCount, baseCount, joinedAt: result[id]?.joinedAt }` に修正
+
+#### Step 8: `decrement()` で `joinedAt` を保持
+- `src/logic/util.ts:59`
+- `result[id] = { playCount, baseCount }` → `result[id] = { playCount, baseCount, joinedAt: result[id]?.joinedAt }` に修正
 
 **各ステップの完了条件**: `npm run check` を実行し、今回の変更に起因しないエラーが発生していないこと。ステップが進むにつれテストの FAIL 数が減っていくこと。
 
@@ -144,10 +201,11 @@ CurrentSettings の構築: テストデータの `members`, `histories`, `gameCo
 |---------|-------|------|
 | `src/components/common/MemberCountPane.tsx` | Phase 0 | data 属性追加（L80-81） |
 | `src/components/common/MemberCountPane.statistics.test.tsx` | Phase 1 | 新規作成（E2E テスト） |
-| `src/logic/types.ts` | Phase 2 | `PlayCount` に `joinedAt` 追加（L9） |
-| `src/logic/join.ts` | Phase 2 | `joinedAt` 設定追加（L13） |
-| `src/logic/count.ts` | Phase 2 | 主要バグ修正（L19-81） |
-| `src/logic/util.ts` | Phase 2 | `getContinuousRestCount` 修正（L39-42） |
+| `src/logic/types.ts` | Phase 2 | `PlayCount` に `joinedAt` 追加（実施済み） |
+| `src/logic/join.ts` | Phase 2 | `joinedAt` 設定追加（実施済み） |
+| `src/logic/count.ts` | Phase 2 | 主要バグ修正（L19-99） |
+| `src/logic/util.ts` | Phase 2 | `getContinuousRestCount` 修正（L39-42）+ `decrement` 修正（L59） |
+| `src/logic/generate.ts` | Phase 2 | `increment` 修正（L159） |
 
 ---
 
