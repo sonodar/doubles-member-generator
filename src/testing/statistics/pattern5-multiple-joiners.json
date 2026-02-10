@@ -1,0 +1,80 @@
+{
+	"description": "複数の途中参加者。メンバー14が6試合目後、メンバー15が8試合目後に参加。",
+	"courtCount": 2,
+	"members": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+	"histories": [
+		{
+			"members": [[1, 4, 10, 11], [3, 5, 6, 9]],
+			"time": "2026/1/29 11:33:53"
+		},
+		{
+			"members": [[3, 7, 12, 13], [2, 6, 8, 10]],
+			"time": "2026/1/29 11:33:56"
+		},
+		{
+			"members": [[2, 8, 9, 13], [1, 4, 5, 7]],
+			"time": "2026/1/29 11:33:58"
+		},
+		{
+			"members": [[1, 3, 4, 8], [5, 6, 11, 12]],
+			"time": "2026/1/29 11:34:00"
+		},
+		{
+			"members": [[2, 7, 11, 13], [6, 9, 10, 12]],
+			"time": "2026/1/29 11:34:09"
+		},
+		{
+			"members": [[3, 5, 10, 12], [2, 8, 9, 13]],
+			"time": "2026/1/29 11:34:18"
+		},
+		{
+			"members": [[2, 5, 7, 14], [1, 3, 4, 11]],
+			"time": "2026/1/29 11:34:21"
+		},
+		{
+			"members": [[6, 7, 11, 13], [4, 9, 10, 14]],
+			"time": "2026/1/29 11:34:23"
+		},
+		{
+			"members": [[4, 5, 12, 14], [1, 2, 11, 15]],
+			"time": "2026/1/29 11:34:41"
+		},
+		{
+			"members": [[1, 8, 10, 14], [3, 6, 7, 15]],
+			"time": "2026/1/29 11:35:43"
+		}
+	],
+	"joiners": {
+		"6": { "id": 14 },
+		"8": { "id": 15 }
+	},
+	"algorithm": "evenness",
+	"expected": {
+		"14": {
+			"playCount": 4,
+			"effectivePlayCount": 8,
+			"totalRestCount": 0,
+			"consecutiveRestCount": 0,
+			"highlightLevel": {
+				"playCount": "medium",
+				"totalRestCount": "none"
+			},
+			"note": "joinedAt=6以降の4試合で4回出場。休憩なし。effectivePlayCount=8は中央値より高いので'low'"
+		},
+		"15": {
+			"playCount": 2,
+			"effectivePlayCount": 7,
+			"totalRestCount": 0,
+			"consecutiveRestCount": 0,
+			"highlightLevel": {
+				"playCount": "low",
+				"totalRestCount": "none"
+			},
+			"note": "joinedAt=8以降の2試合で2回出場。休憩なし。"
+		}
+	},
+	"bugDetection": {
+		"issue": "複数の途中参加者がいる場合、それぞれのjoinedAtが正しく反映されるか",
+		"expectedBehavior": "各途中参加者はそれぞれのjoinedAt以降でのみ休憩数カウント"
+	}
+}

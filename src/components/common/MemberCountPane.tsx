@@ -78,7 +78,7 @@ export default function MemberCountPane({ settings, showLeftMember, defaultTabIn
 		const color = !members.includes(id) ? "gray" : outlierLevelColors[level];
 
 		return (
-			<Box bg={color} color={members.includes(id) ? "" : "white"}>
+			<Box bg={color} color={members.includes(id) ? "" : "white"} data-member-id={id} data-highlight={level}>
 				<Center>
 					<HStack gap={1}>
 						<Box w="2em" textAlign="right">

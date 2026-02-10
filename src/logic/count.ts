@@ -16,30 +16,47 @@ export const memberCountVariantLabels: Record<MemberCountVariant, string> = {
 const outlierLevels = ["none", "low", "medium", "high"] as const;
 export type OutlierLevel = (typeof outlierLevels)[number];
 
-function toCountPerMember(gameCounts: PlayCountPerMember): CountPerMember {
+function toPlayCountPerMember(gameCounts: PlayCountPerMember): CountPerMember {
 	return Object.fromEntries(Object.entries(gameCounts).map(([id, counts]) => [id, counts.playCount]));
+}
+
+function toEffectivePlayCountPerMember(gameCounts: PlayCountPerMember): CountPerMember {
+	return Object.fromEntries(
+		Object.entries(gameCounts).map(([id, counts]) => [id, counts.playCount + counts.baseCount]),
+	);
 }
 
 function getAllCounts(members: number[], counts: CountPerMember) {
 	return members.map((id) => counts[id] || 0);
 }
 
-function getContinuousRestCounts({ members, histories }: Pick<CurrentSettings, "histories" | "members">) {
+function getContinuousRestCounts({
+	members,
+	histories,
+	gameCounts,
+}: Pick<CurrentSettings, "histories" | "members" | "gameCounts">) {
 	const lastMembers = getLatestMembers({ histories });
 	const restMembers = lastMembers ? getRestMembers({ members }, lastMembers) : [];
 	return restMembers.reduce((counts, id) => {
-		counts[id] = getContinuousRestCount(histories, id);
+		const joinedAt = gameCounts[id]?.joinedAt ?? 0;
+		counts[id] = getContinuousRestCount(histories, id, joinedAt);
 		return counts;
 	}, {} as CountPerMember);
 }
 
-function getTotalRestCount(histories: History[], memberId: number): number {
-	return histories.filter((history) => !history.members.flat().includes(memberId)).length;
+function getTotalRestCount(histories: History[], memberId: number, joinedAt: number): number {
+	const relevant = histories.slice(joinedAt);
+	return relevant.filter((history) => !history.members.flat().includes(memberId)).length;
 }
 
-function getTotalRestCounts({ members, histories }: Pick<CurrentSettings, "histories" | "members">) {
+function getTotalRestCounts({
+	members,
+	histories,
+	gameCounts,
+}: Pick<CurrentSettings, "histories" | "members" | "gameCounts">) {
 	return members.reduce((counts, id) => {
-		counts[id] = getTotalRestCount(histories, id);
+		const joinedAt = gameCounts[id]?.joinedAt ?? 0;
+		counts[id] = getTotalRestCount(histories, id, joinedAt);
 		return counts;
 	}, {} as CountPerMember);
 }
@@ -53,8 +70,9 @@ function getOutlierLevel(diff: number): OutlierLevel {
 }
 
 export function OutlierLevelProvider(settings: Pick<CurrentSettings, "histories" | "members" | "gameCounts">) {
-	const playCounts = toCountPerMember(settings.gameCounts);
-	const playCountMedian = array.median(getAllCounts(settings.members, playCounts));
+	const playCounts = toPlayCountPerMember(settings.gameCounts);
+	const effectivePlayCounts = toEffectivePlayCountPerMember(settings.gameCounts);
+	const effectivePlayCountMedian = array.median(getAllCounts(settings.members, effectivePlayCounts));
 
 	const continuousRestCounts = getContinuousRestCounts(settings);
 
@@ -71,7 +89,7 @@ export function OutlierLevelProvider(settings: Pick<CurrentSettings, "histories"
 	const getLevel = (variant: MemberCountVariant, memberId: number): OutlierLevel => {
 		const diff = match(variant)
 			.with("restCount", () => getValue(variant, memberId))
-			.with("playCount", () => Math.abs(getValue(variant, memberId) - playCountMedian))
+			.with("playCount", () => Math.abs((effectivePlayCounts[memberId] || 0) - effectivePlayCountMedian))
 			.with("totalRestCount", () => getValue(variant, memberId) - totalRestCountMedian)
 			.exhaustive();
 		return getOutlierLevel(diff);

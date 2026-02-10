@@ -36,9 +36,11 @@ export function getRestMembers({ members }: { members: number[] }, current: Game
 }
 
 // 履歴を直近から走査し、連続で休憩している回数を算出する
-export function getContinuousRestCount(histories: History[], memberId: number): number {
-	const lastIndex = histories.findLastIndex((history) => history.members.flat().includes(memberId));
-	return histories.length - 1 - lastIndex;
+export function getContinuousRestCount(histories: History[], memberId: number, joinedAt = 0): number {
+	const relevant = histories.slice(joinedAt);
+	if (relevant.length === 0) return 0;
+	const lastIndex = relevant.findLastIndex((history) => history.members.flat().includes(memberId));
+	return relevant.length - 1 - lastIndex;
 }
 
 // 最後の履歴を削除してプレイ回数を再計算する
@@ -54,7 +56,7 @@ function decrement(gameCounts: PlayCountPerMember, members: GameMembers): PlayCo
 	for (const id of members.flat()) {
 		const playCount = Math.max(0, (result[id]?.playCount || 0) - 1);
 		const baseCount = result[id]?.baseCount || 0;
-		result[id] = { playCount, baseCount };
+		result[id] = { ...result[id], playCount, baseCount };
 	}
 	return result;
 }

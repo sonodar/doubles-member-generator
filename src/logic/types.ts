@@ -6,7 +6,7 @@ export type History = {
 	time: string;
 	deleted?: true;
 };
-export type PlayCount = { playCount: number; baseCount: number };
+export type PlayCount = { playCount: number; baseCount: number; joinedAt?: number };
 export type PlayCountPerMember = Record<MemberId, PlayCount>;
 
 export const Algorithms = {
