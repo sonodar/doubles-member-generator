@@ -7,17 +7,14 @@
  * 実行: npx tsx src/testing/statistics/verify-patterns.ts
  */
 import { readFileSync } from "node:fs";
-import { resolve, basename } from "node:path";
+import { basename, resolve } from "node:path";
 import { array } from "../../logic/array";
+import type { OutlierLevel } from "../../logic/count";
+import type { History, PlayCount } from "../../logic/types";
 
 // --- 型定義 ---
 
-type History = { members: number[][]; time: string };
-type GameCounts = Record<
-	string,
-	{ playCount: number; baseCount: number; joinedAt?: number }
->;
-type OutlierLevel = "none" | "low" | "medium" | "high";
+type GameCounts = Record<string, PlayCount>;
 type HighlightLevel = {
 	playCount?: OutlierLevel;
 	totalRestCount?: OutlierLevel;
@@ -57,27 +54,16 @@ function getOutlierLevel(diff: number): OutlierLevel {
 
 // --- 計算関数 ---
 
-function calcPlayCountFromHistories(
-	histories: History[],
-	memberId: number,
-): number {
+function calcPlayCountFromHistories(histories: History[], memberId: number): number {
 	return histories.filter((h) => h.members.flat().includes(memberId)).length;
 }
 
-function calcTotalRestCount(
-	histories: History[],
-	memberId: number,
-	joinedAt: number,
-): number {
+function calcTotalRestCount(histories: History[], memberId: number, joinedAt: number): number {
 	const relevant = histories.slice(joinedAt);
 	return relevant.filter((h) => !h.members.flat().includes(memberId)).length;
 }
 
-function calcConsecutiveRestCount(
-	histories: History[],
-	memberId: number,
-	joinedAt: number,
-): number {
+function calcConsecutiveRestCount(histories: History[], memberId: number, joinedAt: number): number {
 	const relevant = histories.slice(joinedAt);
 	if (relevant.length === 0) return 0;
 	let count = 0;
@@ -91,25 +77,16 @@ function calcConsecutiveRestCount(
 	return count;
 }
 
-function calcBaseCount(
-	histories: History[],
-	members: number[],
-	gameCounts: GameCounts,
-	joinedAt: number,
-): number {
+function calcBaseCount(histories: History[], members: number[], gameCounts: GameCounts, joinedAt: number): number {
 	// joinedAt 時点の既存メンバーの playCount を計算
 	const historiesAtJoin = histories.slice(0, joinedAt);
 	const existingMembers = members.filter(
-		(id) =>
-			!gameCounts[id.toString()] ||
-			(gameCounts[id.toString()].joinedAt ?? 0) < joinedAt,
+		(id) => !gameCounts[id.toString()] || (gameCounts[id.toString()].joinedAt ?? 0) < joinedAt,
 	);
 
 	if (existingMembers.length === 0) return 0;
 
-	const playCounts = existingMembers.map((id) =>
-		calcPlayCountFromHistories(historiesAtJoin, id),
-	);
+	const playCounts = existingMembers.map((id) => calcPlayCountFromHistories(historiesAtJoin, id));
 
 	return array.mode(playCounts);
 }
@@ -123,16 +100,9 @@ type Issue = {
 	actual: unknown;
 };
 
-function verifyPattern(
-	name: string,
-	data: PatternData,
-	expectedData: Record<string, ExpectedMemberStats>,
-): Issue[] {
+function verifyPattern(_name: string, data: PatternData, expectedData: Record<string, ExpectedMemberStats>): Issue[] {
 	const issues: Issue[] = [];
-	const allMembers = [
-		...data.members,
-		...(data.leftMembers ?? []),
-	];
+	const allMembers = [...data.members, ...(data.leftMembers ?? [])];
 
 	// 1. gameCounts.playCount の検証
 	const correctPlayCounts: Record<string, number> = {};
@@ -160,12 +130,7 @@ function verifyPattern(
 			correctBaseCounts[id.toString()] = 0;
 			continue;
 		}
-		const correctBase = calcBaseCount(
-			data.histories,
-			allMembers,
-			data.gameCounts,
-			joinedAt,
-		);
+		const correctBase = calcBaseCount(data.histories, allMembers, data.gameCounts, joinedAt);
 		correctBaseCounts[id.toString()] = correctBase;
 		if (gc.baseCount !== correctBase) {
 			issues.push({
@@ -197,10 +162,7 @@ function verifyPattern(
 		}
 
 		// effectivePlayCount
-		if (
-			exp.effectivePlayCount !== undefined &&
-			exp.effectivePlayCount !== correctEffective
-		) {
+		if (exp.effectivePlayCount !== undefined && exp.effectivePlayCount !== correctEffective) {
 			issues.push({
 				field: "expected.effectivePlayCount",
 				memberId,
@@ -210,15 +172,8 @@ function verifyPattern(
 		}
 
 		// totalRestCount
-		const correctTotalRest = calcTotalRestCount(
-			data.histories,
-			Number(memberId),
-			joinedAt,
-		);
-		if (
-			exp.totalRestCount !== undefined &&
-			exp.totalRestCount !== correctTotalRest
-		) {
+		const correctTotalRest = calcTotalRestCount(data.histories, Number(memberId), joinedAt);
+		if (exp.totalRestCount !== undefined && exp.totalRestCount !== correctTotalRest) {
 			issues.push({
 				field: "expected.totalRestCount",
 				memberId,
@@ -228,15 +183,8 @@ function verifyPattern(
 		}
 
 		// consecutiveRestCount
-		const correctConsRest = calcConsecutiveRestCount(
-			data.histories,
-			Number(memberId),
-			joinedAt,
-		);
-		if (
-			exp.consecutiveRestCount !== undefined &&
-			exp.consecutiveRestCount !== correctConsRest
-		) {
+		const correctConsRest = calcConsecutiveRestCount(data.histories, Number(memberId), joinedAt);
+		if (exp.consecutiveRestCount !== undefined && exp.consecutiveRestCount !== correctConsRest) {
 			issues.push({
 				field: "expected.consecutiveRestCount",
 				memberId,
@@ -250,7 +198,7 @@ function verifyPattern(
 			// effectivePlayCount のハイライト
 			const allEffective = allMembers.map((id) => {
 				const pc = correctPlayCounts[id.toString()] ?? 0;
-				const bc = correctBaseCounts[id.toString()] ?? (data.gameCounts[id.toString()]?.baseCount ?? 0);
+				const bc = correctBaseCounts[id.toString()] ?? data.gameCounts[id.toString()]?.baseCount ?? 0;
 				return pc + bc;
 			});
 			const effectiveMedian = array.median(allEffective);
@@ -333,11 +281,7 @@ for (const file of patternFiles) {
 	if (data.algorithms) {
 		// Pattern 12: アルゴリズム別
 		for (const [alg, algData] of Object.entries(data.algorithms)) {
-			const issues = verifyPattern(
-				`${name} (${alg})`,
-				data,
-				algData.expected,
-			);
+			const issues = verifyPattern(`${name} (${alg})`, data, algData.expected);
 			if (issues.length > 0) {
 				console.log(`\n❌ ${name} (${alg}): ${issues.length} 件の不整合`);
 				for (const issue of issues) {

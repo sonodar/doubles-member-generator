@@ -7,8 +7,8 @@
  */
 import { describe, expect, it } from "vitest";
 import { array } from "../../logic/array";
-import { getContinuousRestCount as srcGetContinuousRestCount } from "../../logic/util";
 import type { History } from "../../logic/types";
+import { getContinuousRestCount as srcGetContinuousRestCount } from "../../logic/util";
 import { pattern4, pattern9 } from "./index";
 
 // --- verify-patterns.ts と同じ関数を再実装（コピーではなく独立実装） ---
@@ -28,11 +28,7 @@ function countPlays(histories: History[], memberId: number): number {
 }
 
 /** joinedAt 以降で memberId が不参加だった回数 */
-function countTotalRest(
-	histories: History[],
-	memberId: number,
-	joinedAt: number,
-): number {
+function countTotalRest(histories: History[], memberId: number, joinedAt: number): number {
 	let count = 0;
 	for (let i = joinedAt; i < histories.length; i++) {
 		const flat = histories[i].members.flat();
@@ -42,11 +38,7 @@ function countTotalRest(
 }
 
 /** joinedAt 以降の末尾からの連続休憩数 */
-function countConsecutiveRest(
-	histories: History[],
-	memberId: number,
-	joinedAt: number,
-): number {
+function countConsecutiveRest(histories: History[], memberId: number, joinedAt: number): number {
 	let count = 0;
 	for (let i = histories.length - 1; i >= joinedAt; i--) {
 		if (!histories[i].members.flat().includes(memberId)) {
@@ -89,9 +81,27 @@ describe("verify-patterns.ts ロジック検証", () => {
 
 	describe("playCount 計算: 手計算ケース", () => {
 		const histories: History[] = [
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t1" },
-			{ members: [[1, 3, 5, 7], [2, 4, 6, 8]], time: "t2" },
-			{ members: [[1, 2, 5, 6], [3, 4, 7, 8]], time: "t3" },
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t1",
+			},
+			{
+				members: [
+					[1, 3, 5, 7],
+					[2, 4, 6, 8],
+				],
+				time: "t2",
+			},
+			{
+				members: [
+					[1, 2, 5, 6],
+					[3, 4, 7, 8],
+				],
+				time: "t3",
+			},
 		];
 
 		it("全員3試合出場 → playCount=3", () => {
@@ -107,10 +117,34 @@ describe("verify-patterns.ts ロジック検証", () => {
 
 	describe("totalRestCount 計算: joinedAt 考慮", () => {
 		const histories: History[] = [
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t1" }, // G0
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t2" }, // G1
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 9]], time: "t3" }, // G2: 9 参加、8 休憩
-			{ members: [[1, 2, 3, 9], [5, 6, 7, 8]], time: "t4" }, // G3
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t1",
+			}, // G0
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t2",
+			}, // G1
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 9],
+				],
+				time: "t3",
+			}, // G2: 9 参加、8 休憩
+			{
+				members: [
+					[1, 2, 3, 9],
+					[5, 6, 7, 8],
+				],
+				time: "t4",
+			}, // G3
 		];
 
 		it("joinedAt=0 のメンバー: 全履歴で不参加カウント", () => {
@@ -128,9 +162,27 @@ describe("verify-patterns.ts ロジック検証", () => {
 
 	describe("consecutiveRestCount: joinedAt 考慮", () => {
 		const histories: History[] = [
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t1" }, // G0
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t2" }, // G1
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t3" }, // G2
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t1",
+			}, // G0
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t2",
+			}, // G1
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t3",
+			}, // G2
 		];
 
 		it("joinedAt=0, 出場中 → 0", () => {
@@ -148,9 +200,27 @@ describe("verify-patterns.ts ロジック検証", () => {
 
 	describe("consecutiveRestCount: ソースコード原本との比較", () => {
 		const histories: History[] = [
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t1" },
-			{ members: [[1, 2, 3, 4], [5, 6, 7, 8]], time: "t2" },
-			{ members: [[1, 3, 5, 7], [2, 4, 6, 8]], time: "t3" },
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t1",
+			},
+			{
+				members: [
+					[1, 2, 3, 4],
+					[5, 6, 7, 8],
+				],
+				time: "t2",
+			},
+			{
+				members: [
+					[1, 3, 5, 7],
+					[2, 4, 6, 8],
+				],
+				time: "t3",
+			},
 		];
 
 		it("joinedAt=0 のメンバーはソースコードと同じ結果になる", () => {
@@ -198,7 +268,7 @@ describe("verify-patterns.ts ロジック検証", () => {
 		it("8人全員が毎試合出場 → playCount=4", () => {
 			for (const id of p.members) {
 				expect(countPlays(p.histories, id)).toBe(4);
-				expect(p.gameCounts[id.toString()].playCount).toBe(4);
+				expect(p.gameCounts[id].playCount).toBe(4);
 			}
 		});
 
@@ -209,9 +279,7 @@ describe("verify-patterns.ts ロジック検証", () => {
 		});
 
 		it("全員 effectivePlayCount=4, median=4, diff=0 → none", () => {
-			const allEffective = p.members.map(
-				(id) => p.gameCounts[id.toString()].playCount + p.gameCounts[id.toString()].baseCount,
-			);
+			const allEffective = p.members.map((id) => p.gameCounts[id].playCount + p.gameCounts[id].baseCount);
 			expect(array.median(allEffective)).toBe(4);
 		});
 	});
@@ -235,16 +303,14 @@ describe("verify-patterns.ts ロジック検証", () => {
 		it("member 14: baseCount=3 (G0-G4 の mode)", () => {
 			// G0-G4 の playCount を手計算
 			const g0to4 = p.histories.slice(0, 5);
-			const playCounts = p.members
-				.filter((id) => id !== 14)
-				.map((id) => countPlays(g0to4, id));
+			const playCounts = p.members.filter((id) => id !== 14).map((id) => countPlays(g0to4, id));
 			expect(array.mode(playCounts)).toBe(3);
 			expect(p.gameCounts["14"].baseCount).toBe(3);
 		});
 
 		it("member 14: effectivePlayCount=9, median=6, diff=3 → high", () => {
 			const allEffective = p.members.map((id) => {
-				const gc = p.gameCounts[id.toString()];
+				const gc = p.gameCounts[id];
 				return gc.playCount + gc.baseCount;
 			});
 			const median = array.median(allEffective);

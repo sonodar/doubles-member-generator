@@ -123,7 +123,8 @@ export function detectWarnings(settings: CurrentSettings, thresholds: WarningThr
 	if (lastMembers) {
 		const restMembers = getRestMembers({ members: settings.members }, lastMembers);
 		for (const memberId of restMembers) {
-			const count = getContinuousRestCount(settings.histories, memberId);
+			const joinedAt = settings.gameCounts[memberId]?.joinedAt ?? 0;
+			const count = getContinuousRestCount(settings.histories, memberId, joinedAt);
 			if (count >= thresholds.consecutiveRestThreshold) {
 				warnings.push({
 					memberId,
