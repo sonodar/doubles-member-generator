@@ -24,7 +24,7 @@ describe("main", () => {
 		expect(added.histories).toEqual(initial.histories);
 		expect(added.gameCounts).toEqual({
 			...initial.gameCounts,
-			13: { playCount: 0, baseCount: 1 },
+			13: { playCount: 0, baseCount: 1, joinedAt: 1 },
 		});
 
 		const next = generate(added);
