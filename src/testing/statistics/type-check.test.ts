@@ -25,7 +25,6 @@ describe("テストデータ型定義", () => {
 			expect(typeof p.courtCount).toBe("number");
 			expect(Array.isArray(p.members)).toBe(true);
 			expect(Array.isArray(p.histories)).toBe(true);
-			expect(typeof p.gameCounts).toBe("object");
 			expect(["evenness", "discreteness"]).toContain(p.algorithm);
 			expect(typeof p.expected).toBe("object");
 		});

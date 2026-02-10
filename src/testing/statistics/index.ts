@@ -1,4 +1,4 @@
-import type { Algorithm, History, MemberId, OutlierLevel, PlayCountPerMember } from "../../logic";
+import type { Algorithm, History, MemberId, OutlierLevel } from "../../logic";
 
 // 期待値の型定義
 export type ExpectedHighlightLevel = {
@@ -28,13 +28,16 @@ export type BugDetection = {
 	expectedBehavior: string;
 };
 
+export type JoinerInfo = { id: MemberId };
+export type Joiners = Record<string, JoinerInfo>;
+
 // 標準パターン（pattern1-11）
 export type StatisticsTestData = {
 	description: string;
 	courtCount: number;
 	members: MemberId[];
 	histories: History[];
-	gameCounts: PlayCountPerMember;
+	joiners?: Joiners;
 	algorithm: Algorithm;
 	expected: Record<string, ExpectedMemberStats>;
 	leftMembers?: MemberId[];
@@ -53,7 +56,7 @@ export type AlgorithmTestData = {
 	courtCount: number;
 	members: MemberId[];
 	histories: History[];
-	gameCounts: PlayCountPerMember;
+	joiners?: Joiners;
 	algorithms: {
 		evenness: AlgorithmExpected;
 		discreteness: AlgorithmExpected;

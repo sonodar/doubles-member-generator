@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import { array } from "../../logic/array";
 import type { History } from "../../logic/types";
 import { getContinuousRestCount as srcGetContinuousRestCount } from "../../logic/util";
+import { buildGameCounts } from "./buildGameCounts";
 import { pattern4, pattern9 } from "./index";
 
 // --- verify-patterns.ts と同じ関数を再実装（コピーではなく独立実装） ---
@@ -264,11 +265,12 @@ describe("verify-patterns.ts ロジック検証", () => {
 
 	describe("Pattern 4 (all-equal) 手計算検証", () => {
 		const p = pattern4;
+		const gameCounts = buildGameCounts(p);
 
 		it("8人全員が毎試合出場 → playCount=4", () => {
 			for (const id of p.members) {
 				expect(countPlays(p.histories, id)).toBe(4);
-				expect(p.gameCounts[id].playCount).toBe(4);
+				expect(gameCounts[id].playCount).toBe(4);
 			}
 		});
 
@@ -279,13 +281,14 @@ describe("verify-patterns.ts ロジック検証", () => {
 		});
 
 		it("全員 effectivePlayCount=4, median=4, diff=0 → none", () => {
-			const allEffective = p.members.map((id) => p.gameCounts[id].playCount + p.gameCounts[id].baseCount);
+			const allEffective = p.members.map((id) => gameCounts[id].playCount + gameCounts[id].baseCount);
 			expect(array.median(allEffective)).toBe(4);
 		});
 	});
 
 	describe("Pattern 9 (over-play) 手計算検証", () => {
 		const p = pattern9;
+		const gameCounts = buildGameCounts(p);
 
 		it("11試合 × 8人 = 88 total plays", () => {
 			let total = 0;
@@ -297,7 +300,7 @@ describe("verify-patterns.ts ロジック検証", () => {
 
 		it("member 14: joinedAt=5 で G5-G10 の6試合全出場 → playCount=6", () => {
 			expect(countPlays(p.histories, 14)).toBe(6);
-			expect(p.gameCounts["14"].playCount).toBe(6);
+			expect(gameCounts["14"].playCount).toBe(6);
 		});
 
 		it("member 14: baseCount=3 (G0-G4 の mode)", () => {
@@ -305,18 +308,18 @@ describe("verify-patterns.ts ロジック検証", () => {
 			const g0to4 = p.histories.slice(0, 5);
 			const playCounts = p.members.filter((id) => id !== 14).map((id) => countPlays(g0to4, id));
 			expect(array.mode(playCounts)).toBe(3);
-			expect(p.gameCounts["14"].baseCount).toBe(3);
+			expect(gameCounts["14"].baseCount).toBe(3);
 		});
 
 		it("member 14: effectivePlayCount=9, median=6, diff=3 → high", () => {
 			const allEffective = p.members.map((id) => {
-				const gc = p.gameCounts[id];
+				const gc = gameCounts[id];
 				return gc.playCount + gc.baseCount;
 			});
 			const median = array.median(allEffective);
 			expect(median).toBe(6);
 
-			const member14Effective = p.gameCounts["14"].playCount + p.gameCounts["14"].baseCount;
+			const member14Effective = gameCounts["14"].playCount + gameCounts["14"].baseCount;
 			expect(member14Effective).toBe(9);
 
 			const diff = Math.abs(member14Effective - median);

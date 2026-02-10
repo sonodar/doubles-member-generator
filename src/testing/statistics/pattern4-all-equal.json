@@ -20,48 +20,6 @@
 			"time": "2026/1/29 12:30:00"
 		}
 	],
-	"gameCounts": {
-		"1": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"2": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"3": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"4": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"5": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"6": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"7": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"8": {
-			"playCount": 4,
-			"baseCount": 0,
-			"joinedAt": 0
-		}
-	},
 	"algorithm": "evenness",
 	"expected": {
 		"1": {
