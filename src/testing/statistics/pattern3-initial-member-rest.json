@@ -44,77 +44,8 @@
 			"time": "2026/1/29 11:35:43"
 		}
 	],
-	"gameCounts": {
-		"1": {
-			"playCount": 9,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"2": {
-			"playCount": 8,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"3": {
-			"playCount": 7,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"4": {
-			"playCount": 7,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"5": {
-			"playCount": 7,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"6": {
-			"playCount": 6,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"7": {
-			"playCount": 6,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"8": {
-			"playCount": 7,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"9": {
-			"playCount": 0,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"10": {
-			"playCount": 0,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"11": {
-			"playCount": 7,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"12": {
-			"playCount": 8,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"13": {
-			"playCount": 6,
-			"baseCount": 0,
-			"joinedAt": 0
-		},
-		"14": {
-			"playCount": 2,
-			"baseCount": 6,
-			"joinedAt": 8
-		}
+	"joiners": {
+		"8": { "id": 14 }
 	},
 	"algorithm": "evenness",
 	"expected": {

@@ -156,7 +156,7 @@ function increment(gameCounts: PlayCountPerMember, members: GameMembers): PlayCo
 	for (const id of members.flat()) {
 		const playCount = (result[id]?.playCount || 0) + 1;
 		const baseCount = result[id]?.baseCount || 0;
-		result[id] = { playCount, baseCount };
+		result[id] = { ...result[id], playCount, baseCount };
 	}
 	return result;
 }

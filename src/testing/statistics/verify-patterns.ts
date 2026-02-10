@@ -10,7 +10,8 @@ import { readFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { array } from "../../logic/array";
 import type { OutlierLevel } from "../../logic/count";
-import type { History, PlayCount } from "../../logic/types";
+import type { History, MemberId, PlayCount } from "../../logic/types";
+import { buildGameCounts } from "./buildGameCounts";
 
 // --- 型定義 ---
 
@@ -27,12 +28,14 @@ type ExpectedMemberStats = {
 	consecutiveRestCount?: number;
 	highlightLevel?: HighlightLevel;
 };
+type JoinerInfo = { id: MemberId };
+type Joiners = Record<string, JoinerInfo>;
 type PatternData = {
 	description: string;
 	courtCount: number;
 	members: number[];
 	histories: History[];
-	gameCounts: GameCounts;
+	joiners?: Joiners;
 	algorithm?: string;
 	expected?: Record<string, ExpectedMemberStats>;
 	algorithms?: {
@@ -100,7 +103,12 @@ type Issue = {
 	actual: unknown;
 };
 
-function verifyPattern(_name: string, data: PatternData, expectedData: Record<string, ExpectedMemberStats>): Issue[] {
+function verifyPattern(
+	_name: string,
+	data: PatternData,
+	gameCounts: GameCounts,
+	expectedData: Record<string, ExpectedMemberStats>,
+): Issue[] {
 	const issues: Issue[] = [];
 	const allMembers = [...data.members, ...(data.leftMembers ?? [])];
 
@@ -109,7 +117,7 @@ function verifyPattern(_name: string, data: PatternData, expectedData: Record<st
 	for (const id of allMembers) {
 		const correct = calcPlayCountFromHistories(data.histories, id);
 		correctPlayCounts[id.toString()] = correct;
-		const recorded = data.gameCounts[id.toString()]?.playCount;
+		const recorded = gameCounts[id.toString()]?.playCount;
 		if (recorded !== undefined && recorded !== correct) {
 			issues.push({
 				field: "gameCounts.playCount",
@@ -123,14 +131,14 @@ function verifyPattern(_name: string, data: PatternData, expectedData: Record<st
 	// 2. baseCount の検証（途中参加メンバーのみ）
 	const correctBaseCounts: Record<string, number> = {};
 	for (const id of allMembers) {
-		const gc = data.gameCounts[id.toString()];
+		const gc = gameCounts[id.toString()];
 		if (!gc) continue;
 		const joinedAt = gc.joinedAt ?? 0;
 		if (joinedAt === 0) {
 			correctBaseCounts[id.toString()] = 0;
 			continue;
 		}
-		const correctBase = calcBaseCount(data.histories, allMembers, data.gameCounts, joinedAt);
+		const correctBase = calcBaseCount(data.histories, allMembers, gameCounts, joinedAt);
 		correctBaseCounts[id.toString()] = correctBase;
 		if (gc.baseCount !== correctBase) {
 			issues.push({
@@ -144,7 +152,7 @@ function verifyPattern(_name: string, data: PatternData, expectedData: Record<st
 
 	// 3. expected の検証
 	for (const [memberId, exp] of Object.entries(expectedData)) {
-		const gc = data.gameCounts[memberId];
+		const gc = gameCounts[memberId];
 		if (!gc) continue;
 		const joinedAt = gc.joinedAt ?? 0;
 		const correctPlay = correctPlayCounts[memberId] ?? 0;
@@ -198,7 +206,7 @@ function verifyPattern(_name: string, data: PatternData, expectedData: Record<st
 			// effectivePlayCount のハイライト
 			const allEffective = allMembers.map((id) => {
 				const pc = correctPlayCounts[id.toString()] ?? 0;
-				const bc = correctBaseCounts[id.toString()] ?? data.gameCounts[id.toString()]?.baseCount ?? 0;
+				const bc = correctBaseCounts[id.toString()] ?? gameCounts[id.toString()]?.baseCount ?? 0;
 				return pc + bc;
 			});
 			const effectiveMedian = array.median(allEffective);
@@ -219,7 +227,7 @@ function verifyPattern(_name: string, data: PatternData, expectedData: Record<st
 			// totalRestCount のハイライト
 			if (exp.highlightLevel.totalRestCount !== undefined) {
 				const allTotalRest = allMembers.map((id) => {
-					const ja = data.gameCounts[id.toString()]?.joinedAt ?? 0;
+					const ja = gameCounts[id.toString()]?.joinedAt ?? 0;
 					return calcTotalRestCount(data.histories, id, ja);
 				});
 				const totalRestMedian = array.median(allTotalRest);
@@ -278,10 +286,20 @@ for (const file of patternFiles) {
 	const data: PatternData = JSON.parse(readFileSync(filePath, "utf-8"));
 	const name = basename(file, ".json");
 
+	// buildGameCounts で gameCounts を構築
+	const gameCounts = buildGameCounts({
+		members: data.members,
+		histories: data.histories,
+		joiners: data.joiners,
+		algorithm: (data.algorithm ?? "evenness") as "evenness" | "discreteness",
+		courtCount: data.courtCount,
+		leftMembers: data.leftMembers,
+	});
+
 	if (data.algorithms) {
 		// Pattern 12: アルゴリズム別
 		for (const [alg, algData] of Object.entries(data.algorithms)) {
-			const issues = verifyPattern(`${name} (${alg})`, data, algData.expected);
+			const issues = verifyPattern(`${name} (${alg})`, data, gameCounts, algData.expected);
 			if (issues.length > 0) {
 				console.log(`\n❌ ${name} (${alg}): ${issues.length} 件の不整合`);
 				for (const issue of issues) {
@@ -295,7 +313,7 @@ for (const file of patternFiles) {
 			}
 		}
 	} else if (data.expected) {
-		const issues = verifyPattern(name, data, data.expected);
+		const issues = verifyPattern(name, data, gameCounts, data.expected);
 		if (issues.length > 0) {
 			console.log(`\n❌ ${name}: ${issues.length} 件の不整合`);
 			for (const issue of issues) {

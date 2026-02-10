@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import type { CurrentSettings } from "../../logic";
 import { OutlierLevelProvider } from "../../logic";
 import { type AlgorithmTestData, pattern12, type StatisticsTestData, standardPatterns } from "../../testing/statistics";
+import { buildGameCounts } from "../../testing/statistics/buildGameCounts";
 
 function runStatisticsTest(pattern: StatisticsTestData) {
-	const { histories, members, gameCounts, expected } = pattern;
+	const { histories, members, expected } = pattern;
+	const gameCounts = buildGameCounts(pattern);
 	const { getValue, getLevel } = OutlierLevelProvider({ histories, members, gameCounts });
 
 	for (const [memberId, exp] of Object.entries(expected)) {
@@ -67,7 +69,7 @@ describe("MemberCountPane 統計ロジック検証", () => {
 					courtCount: p12.courtCount,
 					members: p12.members,
 					histories: p12.histories,
-					gameCounts: p12.gameCounts,
+					joiners: p12.joiners,
 					algorithm: algName as CurrentSettings["algorithm"],
 					expected: algData.expected,
 				};
