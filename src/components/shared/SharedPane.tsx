@@ -3,7 +3,7 @@ import { atom } from "jotai";
 import { useCallback, useState } from "react";
 import { MdHome, MdRefresh } from "react-icons/md";
 import { match } from "ts-pattern";
-import { type Event, EventType, getEnvironment, replayEvent } from "../../api";
+import { type Event, EventType, getEnvironment } from "../../api";
 import { usePushSubscription, useRealtimeSync } from "../../hooks";
 import type { CurrentSettings } from "../../logic";
 import { AlgorithmBadge } from "../common/AlgorithmBadge.tsx";
@@ -12,6 +12,7 @@ import { MemberButton } from "../common/MemberButton.tsx";
 import { emptySettings, settingsReducer, useReducerAtom } from "../state";
 import { toaster } from "../theme.ts";
 import { NotificationBanner } from "./NotificationBanner.tsx";
+import { replayEvents } from "./replayEvents";
 
 // ゲーム画面と違い、オンメモリの atom を利用する。
 // こうしないと同一ブラウザで共有画面を開いたときに同じ localStorage に書き込みをしてしまう。
@@ -189,22 +190,4 @@ export default function SharedPane({ sharedId }: { sharedId: string }) {
 			</Card.Body>
 		</Card.Root>
 	);
-}
-
-function replayEvents(allEvents: Event[]) {
-	const [init, ...events] = allEvents;
-
-	if (init.type !== EventType.Initialize) {
-		throw new Error(`Invalid first event type: ${init.type}`);
-	}
-
-	let finished = false;
-
-	const settings = events.reduce((settings, event) => {
-		if (event.type === EventType.Initialize) return settings;
-		finished = finished || event.type === EventType.Finish;
-		return replayEvent(settings, event);
-	}, init.payload);
-
-	return { settings, finished };
 }
